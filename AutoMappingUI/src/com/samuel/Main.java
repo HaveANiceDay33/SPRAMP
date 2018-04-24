@@ -56,13 +56,15 @@ public class Main extends HvlTemplateInteg2D{
 	float xOffsetBet;
 	float yOffsetBet;
 	double prevAngle;
+	double angleOff;
+	int numPoints;
 	
 	boolean clicked;
 	String instructions;
 	String direct;
 	
 	ArrayList<Waypoint>waypoints;
-	
+	ArrayList<Action>actions;
 	@Override
 	public void initialize() {
 		getTextureLoader().loadResource("filed2018");//0
@@ -70,7 +72,7 @@ public class Main extends HvlTemplateInteg2D{
 		zoom = 1;
 		gameFont =  new HvlFontPainter2D(getTexture(1), HvlFontPainter2D.Preset.FP_INOFFICIAL,.5f,8f,0);
 		zoomer = new HvlCamera2D(540, 360, 0, zoom, HvlCamera2D.ALIGNMENT_CENTER);
-		
+		numPoints = 0;
 		picSizeX = 1080;
 		picSizeY = 720;
 		xPos = 540;
@@ -78,7 +80,8 @@ public class Main extends HvlTemplateInteg2D{
 		deleteCounter = 0;
 		clicked = false;
 		waypoints = new ArrayList<Waypoint>();
-		instructions = "C: erase all \nD: delete last \nW: Coords   \nScroll: Zoom in/out \nRight Click: drag  \nLeft Click: set waypoint\nESC: exit";
+		actions = new ArrayList<Action>();
+		instructions = "C: erase all \nD: delete last \nW: Coords   \nScroll: Zoom in/out \nRight Click: drag  \nLeft Click: set waypoint\nESC: exit\nL-Shift: backwards waypoint";
 		direct = "    Press Q to see all controls";
 		xOffsetBet = 0;
 		yOffsetBet = 0;
@@ -86,23 +89,41 @@ public class Main extends HvlTemplateInteg2D{
 		UI = new HvlMenu() {
 			public void draw(float delta) {
 				
-				if(Mouse.isButtonDown(0) && clicked == false) {
+				if(Mouse.isButtonDown(0) && clicked == false && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_A)) {
 					if(waypoints.size() >= 1) {
-						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green);
+						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward", 0, 0);
 						waypoints.add(point);
+						numPoints++;
 						clicked = true;
 					}
 					if(waypoints.size() ==0 && mouseX <= 540) {
-						Waypoint point = new Waypoint(157, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange);
+						Waypoint point = new Waypoint(157, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",0 ,0);
 						waypoints.add(point);
+						numPoints++;
 						clicked = true;
 					}	
 					if(waypoints.size() == 0 && mouseX > 540) {
-						Waypoint point = new Waypoint(930, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange);
+						Waypoint point = new Waypoint(930, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start", 0, 0);
 						waypoints.add(point);
+						numPoints++;
 						clicked = true;
 					}	
 					
+				}
+				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false) {
+					if(waypoints.size() >= 1) {
+						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.red, "backwards",0, 0);
+						waypoints.add(point);
+						numPoints++;
+						clicked = true;
+					}
+				}
+				if(Keyboard.isKeyDown(Keyboard.KEY_A) && Mouse.isButtonDown(0) && clicked == false) {
+					if(waypoints.size() >= 1) {
+						Action singleAction = new Action(waypoints.get(numPoints-1).x, waypoints.get(numPoints-1).y, 7, Color.blue, "action");
+						actions.add(singleAction);
+						clicked = true;
+					}
 				}
 				if(!Mouse.isButtonDown(0)) {
 					clicked = false;
@@ -178,12 +199,18 @@ public class Main extends HvlTemplateInteg2D{
 					public void run() {
 						hvlDrawQuadc(540, 360, picSizeX, picSizeY, getTexture(0));
 						for(Waypoint allPoints : waypoints) {
-								allPoints.display();
-								
+								allPoints.display();		
+						}
+						for(Action allActions : actions) {
+							allActions.display();
 						}
 						for(int i = 0; i < waypoints.size(); i++) {
 							if(i>0) {
 								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.green);
+							}
+							if(waypoints.get(i).type.equals("backwards")) {
+								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.red);
+
 							}
 							
 						}
@@ -197,34 +224,33 @@ public class Main extends HvlTemplateInteg2D{
 		};
 		Coords = new HvlMenu() {
 			public void draw(float delta) {
-				for(int i = 0; i < waypoints.size(); i++) {
-					if(i % 2 == 0) {
+				for(int i = 0; i < waypoints.size(); i++) {	
 						textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + 20, 0.3f);
+						
 						if(i > 0) {
 							distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);
-							prevAngle = Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet));
+							
+		
 							xOffsetBet = Math.round(waypoints.get(i).x - waypoints.get(i-1).x);
 							yOffsetBet = Math.round(waypoints.get(i).y - waypoints.get(i-1).y);
-							if(i == 1) {
-								prevAngle = 0;
+							
+							angleOff = Math.round((Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-waypoints.get(i-1).angleOffset));
+							
+					
+							if(waypoints.get(i).type.equals("backwards")) {
+								angleOff -= 180;
+								distanceBet *= -1;
 							}
-							textOutline("Distance between "+ (i) +" and " +(i+1) + ": "+ distanceBet + " In. Angle: "+(Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-prevAngle)+ " degrees.", Color.cyan, Color.darkGray, 400, (40*(i-1))+40, 0.3f);
+							if(waypoints.get(i-1).type.equals("backwards")) {
+								angleOff+=90;
+							}
+							
+							waypoints.get(i).setDistance(distanceBet);
+							waypoints.get(i).setAngle(angleOff);
+							
+							textOutline("Angle: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+40, 0.25f);
 						}
 						
-					}else {
-						textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.yellow, Color.darkGray, 40, (40 *i) + 20, 0.3f);
-						if(i > 0) {
-							distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);
-							prevAngle = Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet));
-							xOffsetBet = Math.round(waypoints.get(i).x - waypoints.get(i-1).x);
-							yOffsetBet = Math.round(waypoints.get(i).y - waypoints.get(i-1).y);
-							if(i == 1) {
-								prevAngle = 0;
-							}
-							textOutline("Distance between "+ (i) +" and " +(i+1) + ": "+ distanceBet + " In. Angle: "+Math.round((Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-prevAngle))+" degrees", Color.yellow, Color.darkGray, 400, (40*(i-1))+40, 0.3f);
-						}
-					}
-					
 				}
 				textOutline("Press E to go back", Color.black, Color.white, 740, 600, 0.4f);
 				if(Keyboard.isKeyDown(Keyboard.KEY_E)) {

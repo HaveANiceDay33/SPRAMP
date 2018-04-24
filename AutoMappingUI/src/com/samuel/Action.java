@@ -5,31 +5,23 @@ import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuadc;
 import org.newdawn.slick.Color;
 
 
-public class Waypoint {
+public class Action {
 	public float x;
 	public float y;
 	public float size;
 	public Color color;
 	public String type;
-	public float distance;
-	public double angleOffset;
-	public Waypoint(float x, float y, float size, Color color, String type, float distance, double angleOffset) {
+
+	public Action(float x, float y, float size, Color color, String type) {
 		this.x = x;
 		this.y = y;
 		this.size = size;
 		this.color = color;
 		this.type = type;
-		this.angleOffset = angleOffset;
-		this.distance = distance;
+
 	}
 	public void display() {
 		hvlDrawQuadc(x, y, size, size, color);
 	}
-	public void setDistance(float newDis) {
-		this.distance = newDis;
-	}
-	public void setAngle(double newAng) {
-		this.angleOffset = newAng;
-	}
-
 }
+	
