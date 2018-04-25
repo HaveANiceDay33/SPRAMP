@@ -11,14 +11,16 @@ public class Waypoint {
 	public float size;
 	public Color color;
 	public String type;
+	public String action;
 	public float distance;
 	public double angleOffset;
-	public Waypoint(float x, float y, float size, Color color, String type, float distance, double angleOffset) {
+	public Waypoint(float x, float y, float size, Color color, String type, String action, float distance, double angleOffset) {
 		this.x = x;
 		this.y = y;
 		this.size = size;
 		this.color = color;
 		this.type = type;
+		this.action = action;
 		this.angleOffset = angleOffset;
 		this.distance = distance;
 		//

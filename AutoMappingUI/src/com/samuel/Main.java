@@ -91,36 +91,47 @@ public class Main extends HvlTemplateInteg2D{
 				
 				if(Mouse.isButtonDown(0) && clicked == false && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_A)) {
 					if(waypoints.size() >= 1) {
-						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward", 0, 0);
+						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward","drive", 0, 0);
 						waypoints.add(point);
 						numPoints++;
 						clicked = true;
 					}
 					if(waypoints.size() ==0 && mouseX <= 540) {
-						Waypoint point = new Waypoint(157, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",0 ,0);
+						Waypoint point = new Waypoint(157, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null,0 ,0);
 						waypoints.add(point);
 						numPoints++;
 						clicked = true;
 					}	
 					if(waypoints.size() == 0 && mouseX > 540) {
-						Waypoint point = new Waypoint(930, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start", 0, 0);
+						Waypoint point = new Waypoint(930, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null, 0, 0);
 						waypoints.add(point);
 						numPoints++;
 						clicked = true;
 					}	
 					
 				}
-				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false) {
+				if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_A) && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)&& Mouse.isButtonDown(0) && clicked == false) {
 					if(waypoints.size() >= 1) {
-						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.red, "backwards",0, 0);
+						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.red, "backwards","drive",0, 0);
 						waypoints.add(point);
 						numPoints++;
 						clicked = true;
 					}
 				}
-				if(Keyboard.isKeyDown(Keyboard.KEY_A) && Mouse.isButtonDown(0) && clicked == false) {
+				if(Keyboard.isKeyDown(Keyboard.KEY_A) && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false) {
 					if(waypoints.size() >= 1) {
-					
+						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.blue, "forward","shoot",0, 0);
+						waypoints.add(point);
+						numPoints++;
+						
+						clicked = true;
+					}
+				}
+				if(Keyboard.isKeyDown(Keyboard.KEY_A) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false) {
+					if(waypoints.size() >= 1) {
+						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.magenta, "backwards","shoot",0, 0);
+						waypoints.add(point);
+						numPoints++;
 						
 						clicked = true;
 					}
