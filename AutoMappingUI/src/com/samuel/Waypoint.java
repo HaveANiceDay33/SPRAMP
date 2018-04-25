@@ -21,6 +21,7 @@ public class Waypoint {
 		this.type = type;
 		this.angleOffset = angleOffset;
 		this.distance = distance;
+		//
 	}
 	public void display() {
 		hvlDrawQuadc(x, y, size, size, color);

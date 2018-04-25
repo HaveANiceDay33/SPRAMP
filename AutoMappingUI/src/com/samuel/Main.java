@@ -64,7 +64,7 @@ public class Main extends HvlTemplateInteg2D{
 	String direct;
 	
 	ArrayList<Waypoint>waypoints;
-	ArrayList<Action>actions;
+	
 	@Override
 	public void initialize() {
 		getTextureLoader().loadResource("filed2018");//0
@@ -80,7 +80,7 @@ public class Main extends HvlTemplateInteg2D{
 		deleteCounter = 0;
 		clicked = false;
 		waypoints = new ArrayList<Waypoint>();
-		actions = new ArrayList<Action>();
+		
 		instructions = "C: erase all \nD: delete last \nW: Coords   \nScroll: Zoom in/out \nRight Click: drag  \nLeft Click: set waypoint\nESC: exit\nL-Shift: backwards waypoint";
 		direct = "    Press Q to see all controls";
 		xOffsetBet = 0;
@@ -120,8 +120,8 @@ public class Main extends HvlTemplateInteg2D{
 				}
 				if(Keyboard.isKeyDown(Keyboard.KEY_A) && Mouse.isButtonDown(0) && clicked == false) {
 					if(waypoints.size() >= 1) {
-						Action singleAction = new Action(waypoints.get(numPoints-1).x, waypoints.get(numPoints-1).y, 7, Color.blue, "action");
-						actions.add(singleAction);
+					
+						
 						clicked = true;
 					}
 				}
@@ -201,9 +201,7 @@ public class Main extends HvlTemplateInteg2D{
 						for(Waypoint allPoints : waypoints) {
 								allPoints.display();		
 						}
-						for(Action allActions : actions) {
-							allActions.display();
-						}
+					
 						for(int i = 0; i < waypoints.size(); i++) {
 							if(i>0) {
 								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.green);
