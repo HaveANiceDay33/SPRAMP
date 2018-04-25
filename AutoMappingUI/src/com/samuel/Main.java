@@ -24,7 +24,7 @@ public class Main extends HvlTemplateInteg2D{
 		new Main();
 	}
 	public Main(){
-		super(60, 1080, 720, "Line following v1", new HvlDisplayModeDefault());
+		super(60, 1440, 720, "Line following v1", new HvlDisplayModeDefault());
 	}
 	
 	public void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
@@ -55,6 +55,8 @@ public class Main extends HvlTemplateInteg2D{
 	float distanceBet;
 	float xOffsetBet;
 	float yOffsetBet;
+	float xCoord;
+	float yCoord;
 	double prevAngle;
 	double angleOff;
 	int numPoints;
@@ -77,6 +79,7 @@ public class Main extends HvlTemplateInteg2D{
 		picSizeY = 720;
 		xPos = 540;
 		yPos = 360;
+		
 		deleteCounter = 0;
 		clicked = false;
 		waypoints = new ArrayList<Waypoint>();
@@ -91,19 +94,19 @@ public class Main extends HvlTemplateInteg2D{
 				
 				if(Mouse.isButtonDown(0) && clicked == false && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_A)) {
 					if(waypoints.size() >= 1) {
-						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 540)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward","drive", 0, 0);
+						Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 720)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward","drive", 0, 0);
 						waypoints.add(point);
 						numPoints++;
 						clicked = true;
 					}
 					if(waypoints.size() ==0 && mouseX <= 540) {
-						Waypoint point = new Waypoint(157, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null,0 ,0);
+						Waypoint point = new Waypoint(157-240, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null,0 ,0);
 						waypoints.add(point);
 						numPoints++;
 						clicked = true;
 					}	
 					if(waypoints.size() == 0 && mouseX > 540) {
-						Waypoint point = new Waypoint(930, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null, 0, 0);
+						Waypoint point = new Waypoint(930-240, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null, 0, 0);
 						waypoints.add(point);
 						numPoints++;
 						clicked = true;
@@ -208,7 +211,7 @@ public class Main extends HvlTemplateInteg2D{
 
 					@Override
 					public void run() {
-						hvlDrawQuadc(540, 360, picSizeX, picSizeY, getTexture(0));
+						hvlDrawQuadc(300, 360, picSizeX, picSizeY, getTexture(0));
 						for(Waypoint allPoints : waypoints) {
 								allPoints.display();		
 						}
@@ -233,8 +236,12 @@ public class Main extends HvlTemplateInteg2D{
 		};
 		Coords = new HvlMenu() {
 			public void draw(float delta) {
-				for(int i = 0; i < waypoints.size(); i++) {	
-						textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + 20, 0.3f);
+				for(int i = 0; i < waypoints.size(); i++) {
+//						xCoord = Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56);
+//						yCoord = Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56);
+//						waypoints.get(i).setX(xCoord);
+//						waypoints.get(i).setY(yCoord);
+						textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + 20, 0.3f);
 						
 						if(i > 0) {
 							distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);

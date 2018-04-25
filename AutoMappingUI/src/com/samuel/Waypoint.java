@@ -34,5 +34,11 @@ public class Waypoint {
 	public void setAngle(double newAng) {
 		this.angleOffset = newAng;
 	}
+	public void setX(float newX) {
+		this.x = newX;
+	}
+	public void setY(float newY) {
+		this.y = newY;
+	}
 
 }
