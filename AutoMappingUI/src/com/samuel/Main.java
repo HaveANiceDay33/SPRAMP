@@ -81,7 +81,7 @@ public class Main extends HvlTemplateInteg2D{
 		clicked = false;
 		waypoints = new ArrayList<Waypoint>();
 		
-		instructions = "C: erase all \nD: delete last \nW: Coords   \nScroll: Zoom in/out \nRight Click: drag  \nLeft Click: set waypoint\nESC: exit\nL-Shift: backwards waypoint";
+		instructions = "C : Erase all \nD : Delete last \nW : Coords\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nLeft Click+L-Shift : Backwards drive\nLeft Click+A : Forward Action\nLeft Click+L Shift+A : Backwards Action";
 		direct = "    Press Q to see all controls";
 		xOffsetBet = 0;
 		yOffsetBet = 0;
