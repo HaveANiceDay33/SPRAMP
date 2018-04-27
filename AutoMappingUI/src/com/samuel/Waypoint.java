@@ -23,7 +23,7 @@ public class Waypoint {
 		this.action = action;
 		this.angleOffset = angleOffset;
 		this.distance = distance;
-		//
+		//yeet
 	}
 	public void display() {
 		hvlDrawQuadc(x, y, size, size, color);
