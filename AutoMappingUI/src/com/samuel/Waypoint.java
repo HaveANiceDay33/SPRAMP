@@ -14,7 +14,8 @@ public class Waypoint {
 	public String action;
 	public float distance;
 	public double angleOffset;
-	public Waypoint(float x, float y, float size, Color color, String type, String action, float distance, double angleOffset) {
+	public double origAngle;
+	public Waypoint(float x, float y, float size, Color color, String type, String action, float distance, double angleOffset, double origAngle) {
 		this.x = x;
 		this.y = y;
 		this.size = size;
@@ -33,6 +34,9 @@ public class Waypoint {
 	}
 	public void setAngle(double newAng) {
 		this.angleOffset = newAng;
+	}
+	public void setOrig(double newOr) {
+		this.origAngle = newOr;
 	}
 	public void setX(float newX) {
 		this.x = newX;
