@@ -347,7 +347,7 @@ public class Main extends HvlTemplateInteg2D{
 			public void run(HvlButton a) {
 				fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
 				
-				String userHomeFolder = System.getProperty("user.home");
+				String userHomeFolder = System.getProperty("user.home")+"/Documents";
 				File profile = new File(userHomeFolder, fileName+".txt");
 				BufferedWriter output = null;
 				try {
@@ -383,13 +383,13 @@ public class Main extends HvlTemplateInteg2D{
 		UI.getFirstArrangerBox().add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.lightGray);	
 			}
 		}).setUnfocusedDrawable(new HvlComponentDrawable() {
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.red);	
+				hvlDrawQuad(x,y,width,height, Color.green);	
 			}
 		}).build());
 
