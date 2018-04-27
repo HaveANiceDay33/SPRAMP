@@ -333,7 +333,15 @@ public class Main extends HvlTemplateInteg2D{
 								if(waypoints.get(i-1).type.equals("backwards")) {
 									angleOff+=180;
 								}
-								
+								if(waypoints.get(i-1).type.equals("backwards") && waypoints.get(i).type.equals("backwards")) {
+									angleOff -= 360;
+								}
+								if(angleOff <= -360) {
+									angleOff+=360;
+								}
+								if(angleOff >= 360) {
+									angleOff-=360;
+								}
 								
 								waypoints.get(i).setDistance(distanceBet);
 								waypoints.get(i).setOrig(origAngle);
