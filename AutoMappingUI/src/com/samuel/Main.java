@@ -216,7 +216,7 @@ public class Main extends HvlTemplateInteg2D{
 						xOffsetBet = Math.round(waypoints.get(i).x - waypoints.get(i-1).x);
 						yOffsetBet = Math.round(waypoints.get(i).y - waypoints.get(i-1).y);
 						
-						angleOff = Math.round((Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-waypoints.get(i-1).angleOffset));
+						angleOff = Math.round((Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-waypoints.get(i-1).angleOffset)-waypoints.get(i-1).angleOffset);
 						
 				
 						if(waypoints.get(i).type.equals("backwards")) {
@@ -304,7 +304,7 @@ public class Main extends HvlTemplateInteg2D{
 							xOffsetBet = Math.round(waypoints.get(i).x - waypoints.get(i-1).x);
 							yOffsetBet = Math.round(waypoints.get(i).y - waypoints.get(i-1).y);
 							
-							angleOff = Math.round((Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-waypoints.get(i-1).angleOffset));
+							angleOff = Math.round((Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-waypoints.get(i-1).angleOffset)-waypoints.get(i-1).angleOffset);
 							
 					
 							if(waypoints.get(i).type.equals("backwards")) {
