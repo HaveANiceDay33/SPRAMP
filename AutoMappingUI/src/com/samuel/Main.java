@@ -205,9 +205,35 @@ public class Main extends HvlTemplateInteg2D{
 				if(zoomer.getY() <= 0) {
 					zoomer.setY(0);
 				}
+			
 				for(int i = 0; i < waypoints.size(); i++) {
-					textOutline((i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In.  "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 1080, (20 *i) + 20, 0.25f);
-				}
+					textOutline((i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In. "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.",Color.cyan, Color.darkGray, 1040, (20*(i-1))+40, 0.25f);
+					
+					if(i > 0) {
+						distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);
+						
+	
+						xOffsetBet = Math.round(waypoints.get(i).x - waypoints.get(i-1).x);
+						yOffsetBet = Math.round(waypoints.get(i).y - waypoints.get(i-1).y);
+						
+						angleOff = Math.round((Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))-waypoints.get(i-1).angleOffset));
+						
+				
+						if(waypoints.get(i).type.equals("backwards")) {
+							angleOff -= 180;
+							distanceBet *= -1;
+						}
+						if(waypoints.get(i-1).type.equals("backwards")) {
+							angleOff+=90;
+						}
+						
+						waypoints.get(i).setDistance(distanceBet);
+						waypoints.get(i).setAngle(angleOff);
+						
+						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1230, (20*(i-1))+40, 0.25f);
+					}
+					
+			}
 				
 				if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  
 						Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {
