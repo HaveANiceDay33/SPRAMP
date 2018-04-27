@@ -43,6 +43,7 @@ public class Main extends HvlTemplateInteg2D{
 	float picSizeY;
 	float mouseX;
 	float mouseY;
+	float fineSpeed;
 	static HvlFontPainter2D gameFont;
 	
 	int mouseDerivative;
@@ -83,6 +84,7 @@ public class Main extends HvlTemplateInteg2D{
 		yPos = 360;
 		screenOffset = 720;
 		deleteCounter = 0;
+		fineSpeed = (float) 0.15;
 		clicked = false;
 		waypoints = new ArrayList<Waypoint>();
 		
@@ -203,8 +205,32 @@ public class Main extends HvlTemplateInteg2D{
 				if(zoomer.getY() <= 0) {
 					zoomer.setY(0);
 				}
+				for(int i = 0; i < waypoints.size(); i++) {
+					textOutline((i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In.  "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 1080, (20 *i) + 20, 0.25f);
+				}
 				
-				
+				if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  
+						Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+					if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT) && waypoints.size()>1) {
+						waypoints.get(waypoints.size()-1).x += fineSpeed;
+					}
+					if(Keyboard.isKeyDown(Keyboard.KEY_LEFT) && waypoints.size()>1) {
+						waypoints.get(waypoints.size()-1).x += -fineSpeed;
+					}
+					if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+						waypoints.get(waypoints.size()-1).y += -fineSpeed;
+					}
+					if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+						waypoints.get(waypoints.size()-1).y += fineSpeed;
+					}
+					
+				}else {
+					if(waypoints.size()>0) {
+						waypoints.get(waypoints.size()-1).x += 0;
+						waypoints.get(waypoints.size()-1).y += 0;
+					}
+			
+				}
 				mouseX1 = mouseX;
 				mouseY1 = mouseY;
 				
