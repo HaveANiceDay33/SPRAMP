@@ -33,6 +33,7 @@ public class Main extends HvlTemplateInteg2D{
 		gameFont.drawWord(text, x, y-2, outlineColor, size);
 		gameFont.drawWord(text, x-2, y, outlineColor, size);
 		gameFont.drawWord(text, x, y, textColor, size);
+		
 	}
 	
 	HvlMenu UI;
@@ -230,7 +231,7 @@ public class Main extends HvlTemplateInteg2D{
 							distanceBet *= -1;
 						}
 						if(waypoints.get(i-1).type.equals("backwards")) {
-							angleOff+=90;
+							angleOff+=180;
 						}
 						
 						
@@ -322,7 +323,7 @@ public class Main extends HvlTemplateInteg2D{
 									distanceBet *= -1;
 								}
 								if(waypoints.get(i-1).type.equals("backwards")) {
-									angleOff+=90;
+									angleOff+=180;
 								}
 								
 								
