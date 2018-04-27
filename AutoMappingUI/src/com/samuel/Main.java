@@ -358,7 +358,7 @@ public class Main extends HvlTemplateInteg2D{
 				}
 				try {
 				    try {
-				    	output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197);
+				    	output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197));
 				    	output.newLine();
 						for(int i = 1; i < waypoints.size(); i++) {
 							output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);
