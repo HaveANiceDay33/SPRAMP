@@ -87,7 +87,7 @@ public class Main extends HvlTemplateInteg2D{
 		yPos = 360;
 		screenOffset = 720;
 		deleteCounter = 0;
-		fineSpeed = (float) 0.15;
+		fineSpeed = (float) 0.125;
 		clicked = false;
 		ran = false;
 		waypoints = new ArrayList<Waypoint>();
