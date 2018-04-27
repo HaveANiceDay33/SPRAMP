@@ -207,7 +207,7 @@ public class Main extends HvlTemplateInteg2D{
 				}
 			
 				for(int i = 0; i < waypoints.size(); i++) {
-					textOutline((i+1)+". X : "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In. Y : "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.",Color.cyan, Color.darkGray, 1040, (20*(i-1))+40, 0.25f);
+					textOutline((i+1)+". X: "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In. Y: "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+40, 0.25f);
 					
 					if(i > 0) {
 						distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);
@@ -230,7 +230,7 @@ public class Main extends HvlTemplateInteg2D{
 						waypoints.get(i).setDistance(distanceBet);
 						waypoints.get(i).setAngle(angleOff);
 						
-						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1230, (20*(i-1))+40, 0.25f);
+						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+44, 0.20f);
 					}
 					
 			}
@@ -318,7 +318,7 @@ public class Main extends HvlTemplateInteg2D{
 							waypoints.get(i).setDistance(distanceBet);
 							waypoints.get(i).setAngle(angleOff);
 							
-							textOutline("Angle: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+40, 0.25f);
+							textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+40, 0.25f);
 						}
 						
 				}
