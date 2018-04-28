@@ -119,7 +119,8 @@ public class Main extends HvlTemplateInteg2D{
 		waypoints = new ArrayList<Waypoint>();
 
 		origAngle = 0;
-		instructions = "C : Erase all (Only in coords) \nD : Delete last (Only in coords) \nW : Coords\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nLeft Click+L-Shift : Backwards drive\nLeft Click+A : Forward Action\nLeft Click+L Shift+A : Backwards Action\nArrow Keys: Adjust LAST point placed";
+		instructions = "C : Erase all (Only in coords) \nD : Delete last (Only in coords) \nW : Coords\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nLeft Click+L-Shift : Backwards drive\n"
+				+ "Left Click+A : Forward Action\nLeft Click+L Shift+A : Backwards Action\nArrow Keys: Adjust LAST point placed\nL : Adjust Robot Width and Length (Clears all points)";
 		direct = "    Press Q to see all controls";
 		xOffsetBet = 0;
 		yOffsetBet = 0;
@@ -473,7 +474,17 @@ public class Main extends HvlTemplateInteg2D{
 		Coords = new HvlMenu() {
 	
 			public void draw(float delta) {
-				
+				if(waypoints.size() > 0) {
+					if(Keyboard.isKeyDown(Keyboard.KEY_D) && deleteCounter <= 0){
+						waypoints.remove(waypoints.size()-1);
+						
+						deleteCounter = 50;
+					}
+					deleteCounter --;
+					if(deleteCounter == 0) {
+						deleteCounter = 0;
+					}
+				}
 					for(int i = 0; i < waypoints.size(); i++) {
 	//						xCoord = Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56);
 	//						yCoord = Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56);
@@ -482,17 +493,7 @@ public class Main extends HvlTemplateInteg2D{
 						if(Keyboard.isKeyDown(Keyboard.KEY_C)) {
 							waypoints.clear();
 						}
-						if(waypoints.size() > 0) {
-							if(Keyboard.isKeyDown(Keyboard.KEY_D) && deleteCounter <= 0){
-								waypoints.remove(waypoints.size()-1);
-								
-								deleteCounter = 50;
-							}
-							deleteCounter --;
-							if(deleteCounter == 0) {
-								deleteCounter = 0;
-							}
-						}
+
 						if(waypoints.size()!=0) {
 							textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + 20, 0.3f);
 
@@ -579,6 +580,10 @@ public class Main extends HvlTemplateInteg2D{
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 			HvlMenu.setCurrent(Controls);
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
+			waypoints.clear();
+			HvlMenu.setCurrent(Geo);
 		}
 	}
 	
