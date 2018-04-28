@@ -574,16 +574,17 @@ public class Main extends HvlTemplateInteg2D{
 		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			exit();
 		}
-
-		if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
-			HvlMenu.setCurrent(Coords);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			HvlMenu.setCurrent(Controls);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
-			waypoints.clear();
-			HvlMenu.setCurrent(Geo);
+		if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
+			if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
+				HvlMenu.setCurrent(Coords);
+			}
+			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+				HvlMenu.setCurrent(Controls);
+			}
+			if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
+				waypoints.clear();
+				HvlMenu.setCurrent(Geo);
+			}
 		}
 	}
 	
