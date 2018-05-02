@@ -222,6 +222,7 @@ public class Main extends HvlTemplateInteg2D{
 							ran = false;
 						}
 						if(waypoints.size() ==0 && mouseX <= 540) {
+							
 							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null,0,0 ,0,robotW, robotL);
 							waypoints.add(point);
 
@@ -230,6 +231,7 @@ public class Main extends HvlTemplateInteg2D{
 							ran = false;
 						}	
 						if(waypoints.size() == 0 && mouseX > 540) {
+	
 							Waypoint point = new Waypoint((float) (930-240-((robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null, 0,0 ,0,robotW, robotL);
 							waypoints.add(point);
 
