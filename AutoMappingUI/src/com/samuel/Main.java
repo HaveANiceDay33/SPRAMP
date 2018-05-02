@@ -456,7 +456,7 @@ public class Main extends HvlTemplateInteg2D{
 				fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
 				
 				String userHomeFolder = System.getProperty("user.home")+"/Documents";
-				File profile = new File(userHomeFolder, fileName+".txt");
+				File profile = new File(userHomeFolder, fileName+".BOND");
 				BufferedWriter output = null;
 				try {
 					output = new BufferedWriter(new FileWriter(profile));
