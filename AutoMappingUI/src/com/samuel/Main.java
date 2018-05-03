@@ -412,9 +412,7 @@ public class Main extends HvlTemplateInteg2D{
 						if(angleOff >= 360) {
 							angleOff-=360;
 						}
-						if(waypoints.get(i).type.contains("noAngle")) {
-							angleOff = (Double) null;
-						}
+			
 						waypoints.get(i).setDistance(distanceBet);
 						waypoints.get(i).setOrig(origAngle);
 						waypoints.get(i).setAngle(angleOff);
@@ -589,9 +587,7 @@ public class Main extends HvlTemplateInteg2D{
 								if(angleOff >= 360) {
 									angleOff-=360;
 								}
-								if(waypoints.get(i).type.contains("noAngle")) {
-									angleOff = (Double) null;
-								}
+							
 								
 								waypoints.get(i).setDistance(distanceBet);
 								waypoints.get(i).setOrig(origAngle);
