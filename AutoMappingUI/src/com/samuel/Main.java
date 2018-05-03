@@ -210,7 +210,7 @@ public class Main extends HvlTemplateInteg2D{
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		UI = new HvlMenu() {
 			public void draw(float delta) {
-				
+				//start and forwards
 				if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 					if(Mouse.isButtonDown(0) && clicked == false && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D))) {
 						if(waypoints.size() >= 1) {
@@ -221,7 +221,7 @@ public class Main extends HvlTemplateInteg2D{
 							clicked = true;
 							ran = false;
 						}
-						if(waypoints.size() ==0 && mouseX <= 540) {
+						if(waypoints.size() ==0 && mouseX <= 540 && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 							
 							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null,0,0 ,0,robotW, robotL);
 							waypoints.add(point);
@@ -230,7 +230,7 @@ public class Main extends HvlTemplateInteg2D{
 							clicked = true;
 							ran = false;
 						}	
-						if(waypoints.size() == 0 && mouseX > 540) {
+						if(waypoints.size() == 0 && mouseX > 540 && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 	
 							Waypoint point = new Waypoint((float) (930-240-((robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null, 0,0 ,0,robotW, robotL);
 							waypoints.add(point);
@@ -241,6 +241,28 @@ public class Main extends HvlTemplateInteg2D{
 						}	
 						
 					}
+					//backwards start
+					if(Mouse.isButtonDown(0) && clicked == false && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D))) {
+						if(waypoints.size() ==0 && mouseX <= 540) {
+							
+							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.red, "backwards","start",0,0 ,0,robotW, robotL);
+							waypoints.add(point);
+
+							numPoints++;
+							clicked = true;
+							ran = false;
+						}	
+						if(waypoints.size() == 0 && mouseX > 540) {
+	
+							Waypoint point = new Waypoint((float) (930-240-((robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.red, "backwards","start", 0,0 ,0,robotW, robotL);
+							waypoints.add(point);
+
+							numPoints++;
+							clicked = true;
+							ran = false;
+						}	
+					}
+					//backwards forward
 					if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D)) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)&& Mouse.isButtonDown(0) && clicked == false) {
 						if(waypoints.size() >= 1) {
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.red, "backwards","drive",0,0, 0,robotW, robotL);
@@ -435,7 +457,7 @@ public class Main extends HvlTemplateInteg2D{
 							if(i>0) {
 								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.green);
 							}
-							if(waypoints.get(i).type.equals("backwards")) {
+							if(waypoints.get(i).type.equals("backwards")&& i>0) {
 								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.red);
 
 							}
