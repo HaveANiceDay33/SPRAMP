@@ -120,7 +120,7 @@ public class Main extends HvlTemplateInteg2D{
 
 		origAngle = 0;
 		instructions = "C : Erase all (Only in coords) \nD : Delete last (Only in coords) \nW : Coords\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nLeft Click+L-Shift : Backwards drive\n"
-				+ "Left Click+KEYCODE : Forward Action\nLeft Click+L Shift+KEYCODE : Backwards Action\nArrow Keys: Adjust LAST point placed\nL : Adjust Robot Width and Length (Clears all points)\n\nU = up, I = intake, D = down, S = shoot";
+				+ "Left Click+KEYCODE : Forward Action\nLeft Click+L Shift+KEYCODE : Backwards Action\nArrow Keys: Adjust LAST point placed\nL : Adjust Robot Width and Length (Clears all points)\n\nU = up, I = intake, D = down, S = shoot, N = NULL Angle";
 		direct = "    Press Q to see all controls";
 		xOffsetBet = 0;
 		yOffsetBet = 0;
@@ -212,7 +212,7 @@ public class Main extends HvlTemplateInteg2D{
 			public void draw(float delta) {
 				//start and forwards
 				if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
-					if(Mouse.isButtonDown(0) && clicked == false && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D))) {
+					if(Mouse.isButtonDown(0) && clicked == false && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N))) {
 						if(waypoints.size() >= 1) {
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 720)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward","drive",0, 0, 0, robotW, robotL);
 							waypoints.add(point);
@@ -242,7 +242,7 @@ public class Main extends HvlTemplateInteg2D{
 						
 					}
 					//backwards start
-					if(Mouse.isButtonDown(0) && clicked == false && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D))) {
+					if(Mouse.isButtonDown(0) && clicked == false && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N))) {
 						if(waypoints.size() ==0 && mouseX <= 540) {
 							
 							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.red, "backwards","start",0,0 ,0,robotW, robotL);
@@ -263,7 +263,7 @@ public class Main extends HvlTemplateInteg2D{
 						}	
 					}
 					//backwards forward
-					if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D)) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)&& Mouse.isButtonDown(0) && clicked == false) {
+					if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N)) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)&& Mouse.isButtonDown(0) && clicked == false) {
 						if(waypoints.size() >= 1) {
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.red, "backwards","drive",0,0, 0,robotW, robotL);
 							waypoints.add(point);
@@ -272,9 +272,11 @@ public class Main extends HvlTemplateInteg2D{
 							clicked = true;
 						}
 					}
-					if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false && (Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D))) {
+					if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false && (Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N))) {
 						String action = "drive";
 						Color color = Color.blue;
+						String type = "forward";
+
 						if(waypoints.size() >= 1) {
 							if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
 								action = "shoot";
@@ -288,8 +290,10 @@ public class Main extends HvlTemplateInteg2D{
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_D)) {
 								action = "down";
 								color = color.blue;
+							}else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+								type = "forward noAngle";
 							}
-							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, "forward",action,0,0,0,robotW, robotL);
+							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0,0,robotW, robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -297,9 +301,10 @@ public class Main extends HvlTemplateInteg2D{
 							clicked = true;
 						}
 					}
-					if( Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false & (Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D))) {
+					if( Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && Mouse.isButtonDown(0) && clicked == false & (Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N))) {
 						String action = "drive";
 						Color color = Color.blue;
+						String type = "backwards";
 						if(waypoints.size() >= 1) {
 							if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
 								action = "shoot";
@@ -313,8 +318,10 @@ public class Main extends HvlTemplateInteg2D{
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_D)) {
 								action = "down";
 								color = color.blue;
+							}else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+								type = "backwards noAngle";
 							}
-							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, "backwards",action,0,0, 0,robotW, robotL);
+							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0, 0,robotW, robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -405,7 +412,9 @@ public class Main extends HvlTemplateInteg2D{
 						if(angleOff >= 360) {
 							angleOff-=360;
 						}
-						
+						if(waypoints.get(i).type.contains("noAngle")) {
+							angleOff = (Double) null;
+						}
 						waypoints.get(i).setDistance(distanceBet);
 						waypoints.get(i).setOrig(origAngle);
 						waypoints.get(i).setAngle(angleOff);
@@ -429,7 +438,7 @@ public class Main extends HvlTemplateInteg2D{
 					if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
 						waypoints.get(waypoints.size()-1).y += fineSpeed;
 					}
-					
+			
 				}else {
 					if(waypoints.size()>0) {
 						waypoints.get(waypoints.size()-1).x += 0;
@@ -579,6 +588,9 @@ public class Main extends HvlTemplateInteg2D{
 								}
 								if(angleOff >= 360) {
 									angleOff-=360;
+								}
+								if(waypoints.get(i).type.contains("noAngle")) {
+									angleOff = (Double) null;
 								}
 								
 								waypoints.get(i).setDistance(distanceBet);
