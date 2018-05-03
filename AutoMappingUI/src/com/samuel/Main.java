@@ -85,6 +85,8 @@ public class Main extends HvlTemplateInteg2D{
 	double angleOff;
 	int numPoints;
 	boolean ran;
+	float textY;
+
 	
 	String fileName;
 	String path = System.getProperty("user.home") + "/Desktop";
@@ -117,6 +119,8 @@ public class Main extends HvlTemplateInteg2D{
 		clicked = false;
 		ran = false;
 		waypoints = new ArrayList<Waypoint>();
+		
+		textY = 40;
 
 		origAngle = 0;
 		instructions = "C : Erase all (Only in coords) \nD : Delete last (Only in coords) \nW : Coords\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nLeft Click+L-Shift : Backwards drive\n"
@@ -291,6 +295,7 @@ public class Main extends HvlTemplateInteg2D{
 								action = "down";
 								color = color.blue;
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+								color = color.transparent;
 								type = "forward noAngle";
 							}
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0,0,robotW, robotL);
@@ -319,6 +324,7 @@ public class Main extends HvlTemplateInteg2D{
 								action = "down";
 								color = color.blue;
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+								color = color.transparent;
 								type = "backwards noAngle";
 							}
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0, 0,robotW, robotL);
@@ -336,7 +342,6 @@ public class Main extends HvlTemplateInteg2D{
 
 	 
 				//System.out.println("zoomer X: " + (zoomer.getX() - (540/zoomer.getZoom())) + "\t     mouseX: "+ mouseX);
-				
 				
 				mouseDerivative = Mouse.getDWheel();
 				mouseX = HvlCursor.getCursorX();
@@ -416,8 +421,9 @@ public class Main extends HvlTemplateInteg2D{
 						waypoints.get(i).setDistance(distanceBet);
 						waypoints.get(i).setOrig(origAngle);
 						waypoints.get(i).setAngle(angleOff);
+
 						
-						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+44, 0.20f);
+						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+textY, 0.20f);
 					}
 					
 			}
@@ -557,7 +563,7 @@ public class Main extends HvlTemplateInteg2D{
 						}
 
 						if(waypoints.size()!=0) {
-							textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + 20, 0.3f);
+							textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + (textY-20), 0.3f);
 
 						}
 							
@@ -592,10 +598,16 @@ public class Main extends HvlTemplateInteg2D{
 								waypoints.get(i).setDistance(distanceBet);
 								waypoints.get(i).setOrig(origAngle);
 								waypoints.get(i).setAngle(angleOff);
+		
+								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+textY, 0.25f);
+								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+textY, 0.25f);
 								
-								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+40, 0.25f);
-								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+40, 0.25f);
-
+								if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+									textY -= 1;
+								}
+								if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+									textY+=1;
+								}
 							}	
 					}
 					
