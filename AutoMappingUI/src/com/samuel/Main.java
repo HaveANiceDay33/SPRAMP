@@ -586,7 +586,7 @@ public class Main extends HvlTemplateInteg2D{
 								}
 								if(waypoints.get(i-1).type.contains("backwards") && waypoints.get(i).type.contains("backwards")) {
 									angleOff -= 360;
-								}
+								}//
 								if(angleOff <= -360) {
 									angleOff+=360;
 								}
