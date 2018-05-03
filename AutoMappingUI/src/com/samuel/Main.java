@@ -496,6 +496,7 @@ public class Main extends HvlTemplateInteg2D{
 							output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);
 							output.newLine();
 						}
+						output.write("END");
 						//MORE WRITING HERE
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -585,6 +586,8 @@ public class Main extends HvlTemplateInteg2D{
 								waypoints.get(i).setAngle(angleOff);
 								
 								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+40, 0.25f);
+								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+40, 0.25f);
+
 							}	
 					}
 					
