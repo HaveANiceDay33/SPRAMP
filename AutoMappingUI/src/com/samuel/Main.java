@@ -389,14 +389,14 @@ public class Main extends HvlTemplateInteg2D{
 						angleOff = origAngle-waypoints.get(i-1).origAngle;
 						
 				
-						if(waypoints.get(i).type.equals("backwards")) {
+						if(waypoints.get(i).type.contains("backwards")) {
 							angleOff -= 180;
 							distanceBet *= -1;
 						}
-						if(waypoints.get(i-1).type.equals("backwards")) {
+						if(waypoints.get(i-1).type.contains("backwards")) {
 							angleOff+=180;
 						}
-						if(waypoints.get(i-1).type.equals("backwards") && waypoints.get(i).type.equals("backwards")) {
+						if(waypoints.get(i-1).type.contains("backwards") && waypoints.get(i).type.contains("backwards")) {
 							angleOff -= 360;
 						}
 						if(angleOff <= -360) {
@@ -457,7 +457,7 @@ public class Main extends HvlTemplateInteg2D{
 							if(i>0) {
 								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.green);
 							}
-							if(waypoints.get(i).type.equals("backwards")&& i>0) {
+							if(waypoints.get(i).type.contains("backwards")&& i>0) {
 								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.red);
 
 							}
@@ -564,14 +564,14 @@ public class Main extends HvlTemplateInteg2D{
 								angleOff = origAngle-waypoints.get(i-1).origAngle;
 								
 						
-								if(waypoints.get(i).type.equals("backwards")) {
+								if(waypoints.get(i).type.contains("backwards")) {
 									angleOff -= 180;
 									distanceBet *= -1;
 								}
-								if(waypoints.get(i-1).type.equals("backwards")) {
+								if(waypoints.get(i-1).type.contains("backwards")) {
 									angleOff+=180;
 								}
-								if(waypoints.get(i-1).type.equals("backwards") && waypoints.get(i).type.equals("backwards")) {
+								if(waypoints.get(i-1).type.contains("backwards") && waypoints.get(i).type.contains("backwards")) {
 									angleOff -= 360;
 								}
 								if(angleOff <= -360) {
