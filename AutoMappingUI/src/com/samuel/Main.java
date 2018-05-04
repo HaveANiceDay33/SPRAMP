@@ -198,6 +198,8 @@ public class Main extends HvlTemplateInteg2D{
 				hvlDrawQuad(x,y,width,height, Color.green);	
 			}
 		}).build());
+		Geo.getChildOfType(HvlArrangerBox.class, 0).add(new HvlSpacer(30, 30));
+
 		Geo.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Set W/H").setClickedCommand(new HvlAction1<HvlButton>() {
 			
 			@Override
@@ -489,7 +491,7 @@ public class Main extends HvlTemplateInteg2D{
 				super.draw(delta);
 			}
 		};
-		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 240).setY(Display.getHeight()-170).build());
+		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 235).setY(Display.getHeight()-180).build());
 		UI.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Delete").setClickedCommand(new HvlAction1<HvlButton>() {
 			
 			@Override
@@ -643,7 +645,7 @@ public class Main extends HvlTemplateInteg2D{
 		};
 		Controls = new HvlMenu() {
 			public void draw(float delta) {
-				textOutline(instructions, Color.black, Color.magenta, 20, 20, 0.35f);
+				textOutline(instructions, Color.black, Color.white, 20, 20, 0.35f);
 				textOutline("Press E to go back", Color.black, Color.white, 740, 600, 0.4f);
 				if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
 					HvlMenu.setCurrent(UI);
