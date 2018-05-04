@@ -140,14 +140,14 @@ public class Main extends HvlTemplateInteg2D{
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height,Color.black);
+				hvlDrawQuad(x,y,width,height,Color.darkGray);
 				
 			}
 		}).setHoverDrawable(new HvlComponentDrawable() {
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height,Color.darkGray);
+				hvlDrawQuad(x,y,width,height,Color.gray);
 				
 			}
 		}).build());
@@ -423,7 +423,7 @@ public class Main extends HvlTemplateInteg2D{
 						waypoints.get(i).setAngle(angleOff);
 
 						
-						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+(textY - 15), 0.20f);
+						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+(textY), 0.20f);
 					}
 					
 			}
@@ -489,7 +489,7 @@ public class Main extends HvlTemplateInteg2D{
 				super.draw(delta);
 			}
 		};
-		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 300).setY(Display.getHeight()-170).build());
+		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 240).setY(Display.getHeight()-170).build());
 		UI.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Delete").setClickedCommand(new HvlAction1<HvlButton>() {
 			
 			@Override
@@ -512,7 +512,7 @@ public class Main extends HvlTemplateInteg2D{
 			
 			@Override
 			public void run(HvlButton a) {
-				fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
+				fileName = UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
 				
 				String userHomeFolder = System.getProperty("user.home")+"/Documents";
 				File profile = new File(userHomeFolder, fileName+".txt");
@@ -676,6 +676,7 @@ public class Main extends HvlTemplateInteg2D{
 		if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 			if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
 				HvlMenu.setCurrent(Coords);
+				textY = 40;
 			}
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 				HvlMenu.setCurrent(Controls);
