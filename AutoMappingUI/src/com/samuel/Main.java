@@ -124,7 +124,7 @@ public class Main extends HvlTemplateInteg2D{
 
 		origAngle = 0;
 		instructions = "C : Erase all (Only in coords) \nD : Delete last (Only in coords) \nW : Coords\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nLeft Click+L-Shift : Backwards drive\n"
-				+ "Left Click+KEYCODE : Forward Action\nLeft Click+L Shift+KEYCODE : Backwards Action\nArrow Keys: Adjust LAST point placed\nL : Adjust Robot Width and Length (Clears all points)\n\nU = up, I = intake, D = down, S = shoot, N = NULL Angle";
+				+ "Left Click+KEYCODE : Forward Action\nLeft Click+L Shift+KEYCODE : Backwards Action\nArrow Keys: Adjust LAST point placed\nL : Adjust Robot Width and Length (Clears all points)\nA : Scroll up, Z : Scroll Down\n\nU = up, I = intake, D = down, S = shoot, N = NULL Angle";
 		direct = "    Press Q to see all controls";
 		xOffsetBet = 0;
 		yOffsetBet = 0;
@@ -389,7 +389,7 @@ public class Main extends HvlTemplateInteg2D{
 				}
 			
 				for(int i = 0; i < waypoints.size(); i++) {
-					textOutline((i+1)+". X: "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In. Y: "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+40, 0.25f);
+					textOutline((i+1)+". X: "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In. Y: "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
 
 					if(i > 0) {
 						distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);
@@ -423,7 +423,7 @@ public class Main extends HvlTemplateInteg2D{
 						waypoints.get(i).setAngle(angleOff);
 
 						
-						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+textY, 0.20f);
+						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+(textY - 20), 0.20f);
 					}
 					
 			}
@@ -450,6 +450,13 @@ public class Main extends HvlTemplateInteg2D{
 					}
 			
 				}
+				if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
+					textY -= 1;
+				}
+				if(Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+					textY+=1;
+				}
+				
 				mouseX1 = mouseX;
 				mouseY1 = mouseY;
 				//System.out.println(Mouse.getX()+"     "+Mouse.getY());
@@ -493,7 +500,7 @@ public class Main extends HvlTemplateInteg2D{
 				fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
 				
 				String userHomeFolder = System.getProperty("user.home")+"/Documents";
-				File profile = new File(userHomeFolder, fileName+".BOND");
+				File profile = new File(userHomeFolder, fileName+".txt");
 				BufferedWriter output = null;
 				try {
 					output = new BufferedWriter(new FileWriter(profile));
@@ -602,11 +609,11 @@ public class Main extends HvlTemplateInteg2D{
 								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+textY, 0.25f);
 								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+textY, 0.25f);
 								
-								if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-									textY -= 1;
+								if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
+									textY -= .1;
 								}
-								if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-									textY+=1;
+								if(Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+									textY+=.1;
 								}
 							}	
 					}
