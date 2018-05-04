@@ -45,10 +45,10 @@ public class Main extends HvlTemplateInteg2D{
 	}
 	
 	public void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
-		gameFont.drawWord(text, x+2, y, outlineColor, size);
-		gameFont.drawWord(text, x, y+2, outlineColor, size);
-		gameFont.drawWord(text, x, y-2, outlineColor, size);
-		gameFont.drawWord(text, x-2, y, outlineColor, size);
+		gameFont.drawWord(text, x+1, y, outlineColor, size);
+		gameFont.drawWord(text, x, y+1, outlineColor, size);
+		gameFont.drawWord(text, x, y-1, outlineColor, size);
+		gameFont.drawWord(text, x-1, y, outlineColor, size);
 		gameFont.drawWord(text, x, y, textColor, size);
 	}
 	
