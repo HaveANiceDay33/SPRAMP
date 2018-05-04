@@ -423,7 +423,7 @@ public class Main extends HvlTemplateInteg2D{
 						waypoints.get(i).setAngle(angleOff);
 
 						
-						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+(textY - 20), 0.20f);
+						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+(textY - 15), 0.20f);
 					}
 					
 			}
@@ -491,9 +491,35 @@ public class Main extends HvlTemplateInteg2D{
 				super.draw(delta);
 			}
 		};
+		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 300).setY(Display.getHeight()-170).build());
+		UI.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Delete").setClickedCommand(new HvlAction1<HvlButton>() {
+			
+			@Override
+			public void run(HvlButton a) {
+				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
+				if(waypoints.size() > 0) {
+					if(deleteCounter <= 0){
+						waypoints.remove(waypoints.size()-1);
+						deleteCounter = 50;
+					}
+					deleteCounter --;
+					if(deleteCounter == 0) {
+						deleteCounter = 0;
+					}
+				}
+			}
+		}).build());
+		UI.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Clear").setClickedCommand(new HvlAction1<HvlButton>() {
+			
+			@Override
+			public void run(HvlButton a) {
+				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
+				waypoints.clear();
+			}
+		}).build());
 		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 300).setY(Display.getHeight()-100).build());
 
-		UI.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Save").setClickedCommand(new HvlAction1<HvlButton>() {
+		UI.getChildOfType(HvlArrangerBox.class, 1).add(new HvlLabeledButton.Builder().setText("Save").setClickedCommand(new HvlAction1<HvlButton>() {
 			
 			@Override
 			public void run(HvlButton a) {
@@ -532,8 +558,8 @@ public class Main extends HvlTemplateInteg2D{
 				}
 			}
 		}).build());
-		UI.getFirstArrangerBox().add(new HvlSpacer(30, 30));
-		UI.getFirstArrangerBox().add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+		UI.getChildOfType(HvlArrangerBox.class, 1).add(new HvlSpacer(30, 30));
+		UI.getChildOfType(HvlArrangerBox.class, 1).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
 				hvlDrawQuad(x,y,width,height, Color.lightGray);	
