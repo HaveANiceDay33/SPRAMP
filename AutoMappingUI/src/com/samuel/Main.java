@@ -509,7 +509,7 @@ public class Main extends HvlTemplateInteg2D{
 							output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);
 							output.newLine();
 						}
-						output.write("END");
+						output.write("END END END END");
 						//MORE WRITING HERE
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
