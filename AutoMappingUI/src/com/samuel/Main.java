@@ -472,8 +472,6 @@ public class Main extends HvlTemplateInteg2D{
 						}
 		
 						for(int i = 0; i < waypoints.size(); i++) {
-
-
 							if(i>0) {
 								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.green);
 							}
@@ -496,16 +494,8 @@ public class Main extends HvlTemplateInteg2D{
 			
 			@Override
 			public void run(HvlButton a) {
-				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
 				if(waypoints.size() > 0) {
-					if(deleteCounter <= 0){
-						waypoints.remove(waypoints.size()-1);
-						deleteCounter = 50;
-					}
-					deleteCounter --;
-					if(deleteCounter == 0) {
-						deleteCounter = 0;
-					}
+					waypoints.remove(waypoints.size()-1);
 				}
 			}
 		}).build());
@@ -513,7 +503,6 @@ public class Main extends HvlTemplateInteg2D{
 			
 			@Override
 			public void run(HvlButton a) {
-				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
 				waypoints.clear();
 			}
 		}).build());
