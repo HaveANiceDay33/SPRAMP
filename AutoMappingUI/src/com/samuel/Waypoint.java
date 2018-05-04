@@ -38,6 +38,21 @@ public class Waypoint {
 		hvlRotate(x,y, (float)origAngle);
 		hvlDrawQuadc(x, y, sizeY, sizeX, Main.getTexture(2));
 		hvlResetRotation();
+		
+		if(action.equals("shoot")) {
+			this.size += 0.5;
+			if(this.size > 20) {
+				this.size = 1;
+			}
+		}
+		if(action.equals("intake")) {
+			this.size -= 0.5;
+			if(this.size < 0) {
+				this.size = 20;
+			}
+		}
+
+		
 	}
 	public void setDistance(float newDis) {
 		this.distance = newDis;

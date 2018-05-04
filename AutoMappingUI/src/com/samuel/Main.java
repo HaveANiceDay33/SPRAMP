@@ -230,7 +230,7 @@ public class Main extends HvlTemplateInteg2D{
 						}
 						if(waypoints.size() ==0 && mouseX <= 540 && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 							
-							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null,0,0 ,0,robotW, robotL);
+							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange,"forward", "start",0,0 ,0,robotW, robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -239,7 +239,7 @@ public class Main extends HvlTemplateInteg2D{
 						}	
 						if(waypoints.size() == 0 && mouseX > 540 && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 	
-							Waypoint point = new Waypoint((float) (930-240-((robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "start",null, 0,0 ,0,robotW, robotL);
+							Waypoint point = new Waypoint((float) (930-240-((robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "forward","start", 0,0 ,0,robotW, robotL);
 							waypoints.add(point);
 
 							numPoints++;
