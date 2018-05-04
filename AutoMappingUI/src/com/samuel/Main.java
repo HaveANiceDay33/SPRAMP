@@ -161,7 +161,8 @@ public class Main extends HvlTemplateInteg2D{
 		// TODO Auto-generated method stub
 		Geo = new HvlMenu() {
 			public void draw(float delta) {
-				textOutline("Set robot width and length",Color.black, Color.white,500,30, 0.4f);
+				textOutline("              Welcome to HavaANiceDay's Auto Mapping Client Application! \nKeep in mind that this is under constant development. Not everything is stable :)" ,Color.black, Color.white,60,30, 0.4f);
+				textOutline("Set robot width and length :",Color.black, Color.white,550,220, 0.3f);
 				textOutline("Width : ",Color.black, Color.white,470,280, 0.4f);
 				textOutline("Length : ",Color.black, Color.white,470,360, 0.4f);
 				super.draw(delta);
