@@ -162,8 +162,8 @@ public class Main extends HvlTemplateInteg2D{
 		Geo = new HvlMenu() {
 			public void draw(float delta) {
 				textOutline("Set robot width and length",Color.black, Color.white,500,30, 0.4f);
-				textOutline("Width : ",Color.black, Color.white,470,300, 0.4f);
-				textOutline("Length : ",Color.black, Color.white,470,370, 0.4f);
+				textOutline("Width : ",Color.black, Color.white,470,280, 0.4f);
+				textOutline("Length : ",Color.black, Color.white,470,360, 0.4f);
 				super.draw(delta);
 			}
 		};
@@ -425,7 +425,7 @@ public class Main extends HvlTemplateInteg2D{
 						waypoints.get(i).setAngle(angleOff);
 
 						
-						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+(textY), 0.20f);
+						textOutline("Angle from last: "+ waypoints.get(i).angleOffset, Color.cyan, Color.darkGray, 1265, (25*(i-1))+(textY+5), 0.20f);
 					}
 					
 			}
@@ -623,8 +623,8 @@ public class Main extends HvlTemplateInteg2D{
 								waypoints.get(i).setOrig(origAngle);
 								waypoints.get(i).setAngle(angleOff);
 		
-								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+textY, 0.25f);
-								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+textY, 0.25f);
+								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+textY+25, 0.25f);
+								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+textY+25, 0.25f);
 								
 								if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
 									textY -= .1;
