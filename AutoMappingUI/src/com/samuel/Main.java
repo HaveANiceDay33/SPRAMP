@@ -44,7 +44,7 @@ public class Main extends HvlTemplateInteg2D{
 		super(60, 1440, 720, "Auto Mapping Client v2", new HvlDisplayModeDefault());
 	}
 	
-	public void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
+	public static void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
 		gameFont.drawWord(text, x+1, y, outlineColor, size);
 		gameFont.drawWord(text, x, y+1, outlineColor, size);
 		gameFont.drawWord(text, x, y-1, outlineColor, size);
@@ -52,10 +52,10 @@ public class Main extends HvlTemplateInteg2D{
 		gameFont.drawWord(text, x, y, textColor, size);
 	}
 	
-	HvlMenu UI;
-	HvlMenu Coords;
-	HvlMenu Controls;
-	HvlMenu Geo;
+	static HvlMenu UI;
+	static HvlMenu Coords;
+
+	
 	HvlCamera2D zoomer;
 	float picSizeX;
 	float picSizeY;
@@ -70,15 +70,13 @@ public class Main extends HvlTemplateInteg2D{
 	float zoom;
 	float mouseX1;
 	float mouseY1;
-	float deleteCounter;
+	static float deleteCounter;
 	float distanceBet;
 	float xOffsetBet;
 	float yOffsetBet;
 	float xCoord;
 	float yCoord;
-	
-	float robotW;
-	float robotL;
+
 	
 	double origAngle;
 	double prevAngle;
@@ -94,10 +92,10 @@ public class Main extends HvlTemplateInteg2D{
 	float screenOffset;
 	
 	boolean clicked;
-	String instructions;
+	
 	String direct;
 	
-	ArrayList<Waypoint>waypoints;
+	static ArrayList<Waypoint>waypoints;
 
 	
 	@Override
@@ -123,9 +121,7 @@ public class Main extends HvlTemplateInteg2D{
 		textY = 40;
 
 		origAngle = 0;
-		instructions = "C : Erase all (Only in coords) \nD : Delete last (Only in coords) \nW : Coords\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nLeft Click+L-Shift : Backwards drive\n"
-				+ "Left Click+KEYCODE : Forward Action\nLeft Click+L Shift+KEYCODE : Backwards Action\nArrow Keys: Adjust LAST point placed\nL : Adjust Robot Width and Length (Clears all points)\nA : Scroll up, Z : Scroll Down\n\nU = up, I = intake, D = down, S = shoot, N = NULL Angle";
-		direct = "    Press Q to see all controls";
+	
 		xOffsetBet = 0;
 		yOffsetBet = 0;
 		
@@ -156,62 +152,11 @@ public class Main extends HvlTemplateInteg2D{
 		
 		
 		
-		
+		RobotGeometry.initMenu();
+		Instructions.initInstructions();
 		
 		// TODO Auto-generated method stub
-		Geo = new HvlMenu() {
-			public void draw(float delta) {
-				textOutline("              Welcome to HavaANiceDay's Auto Mapping Client Application! \nKeep in mind that this is under constant development. Not everything is stable :)" ,Color.black, Color.white,60,30, 0.4f);
-				textOutline("Set robot width and length :",Color.black, Color.white,550,220, 0.3f);
-				textOutline("Width : ",Color.black, Color.white,470,280, 0.4f);
-				textOutline("Length : ",Color.black, Color.white,470,360, 0.4f);
-				super.draw(delta);
-			}
-		};
-		Geo.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)-200).build());
-		
-		Geo.getFirstArrangerBox().add(new HvlSpacer(30, 30));
-		
-		Geo.getFirstArrangerBox().add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
-			@Override
-			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.lightGray);	
-			}
-		}).setUnfocusedDrawable(new HvlComponentDrawable() {
-			
-			@Override
-			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
-			}
-		}).build());
-		
-		Geo.getFirstArrangerBox().add(new HvlSpacer(30, 30));
-		
-		Geo.getFirstArrangerBox().add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
-			@Override
-			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.lightGray);	
-			}
-		}).setUnfocusedDrawable(new HvlComponentDrawable() {
-			
-			@Override
-			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
-			}
-		}).build());
-		Geo.getChildOfType(HvlArrangerBox.class, 0).add(new HvlSpacer(30, 30));
 
-		Geo.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Set W/H").setClickedCommand(new HvlAction1<HvlButton>() {
-			
-			@Override
-			public void run(HvlButton a) {
-				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
-				robotW = Float.parseFloat(Geo.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText());
-				robotL = Float.parseFloat(Geo.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText());
-				
-				HvlMenu.setCurrent(UI);
-			}
-		}).build());
 		
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +166,7 @@ public class Main extends HvlTemplateInteg2D{
 				if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 					if(Mouse.isButtonDown(0) && clicked == false && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N))) {
 						if(waypoints.size() >= 1) {
-							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 720)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward","drive",0, 0, 0, robotW, robotL);
+							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 720)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward","drive",0, 0, 0, RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -230,7 +175,7 @@ public class Main extends HvlTemplateInteg2D{
 						}
 						if(waypoints.size() ==0 && mouseX <= 540 && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 							
-							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange,"forward", "start",0,0 ,0,robotW, robotL);
+							Waypoint point = new Waypoint((float) (157-240+((RobotGeometry.robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange,"forward", "start",0,0 ,0,RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -239,7 +184,7 @@ public class Main extends HvlTemplateInteg2D{
 						}	
 						if(waypoints.size() == 0 && mouseX > 540 && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 	
-							Waypoint point = new Waypoint((float) (930-240-((robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "forward","start", 0,0 ,0,robotW, robotL);
+							Waypoint point = new Waypoint((float) (930-240-((RobotGeometry.robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.orange, "forward","start", 0,0 ,0,RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -252,7 +197,7 @@ public class Main extends HvlTemplateInteg2D{
 					if(Mouse.isButtonDown(0) && clicked == false && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N))) {
 						if(waypoints.size() ==0 && mouseX <= 540) {
 							
-							Waypoint point = new Waypoint((float) (157-240+((robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.red, "backwards","start",0,0 ,0,robotW, robotL);
+							Waypoint point = new Waypoint((float) (157-240+((RobotGeometry.robotL*.4646*2.56)/2))-5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.red, "backwards","start",0,0 ,0,RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -261,7 +206,7 @@ public class Main extends HvlTemplateInteg2D{
 						}	
 						if(waypoints.size() == 0 && mouseX > 540) {
 	
-							Waypoint point = new Waypoint((float) (930-240-((robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.red, "backwards","start", 0,0 ,0,robotW, robotL);
+							Waypoint point = new Waypoint((float) (930-240-((RobotGeometry.robotL*.4646*2.56)/2))+5, (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 20, Color.red, "backwards","start", 0,0 ,0,RobotGeometry.robotW,RobotGeometry. robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -272,7 +217,7 @@ public class Main extends HvlTemplateInteg2D{
 					//backwards forward
 					if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !(Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_U) || Keyboard.isKeyDown(Keyboard.KEY_I)|| Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_N)) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)&& Mouse.isButtonDown(0) && clicked == false) {
 						if(waypoints.size() >= 1) {
-							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.red, "backwards","drive",0,0, 0,robotW, robotL);
+							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.red, "backwards","drive",0,0, 0,RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -301,7 +246,7 @@ public class Main extends HvlTemplateInteg2D{
 								color = color.transparent;
 								type = "forward noAngle";
 							}
-							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0,0,robotW, robotL);
+							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0,0,RobotGeometry.robotW,RobotGeometry.robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -330,7 +275,7 @@ public class Main extends HvlTemplateInteg2D{
 								color = color.transparent;
 								type = "backwards noAngle";
 							}
-							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0, 0,robotW, robotL);
+							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0, 0,RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
 
 							numPoints++;
@@ -644,30 +589,8 @@ public class Main extends HvlTemplateInteg2D{
 				super.draw(delta);
 			}
 		};
-		Controls = new HvlMenu() {
-			public void draw(float delta) {
-				textOutline(instructions, Color.black, Color.white, 20, 20, 0.35f);
-				textOutline("Press E to go back", Color.black, Color.white, 740, 600, 0.4f);
-				if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
-					HvlMenu.setCurrent(UI);
-				}
-				if(Keyboard.isKeyDown(Keyboard.KEY_C)) {
-					waypoints.clear();
-				}
-				if(waypoints.size() > 0) {
-					if(Keyboard.isKeyDown(Keyboard.KEY_D) && deleteCounter <= 0){
-						waypoints.remove(waypoints.size()-1);
-						deleteCounter = 50;
-					}
-					deleteCounter --;
-					if(deleteCounter == 0) {
-						deleteCounter = 0;
-					}
-				}
-				super.draw(delta);
-			}
-		};
-		HvlMenu.setCurrent(Geo);
+		
+		HvlMenu.setCurrent(RobotGeometry.Geo);
 	}
 	@Override
 	public void update(float delta) {
@@ -682,11 +605,11 @@ public class Main extends HvlTemplateInteg2D{
 				textY = 40;
 			}
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-				HvlMenu.setCurrent(Controls);
+				HvlMenu.setCurrent(Instructions.Controls);
 			}
 			if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
 				waypoints.clear();
-				HvlMenu.setCurrent(Geo);
+				HvlMenu.setCurrent(RobotGeometry.Geo);
 			}
 		}
 	}
