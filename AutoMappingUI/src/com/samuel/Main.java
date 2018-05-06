@@ -58,33 +58,25 @@ public class Main extends HvlTemplateInteg2D{
 		File profile = new File(userHomeFolder, fileName+".txt");
 		BufferedWriter output = null;
 		try {
+			
 			output = new BufferedWriter(new FileWriter(profile));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-		    try {
-		    	output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+" start null");
-		    	output.newLine();
-				for(int i = 1; i < waypoints.size(); i++) {
-					output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);
-					output.newLine();
-				}
-				output.write("END END END END");
-				//MORE WRITING HERE
+			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+" start null");
+			output.newLine();
+			for(int i = 1; i < waypoints.size(); i++) {
+				output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);
+				output.newLine();
+			}
+			output.write("END END END END");
+					//MORE WRITING HERE
+		
+			
+			
+			output.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} finally {
-		   try {
-			output.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		}
+		
 	}
 	
 	static HvlMenu UI;
