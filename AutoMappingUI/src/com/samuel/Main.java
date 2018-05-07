@@ -43,7 +43,7 @@ public class Main extends HvlTemplateInteg2D{
 	public Main(){
 		super(60, 1440, 720, "Auto Mapping Client v2", new HvlDisplayModeDefault());
 	}
-	
+	//Method for drawing text with an outline. Much more visually appealing
 	public static void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
 		gameFont.drawWord(text, x+1, y, outlineColor, size);
 		gameFont.drawWord(text, x, y+1, outlineColor, size);
@@ -51,26 +51,25 @@ public class Main extends HvlTemplateInteg2D{
 		gameFont.drawWord(text, x-1, y, outlineColor, size);
 		gameFont.drawWord(text, x, y, textColor, size);
 	}
+	//Method for saving profiles into text files
 	public void profileSaver() {
-		fileName = UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
-		
-		String userHomeFolder = System.getProperty("user.home")+"/Documents";
-		File profile = new File(userHomeFolder, fileName+".txt");
+		fileName = UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText(); //gets text box input; saves as variable
+		 
+		String userHomeFolder = System.getProperty("user.home")+"/Documents"; 
+		File profile = new File(userHomeFolder, fileName+".txt");   //creates new txt file with inputed name
 		BufferedWriter output = null;
 		try {
 			
-			output = new BufferedWriter(new FileWriter(profile));
-			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+" start null");
+			output = new BufferedWriter(new FileWriter(profile));            
+			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+" start null");//writes starting coords
 			output.newLine();
 			for(int i = 1; i < waypoints.size(); i++) {
-				output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);
+				output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);//writes distance, angle, type, and action to text file
 				output.newLine();
 			}
 			output.write("END END END END");
 					//MORE WRITING HERE
 		
-			
-			
 			output.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -127,12 +126,12 @@ public class Main extends HvlTemplateInteg2D{
 	
 	@Override
 	public void initialize() {
-		getTextureLoader().loadResource("filed2018");//0
-		getTextureLoader().loadResource("osFont");//1
+		getTextureLoader().loadResource("filed2018");//0 
+		getTextureLoader().loadResource("osFont");//1					//TEXTURES
 		getTextureLoader().loadResource("robotFrame2");//2
 		zoom = 1;
-		gameFont =  new HvlFontPainter2D(getTexture(1), HvlFontPainter2D.Preset.FP_INOFFICIAL,.5f,8f,0);
-		zoomer = new HvlCamera2D(540, 360, 0, zoom, HvlCamera2D.ALIGNMENT_CENTER);
+		gameFont =  new HvlFontPainter2D(getTexture(1), HvlFontPainter2D.Preset.FP_INOFFICIAL,.5f,8f,0); //font definition
+		zoomer = new HvlCamera2D(540, 360, 0, zoom, HvlCamera2D.ALIGNMENT_CENTER); //Camera definition
 		numPoints = 0;
 		picSizeX = 1080;
 		picSizeY = 720;
@@ -151,7 +150,7 @@ public class Main extends HvlTemplateInteg2D{
 	
 		xOffsetBet = 0;
 		yOffsetBet = 0;
-		
+		//DEFAULT BUTTON CONFIG
 		HvlComponentDefault.setDefault(HvlLabeledButton.class, new HvlLabeledButton.Builder().setWidth(100).setHeight(50).setFont(gameFont).setTextColor(Color.white).setTextScale(0.25f).setOnDrawable(new HvlComponentDrawable() {
 			
 			@Override
@@ -176,11 +175,13 @@ public class Main extends HvlTemplateInteg2D{
 		}).build());
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////
-		
+		//Menu initialization
 		RobotGeometry.initMenu();
 		Instructions.initInstructions();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		//Main screen user will see
 		UI = new HvlMenu() {
 			public void draw(float delta) {
 				//start and forwards
@@ -189,7 +190,7 @@ public class Main extends HvlTemplateInteg2D{
 						if(waypoints.size() >= 1) {
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - 720)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 10, Color.green, "forward","drive",0, 0, 0, RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
-
+							//Adds waypoints to an arraylist when the user clicks
 							numPoints++;
 							clicked = true;
 							ran = false;
@@ -254,7 +255,7 @@ public class Main extends HvlTemplateInteg2D{
 							if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
 								action = "shoot";
 								color = color.yellow;
-							}else if(Keyboard.isKeyDown(Keyboard.KEY_U)) {
+							}else if(Keyboard.isKeyDown(Keyboard.KEY_U)) {     //DEPENDING ON KEY PRESSED, THE TYPE WILL CHANGE, ALONG WITH COLOR	
 								action = "up";
 								color = color.pink;
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_I)) {
@@ -284,7 +285,7 @@ public class Main extends HvlTemplateInteg2D{
 								action = "shoot";
 								color = color.yellow;
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_U)) {
-								action = "up";
+								action = "up";									//SAME FOR BACKWARDS
 								color = color.pink;
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_I)) {
 								action = "intake";
@@ -361,15 +362,16 @@ public class Main extends HvlTemplateInteg2D{
 					textOutline((i+1)+". X: "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In. Y: "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
 
 					if(i > 0) {
+						//Simple distance formula : ((y2-y1)^2 + (x2-x1)^2)^0.5
 						distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);
 						
 	
 						xOffsetBet = Math.round(waypoints.get(i).x - waypoints.get(i-1).x);
 						yOffsetBet = Math.round(waypoints.get(i).y - waypoints.get(i-1).y);
-						origAngle = Math.round(Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet)));
+						origAngle = Math.round(Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet))); //Calculating angle offset 
 						angleOff = origAngle-waypoints.get(i-1).origAngle;
 						
-				
+						//TRANSFORMATIONS BASED ON CERTAIN SCENARIOS	
 						if(waypoints.get(i).type.contains("backwards")) {
 							angleOff -= 180;
 							distanceBet *= -1;
@@ -380,6 +382,8 @@ public class Main extends HvlTemplateInteg2D{
 						if(waypoints.get(i-1).type.contains("backwards") && waypoints.get(i).type.contains("backwards")) {
 							//angleOff -= 360;
 						}
+						
+						//CANT GO ABOVE 360	
 						if(angleOff <= -360) {
 							angleOff+=360;
 						}
@@ -387,7 +391,7 @@ public class Main extends HvlTemplateInteg2D{
 							angleOff-=360;
 						}
 			
-						waypoints.get(i).setDistance(distanceBet);
+						waypoints.get(i).setDistance(distanceBet);  //Assigning each waypoint its properties
 						waypoints.get(i).setOrig(origAngle);
 						waypoints.get(i).setAngle(angleOff);
 
@@ -398,7 +402,7 @@ public class Main extends HvlTemplateInteg2D{
 			}
 				
 				if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  
-						Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+						Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {  //FINE ADJUSTMENT FOR WAYPOINTS
 					if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT) && waypoints.size()>1) {
 						waypoints.get(waypoints.size()-1).x += fineSpeed;
 					}
@@ -419,7 +423,7 @@ public class Main extends HvlTemplateInteg2D{
 					}
 			
 				}
-				if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
+				if(Keyboard.isKeyDown(Keyboard.KEY_A)) {    //SCROLLING
 					textY -= 1;
 				}
 				if(Keyboard.isKeyDown(Keyboard.KEY_Z)) {
@@ -430,13 +434,13 @@ public class Main extends HvlTemplateInteg2D{
 				mouseY1 = mouseY;
 				//System.out.println(Mouse.getX()+"     "+Mouse.getY());
 				zoomer.setZoom(zoom);
-				zoomer.doTransform(new HvlAction0() {
+				zoomer.doTransform(new HvlAction0() { //THIS THING ALLOWS THE ZOOM TO WORK	
 
 					@Override
 					public void run() {
 						
 						hvlDrawQuadc(300, 360, picSizeX, picSizeY, getTexture(0));
-						for(Waypoint allPoints : waypoints) {
+						for(Waypoint allPoints : waypoints) {   //DISPLAYING ALL WAYPOINTS
 								allPoints.display();		
 						}
 		
@@ -458,6 +462,8 @@ public class Main extends HvlTemplateInteg2D{
 				super.draw(delta);
 			}
 		};
+		
+		//THESE ARE UI ELEMENTS. AN ARRANGERBOX CONTAINS ALL TEXT BOXES AND BUTTONS
 		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 235).setY(Display.getHeight()-180).build());
 		UI.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Delete").setClickedCommand(new HvlAction1<HvlButton>() {
 			
@@ -497,7 +503,7 @@ public class Main extends HvlTemplateInteg2D{
 				hvlDrawQuad(x,y,width,height, Color.green);	
 			}
 		}).build());
-
+		//DISPLAYS THE INFORMATION ABOUT EACH COORD
 		Coords = new HvlMenu() {
 	
 			public void draw(float delta) {
@@ -513,10 +519,7 @@ public class Main extends HvlTemplateInteg2D{
 					}
 				}
 					for(int i = 0; i < waypoints.size(); i++) {
-	//						xCoord = Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56);
-	//						yCoord = Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56);
-	//						waypoints.get(i).setX(xCoord);
-	//						waypoints.get(i).setY(yCoord);
+
 						if(Keyboard.isKeyDown(Keyboard.KEY_C)) {
 							waypoints.clear();
 						}
@@ -527,36 +530,6 @@ public class Main extends HvlTemplateInteg2D{
 						}
 							
 							if(i > 0) {
-								distanceBet = Math.round(Math.sqrt(((waypoints.get(i).y-waypoints.get(i-1).y)*(waypoints.get(i).y-waypoints.get(i-1).y))+ ((waypoints.get(i).x-waypoints.get(i-1).x)*(waypoints.get(i).x-waypoints.get(i-1).x)))/0.4646/2.56);
-								
-			
-								xOffsetBet = Math.round(waypoints.get(i).x - waypoints.get(i-1).x);
-								yOffsetBet = Math.round(waypoints.get(i).y - waypoints.get(i-1).y);
-								origAngle = Math.round(Math.toDegrees(Math.atan2(yOffsetBet, xOffsetBet)));
-								angleOff = origAngle-waypoints.get(i-1).origAngle;
-								
-						
-								if(waypoints.get(i).type.contains("backwards")) {
-									angleOff -= 180;
-									distanceBet *= -1;
-								}
-								if(waypoints.get(i-1).type.contains("backwards")) {
-									angleOff+=180;
-								}
-								if(waypoints.get(i-1).type.contains("backwards") && waypoints.get(i).type.contains("backwards")) {
-									//angleOff -= 360;
-								}//
-								if(angleOff <= -360) {
-									angleOff+=360;
-								}
-								if(angleOff >= 360) {
-									angleOff-=360;
-								}
-							
-								
-								waypoints.get(i).setDistance(distanceBet);
-								waypoints.get(i).setOrig(origAngle);
-								waypoints.get(i).setAngle(angleOff);
 		
 								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+textY+25, 0.25f);
 								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+textY+25, 0.25f);
