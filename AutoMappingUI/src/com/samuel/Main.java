@@ -56,21 +56,31 @@ public class Main extends HvlTemplateInteg2D{
 		fileName = UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText(); //gets text box input; saves as variable
 		 
 		String userHomeFolder = System.getProperty("user.home")+"/Documents"; 
-		File profile = new File(userHomeFolder, fileName+".txt");   //creates new txt file with inputed name
+		File profile = new File(userHomeFolder, fileName+".txt");  
+		File loader = new File(userHomeFolder, fileName+"Loader.BOND");//creates new txt file with inputed name
 		BufferedWriter output = null;
+		BufferedWriter loaderOut = null;
 		try {
 			
-			output = new BufferedWriter(new FileWriter(profile));            
-			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+" start null");//writes starting coords
+			output = new BufferedWriter(new FileWriter(profile));  
+			loaderOut = new BufferedWriter(new FileWriter(loader));
+			//output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+waypoints.get(0).size + " " + waypoints.get(0).color + " "+waypoints.get(0).type + " "   );//writes starting coords
+			//output.newLine();
+			for(int i = 0; i < waypoints.size(); i++) {
+				loaderOut.write((waypoints.get(i).x+83)+" "+(waypoints.get(i).y-197)+waypoints.get(i).size + " " + waypoints.get(i).color + " "+waypoints.get(i).type + " " +waypoints.get(i).action + " "+ waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).origAngle+" "+waypoints.get(i).sizeX+ " "+waypoints.get(i).sizeY);//writes distance, angle, type, and action to text file
+				loaderOut.newLine();
+			}
+			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+ " start null" );//writes starting coords
 			output.newLine();
 			for(int i = 1; i < waypoints.size(); i++) {
-				output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).type+" "+waypoints.get(i).action);//writes distance, angle, type, and action to text file
+				output.write(waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+ " " +waypoints.get(i).type + " " +waypoints.get(i).action);//writes distance, angle, type, and action to text file
 				output.newLine();
 			}
 			output.write("END END END END");
 					//MORE WRITING HERE
 		
 			output.close();
+			loaderOut.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
