@@ -126,7 +126,7 @@ public class Main extends HvlTemplateInteg2D{
 	
 	@Override
 	public void initialize() {
-		getTextureLoader().loadResource("filed2018");//0 
+		getTextureLoader().loadResource("field2018");//0 //
 		getTextureLoader().loadResource("osFont");//1					//TEXTURES
 		getTextureLoader().loadResource("robotFrame2");//2
 		zoom = 1;
