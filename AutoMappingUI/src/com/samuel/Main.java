@@ -79,8 +79,6 @@ public class Main extends HvlTemplateInteg2D{
 	}
 	
 	static HvlMenu UI;
-	static HvlMenu Coords;
-
 	
 	HvlCamera2D zoomer;
 	float picSizeX;
@@ -109,7 +107,7 @@ public class Main extends HvlTemplateInteg2D{
 	double angleOff;
 	int numPoints;
 	boolean ran;
-	float textY;
+	static float textY;
 
 	
 	String fileName;
@@ -178,7 +176,7 @@ public class Main extends HvlTemplateInteg2D{
 		//Menu initialization
 		RobotGeometry.initMenu();
 		Instructions.initInstructions();
-
+		Coordinates.initCoords();
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		//Main screen user will see
@@ -504,53 +502,7 @@ public class Main extends HvlTemplateInteg2D{
 			}
 		}).build());
 		//DISPLAYS THE INFORMATION ABOUT EACH COORD
-		Coords = new HvlMenu() {
-	
-			public void draw(float delta) {
-				if(waypoints.size() > 0) {
-					if(Keyboard.isKeyDown(Keyboard.KEY_D) && deleteCounter <= 0){
-						waypoints.remove(waypoints.size()-1);
-						
-						deleteCounter = 50;
-					}
-					deleteCounter --;
-					if(deleteCounter == 0) {
-						deleteCounter = 0;
-					}
-				}
-					for(int i = 0; i < waypoints.size(); i++) {
 
-						if(Keyboard.isKeyDown(Keyboard.KEY_C)) {
-							waypoints.clear();
-						}
-
-						if(waypoints.size()!=0) {
-							textOutline("Coord "+(i+1)+": "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In.      "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + (textY-20), 0.3f);
-
-						}
-							
-							if(i > 0) {
-		
-								textOutline("Angle from last: "+ waypoints.get(i).angleOffset + " degrees. Distance between "+ (i) +" and " +(i+1) + ": "+ waypoints.get(i).distance + " In.", Color.cyan, Color.darkGray, 400, (40*(i-1))+textY+25, 0.25f);
-								textOutline(waypoints.get(i).action, Color.cyan, Color.darkGray, 1200, (40*(i-1))+textY+25, 0.25f);
-								
-								if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
-									textY -= .1;
-								}
-								if(Keyboard.isKeyDown(Keyboard.KEY_Z)) {
-									textY+=.1;
-								}
-							}	
-					}
-					
-				
-				textOutline("Press E to go back", Color.black, Color.white, 740, 600, 0.4f);
-				if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
-					HvlMenu.setCurrent(UI);
-				}
-				super.draw(delta);
-			}
-		};
 		
 		HvlMenu.setCurrent(RobotGeometry.Geo);
 	}
@@ -563,7 +515,7 @@ public class Main extends HvlTemplateInteg2D{
 		}
 		if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 			if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
-				HvlMenu.setCurrent(Coords);
+				HvlMenu.setCurrent(Coordinates.Coords);
 				textY = 40;
 			}
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
