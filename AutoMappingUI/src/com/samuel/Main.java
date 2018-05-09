@@ -67,7 +67,7 @@ public class Main extends HvlTemplateInteg2D{
 			//output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+waypoints.get(0).size + " " + waypoints.get(0).color + " "+waypoints.get(0).type + " "   );//writes starting coords
 			//output.newLine();
 			for(int i = 0; i < waypoints.size(); i++) {
-				loaderOut.write((waypoints.get(i).x+83)+" "+(waypoints.get(i).y-197)+" "+waypoints.get(i).size + " " + "Pink"+ " "+waypoints.get(i).type + " " +waypoints.get(i).action + " "+ waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).origAngle+" "+waypoints.get(i).sizeX+ " "+waypoints.get(i).sizeY);//writes distance, angle, type, and action to text file
+				loaderOut.write((waypoints.get(i).x+83)+" "+(waypoints.get(i).y-197)+" "+waypoints.get(i).size + " " + "Color"+ " "+waypoints.get(i).type + " " +waypoints.get(i).action + " "+ waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).origAngle+" "+waypoints.get(i).sizeX+ " "+waypoints.get(i).sizeY);//writes distance, angle, type, and action to text file
 				loaderOut.newLine();
 			}
 			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+ " start null" );//writes starting coords
@@ -274,7 +274,7 @@ public class Main extends HvlTemplateInteg2D{
 								color = color.blue;
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
 								color = color.transparent;
-								type = "forward noAngle";
+								type = "forwardnoAngle";
 							}
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0,0,RobotGeometry.robotW,RobotGeometry.robotL);
 							waypoints.add(point);
@@ -303,7 +303,7 @@ public class Main extends HvlTemplateInteg2D{
 								color = color.blue;
 							}else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
 								color = color.transparent;
-								type = "backwards noAngle";
+								type = "backwardsnoAngle";
 							}
 							Waypoint point = new Waypoint((mouseX / zoomer.getZoom() + (zoomer.getX() - screenOffset)/zoomer.getZoom()), (mouseY / zoomer.getZoom())+(zoomer.getY() - 360)/zoomer.getZoom(), 15, color, type,action,0,0, 0,RobotGeometry.robotW, RobotGeometry.robotL);
 							waypoints.add(point);
