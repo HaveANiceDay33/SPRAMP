@@ -31,23 +31,29 @@ public class ProfileLoader {
 	}
 	public void loadProfile() {
 		String userHomeFolder = System.getProperty("user.home")+"/Documents/"; 
-		  
+		String[] info = null;
+		String color;
 		   try{
-		          FileInputStream fstream = new FileInputStream(userHomeFolder+fileName+"Loader.txt");
+		          FileInputStream fstream = new FileInputStream(userHomeFolder+fileName+"Loader.BOND");
 		          DataInputStream in = new DataInputStream(fstream);
 		          BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		          String strLine;
 		        
 
 			      while ((strLine = br.readLine()) != null)   {
-			    	  String[] info = strLine.split(" ");  
+			    	  info = strLine.split(" ");  
 			    	  
-			    	  Waypoint waypoint = new Waypoint(Float.parseFloat(info[0]),Float.parseFloat(info[1]),Float.parseFloat(info[2]), Color.pink,info[5],info[6],Float.parseFloat(info[7]), Double.parseDouble(info[8]),Double.parseDouble(info[9]),Float.parseFloat(info[10]),Float.parseFloat(info[11]));//process record , etc
+			   
+			    	  
+			    	  Waypoint waypoint = new Waypoint(Float.parseFloat(info[0])-83,Float.parseFloat(info[1])+197,Float.parseFloat(info[2]), Color.pink,info[4],info[5],Float.parseFloat(info[6]), Double.parseDouble(info[7]),Double.parseDouble(info[8]),Float.parseFloat(info[9]),Float.parseFloat(info[10]));//process record , etc
+			    	 
 			    	  if(!strLine.equals("")) {
 			    		  Main.waypoints.add(waypoint);
 			    	  }
 			        	  
 			     }
+			     RobotGeometry.robotW = Float.parseFloat(info[9]);
+			     RobotGeometry.robotL = Float.parseFloat(info[10]);
 			     in.close();
 		          
 		          

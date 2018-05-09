@@ -67,7 +67,7 @@ public class Main extends HvlTemplateInteg2D{
 			//output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+waypoints.get(0).size + " " + waypoints.get(0).color + " "+waypoints.get(0).type + " "   );//writes starting coords
 			//output.newLine();
 			for(int i = 0; i < waypoints.size(); i++) {
-				loaderOut.write((waypoints.get(i).x+83)+" "+(waypoints.get(i).y-197)+" "+waypoints.get(i).size + " " + "Pink lol"+ " "+waypoints.get(i).type + " " +waypoints.get(i).action + " "+ waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).origAngle+" "+waypoints.get(i).sizeX+ " "+waypoints.get(i).sizeY);//writes distance, angle, type, and action to text file
+				loaderOut.write((waypoints.get(i).x+83)+" "+(waypoints.get(i).y-197)+" "+waypoints.get(i).size + " " + "Pink"+ " "+waypoints.get(i).type + " " +waypoints.get(i).action + " "+ waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).origAngle+" "+waypoints.get(i).sizeX+ " "+waypoints.get(i).sizeY);//writes distance, angle, type, and action to text file
 				loaderOut.newLine();
 			}
 			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+ " start null" );//writes starting coords
@@ -531,10 +531,7 @@ public class Main extends HvlTemplateInteg2D{
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 				HvlMenu.setCurrent(Instructions.Controls);
 			}
-			if(Keyboard.isKeyDown(Keyboard.KEY_M)) {
-				ProfileLoader loader = new ProfileLoader("er");
-				loader.loadProfile();
-			}
+
 			if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
 				waypoints.clear();
 				HvlMenu.setCurrent(RobotGeometry.Geo);

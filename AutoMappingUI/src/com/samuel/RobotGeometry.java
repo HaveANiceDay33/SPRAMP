@@ -31,7 +31,7 @@ public class RobotGeometry {
 			}
 		};
 		Geo.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)-200).build());
-		
+
 		Geo.getFirstArrangerBox().add(new HvlSpacer(30, 30));
 		
 		Geo.getFirstArrangerBox().add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setNumbersOnly(true).setFocusedDrawable(new HvlComponentDrawable() {	
@@ -72,6 +72,39 @@ public class RobotGeometry {
 					robotW = Float.parseFloat(Geo.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText());
 					robotL = Float.parseFloat(Geo.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText());
 				
+					HvlMenu.setCurrent(Main.UI);
+				}
+	
+			}
+		}).build());
+		
+		Geo.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)+00).build());
+
+		Geo.getChildOfType(HvlArrangerBox.class,1).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.lightGray);	
+			}
+		}).setUnfocusedDrawable(new HvlComponentDrawable() {
+			
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.green);	
+			}
+		}).build());
+		Geo.getChildOfType(HvlArrangerBox.class, 1).add(new HvlSpacer(30, 30));
+
+		Geo.getChildOfType(HvlArrangerBox.class,1).add(new HvlLabeledButton.Builder().setText("Load").setClickedCommand(new HvlAction1<HvlButton>() {
+	
+			@Override
+			public void run(HvlButton a) {
+				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
+				if(!Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).getText().equals("")){
+					Main.waypoints.clear();
+					
+					ProfileLoader loader = new ProfileLoader(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
+					loader.loadProfile();
+					
 					HvlMenu.setCurrent(Main.UI);
 				}
 	
