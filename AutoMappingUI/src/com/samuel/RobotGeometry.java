@@ -20,7 +20,7 @@ public class RobotGeometry {
 	static float robotW;
 	static float robotL;
 	public static void initMenu() {
-		
+
 		Geo = new HvlMenu() {
 			public void draw(float delta) {
 				Main.textOutline("              Welcome to HavaANiceDay's Auto Mapping Client Application! \nKeep in mind that this is under constant development. Not everything is stable :)" ,Color.black, Color.white,60,30, 0.4f);
@@ -110,6 +110,7 @@ public class RobotGeometry {
 	
 			}
 		}).build());
+
 	}
 	
 }

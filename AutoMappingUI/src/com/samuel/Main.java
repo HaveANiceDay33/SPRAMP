@@ -534,6 +534,9 @@ public class Main extends HvlTemplateInteg2D{
 
 			if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
 				waypoints.clear();
+				RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
+				RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,0).setText("");
+				RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,1).setText("");
 				HvlMenu.setCurrent(RobotGeometry.Geo);
 			}
 		}
