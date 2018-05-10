@@ -466,7 +466,23 @@ public class Main extends HvlTemplateInteg2D{
 				});
 				textOutline("Press Q to see controls", Color.black, Color.white, 50, 50, 0.4f);
 
-				
+				if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
+					if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
+						HvlMenu.setCurrent(Coordinates.Coords);
+						textY = 40;
+					}
+					if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+						HvlMenu.setCurrent(Instructions.Controls);
+					}
+
+					if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
+						waypoints.clear();
+						RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
+						RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,0).setText("");
+						RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,1).setText("");
+						HvlMenu.setCurrent(RobotGeometry.Geo);
+					}
+				}
 				super.draw(delta);
 			}
 		};
@@ -523,23 +539,7 @@ public class Main extends HvlTemplateInteg2D{
 		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			exit();
 		}
-		if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
-			if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
-				HvlMenu.setCurrent(Coordinates.Coords);
-				textY = 40;
-			}
-			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-				HvlMenu.setCurrent(Instructions.Controls);
-			}
 
-			if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
-				waypoints.clear();
-				RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
-				RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,0).setText("");
-				RobotGeometry.Geo.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,1).setText("");
-				HvlMenu.setCurrent(RobotGeometry.Geo);
-			}
-		}
 	}
 	
 }
