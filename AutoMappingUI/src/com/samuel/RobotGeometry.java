@@ -71,6 +71,7 @@ public class RobotGeometry {
 				if(!Geo.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText().equals("")){
 					robotW = Float.parseFloat(Geo.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText());
 					robotL = Float.parseFloat(Geo.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText());
+					Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
 				
 					HvlMenu.setCurrent(Main.UI);
 				}
@@ -104,7 +105,8 @@ public class RobotGeometry {
 					
 					ProfileLoader loader = new ProfileLoader(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
 					loader.loadProfile();
-					
+					Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
+
 					HvlMenu.setCurrent(Main.UI);
 				}
 	
