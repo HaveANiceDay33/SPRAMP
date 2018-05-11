@@ -1,0 +1,18 @@
+-Font looks better. Uses 1 px of outline instead of 2
+-Welcome message
+-Title
+-Loading
+	-Saving a profile now saves the file for the robot AND a Loader file that is called when loading
+	-In the robot Geometry menu, type in the profile you want and the program will reconstruct it, 		where the user can edit and resave it
+-Clears text boxes when: 
+	-Going into Robot Geometry
+	-Re-entering UI with new Length and Width
+-Saves name of loaded-in file and automatically inserts it into the save prompt
+-Accounts for blank text boxes and uses form validation in robot geometry to prevent non-numbers from being entered. Consequently, does not crash.
+-Map has a drawn in (0,0) point
+-Four actions: shoot, up, down, and intake; all separately activated.
+-Null angle point.
+-Updated instructions.
+-Can now scroll to see additional points if they run off the window.
+-Added Clear and Delete Buttons to make it easier to do those actions.
+-LOTS and LOTS of bug fixes.
