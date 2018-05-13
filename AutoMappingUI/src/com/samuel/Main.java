@@ -503,6 +503,7 @@ public class Main extends HvlTemplateInteg2D{
 			@Override
 			public void run(HvlButton a) {
 				waypoints.clear();
+				UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
 			}
 		}).build());
 		UI.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(100).setX(Display.getWidth() - 300).setY(Display.getHeight()-100).build());
