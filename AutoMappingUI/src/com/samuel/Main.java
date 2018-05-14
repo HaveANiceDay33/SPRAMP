@@ -5,11 +5,7 @@ import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuadc;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
@@ -392,10 +388,10 @@ public class Main extends HvlTemplateInteg2D{
 						}
 						
 						//CANT GO ABOVE 360	
-						if(angleOff <= -360) {
+						if(angleOff < -360) {
 							angleOff+=360;
 						}
-						if(angleOff >= 360) {
+						if(angleOff > 360) {
 							angleOff-=360;
 						}
 			
