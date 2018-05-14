@@ -77,10 +77,10 @@ public class Main extends HvlTemplateInteg2D{
 		
 			output.close();
 			loaderOut.close();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -386,12 +386,20 @@ public class Main extends HvlTemplateInteg2D{
 						if(waypoints.get(i-1).type.contains("backwards") && waypoints.get(i).type.contains("backwards")) {
 							//angleOff -= 360;
 						}
+						//CHOOSES THE SMALLER ANGLE
+						if(angleOff > 180) {
+							angleOff -= 360;
+						}
+						if(angleOff < -180) {
+							angleOff += 360;
+						}
+	
 						
 						//CANT GO ABOVE 360	
-						if(angleOff < -360) {
+						if(angleOff <= -360) {
 							angleOff+=360;
 						}
-						if(angleOff > 360) {
+						if(angleOff >= 360) {
 							angleOff-=360;
 						}
 			

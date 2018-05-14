@@ -8,8 +8,6 @@ import java.io.InputStreamReader;
 
 import org.newdawn.slick.Color;
 
-
-
 public class ProfileLoader {
 	float startX = 0;
 	float startY = 0;
@@ -40,7 +38,6 @@ public class ProfileLoader {
 		          DataInputStream in = new DataInputStream(fstream);
 		          BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		          String strLine;
-		        
 
 			      while ((strLine = br.readLine()) != null)   {
 			    	  info = strLine.split(" ");  
@@ -81,13 +78,17 @@ public class ProfileLoader {
 			    	  if(type.equals("fowardnoAngle") || type.equals("backwardsnoAngle")) {
 			    		  color = Color.transparent;
 			    	  }
-			    	  Waypoint waypoint = new Waypoint(Float.parseFloat(info[0])-83,Float.parseFloat(info[1])+197,Float.parseFloat(info[2]), color,type,action,Float.parseFloat(info[6]), Double.parseDouble(info[7]),Double.parseDouble(info[8]),Float.parseFloat(info[9]),Float.parseFloat(info[10]));//process record , etc
+			    	  Waypoint waypoint = new Waypoint(Float.parseFloat(info[0])-83,Float.parseFloat(info[1])+197,Float.parseFloat(info[2]), 
+			    			  color,type,action,Float.parseFloat(info[6]), Double.parseDouble(info[7]),Double.parseDouble(info[8]),
+			    			  Float.parseFloat(info[9]),Float.parseFloat(info[10]));//process record , etc
 
 			    	  if(!strLine.equals("")) {
 			    		  Main.waypoints.add(waypoint);
 			    	  }
-			        	  
+			    	  
+			    	  
 			     }
+			  
 			     RobotGeometry.robotW = Float.parseFloat(info[9]);
 			     RobotGeometry.robotL = Float.parseFloat(info[10]);
 			     in.close();
