@@ -401,7 +401,7 @@ public class Main extends HvlTemplateInteg2D{
 						}
 						if(angleOff >= 360) {
 							angleOff-=360;
-						}
+						}   
 			
 						waypoints.get(i).setDistance(distanceBet);  //Assigning each waypoint its properties
 						waypoints.get(i).setOrig(origAngle);
