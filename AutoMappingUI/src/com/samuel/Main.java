@@ -393,7 +393,7 @@ public class Main extends HvlTemplateInteg2D{
 						if(angleOff < -180) {
 							angleOff += 360;
 						}
-	
+	  
 						
 						//CANT GO ABOVE 360	
 						if(angleOff <= -360) {
