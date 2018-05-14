@@ -14,8 +14,8 @@ public class Instructions {
 	public static void initInstructions() {
 		Controls = new HvlMenu() {
 			public void draw(float delta) {
-				Main.textOutline(instructions, Color.black, Color.white, 20, 20, 0.35f);
-				Main.textOutline("Press E to go back", Color.black, Color.white, 740, 600, 0.4f);
+				Main.textOutline(instructions, Color.cyan, Color.darkGray, 20, 20, 0.35f);
+				Main.textOutline("Press E to go back", Color.cyan, Color.darkGray, 740, 600, 0.4f);
 				if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
 					HvlMenu.setCurrent(Main.UI);
 				}

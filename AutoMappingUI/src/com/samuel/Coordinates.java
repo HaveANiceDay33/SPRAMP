@@ -48,7 +48,7 @@ public class Coordinates {
 					}
 					
 				
-				Main.textOutline("Press E to go back", Color.black, Color.white, 740, 600, 0.4f);
+				Main.textOutline("Press E to go back",  Color.cyan, Color.darkGray, 740, 600, 0.4f);
 				if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
 					HvlMenu.setCurrent(Main.UI);
 				}

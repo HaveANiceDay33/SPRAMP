@@ -159,7 +159,7 @@ public class Main extends HvlTemplateInteg2D{
 		xOffsetBet = 0;
 		yOffsetBet = 0;
 		//DEFAULT BUTTON CONFIG
-		HvlComponentDefault.setDefault(HvlLabeledButton.class, new HvlLabeledButton.Builder().setWidth(100).setHeight(50).setFont(gameFont).setTextColor(Color.white).setTextScale(0.25f).setOnDrawable(new HvlComponentDrawable() {
+		HvlComponentDefault.setDefault(HvlLabeledButton.class, new HvlLabeledButton.Builder().setWidth(100).setHeight(50).setFont(gameFont).setTextColor(Color.cyan).setTextScale(0.25f).setOnDrawable(new HvlComponentDrawable() {
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
@@ -464,7 +464,7 @@ public class Main extends HvlTemplateInteg2D{
 						}
 					}
 				});
-				textOutline("Press Q to see controls", Color.black, Color.white, 50, 50, 0.4f);
+				textOutline("Press Q to see controls", Color.cyan, Color.darkGray, 50, 50, 0.4f);
 
 				if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 					if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
