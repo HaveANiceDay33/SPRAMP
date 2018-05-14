@@ -23,7 +23,8 @@ public class RobotGeometry {
 
 		Geo = new HvlMenu() {
 			public void draw(float delta) {
-				Main.textOutline("              Welcome to HavaANiceDay's Auto Mapping Client Application! \nKeep in mind that this is under constant development. Not everything is stable :)" ,Color.cyan, Color.darkGray,60,30, 0.4f);
+				Main.textOutline("              Welcome to HavaANiceDay's Auto Mapping Client Application! \nKeep in mind that this is under constant development. Not everything is stable : " ,Color.cyan, Color.darkGray,60,30, 0.4f);
+				Main.textOutline(")",Color.cyan, Color.darkGray,1345,70, 0.4f);
 				Main.textOutline("Set robot width and length :",Color.cyan, Color.darkGray,550,220, 0.3f);
 				Main.textOutline("Width : ",Color.cyan, Color.darkGray,470,280, 0.4f);
 				Main.textOutline("Length : ",Color.cyan, Color.darkGray,470,360, 0.4f);
