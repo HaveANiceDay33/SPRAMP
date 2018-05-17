@@ -56,7 +56,9 @@ public class ProfileLoader {
 			    	  			color = Color.pink;
 			    	  		}else if(action.equals("down")) {
 			    	  			color = Color.blue;
-			    	  		}
+			    	  		}else if(action.equals("start")) {
+					    		color = Color.red;
+					    	}
 			    	  	}
 			    	  	if(type.equals("forward")) {
 			    	  	
@@ -70,11 +72,11 @@ public class ProfileLoader {
 			    	  			color = Color.pink;
 			    	  		}else if(action.equals("down")) {
 			    	  			color = Color.blue;
-			    	  		} 
+			    	  		}else if(action.equals("start")) {
+					    		color = Color.orange;
+					    	}
 			    	  }
-			    	  if(action.equals("start")) {
-			    		  color = Color.orange;
-			    	  }
+			 
 			    	  if(type.equals("fowardnoAngle") || type.equals("backwardsnoAngle")) {
 			    		  color = Color.transparent;
 			    	  }
