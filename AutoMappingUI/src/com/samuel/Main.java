@@ -145,7 +145,7 @@ public class Main extends HvlTemplateInteg2D{
 		picSizeY = 720;
 		xPos = 540;
 		yPos = 360;
-		screenOffset = 720;
+		screenOffset = 720; //has to be half of screen width
 		deleteCounter = 0;
 		fineSpeed = (float) 0.125;
 		clicked = false;
@@ -518,10 +518,13 @@ public class Main extends HvlTemplateInteg2D{
 
 		UI.getChildOfType(HvlArrangerBox.class, 1).add(new HvlLabeledButton.Builder().setText("Save").setClickedCommand(new HvlAction1<HvlButton>() {
 			
+			
 			@Override
 			public void run(HvlButton a) {
 				profileSaver();
 			}
+			
+			
 		}).build());
 		UI.getChildOfType(HvlArrangerBox.class, 1).add(new HvlSpacer(30, 30));
 		UI.getChildOfType(HvlArrangerBox.class, 1).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
