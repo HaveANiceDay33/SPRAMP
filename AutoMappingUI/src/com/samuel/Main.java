@@ -3,9 +3,11 @@ package com.samuel;
 import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuad;
 import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuadc;
 
+import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
@@ -39,6 +41,8 @@ public class Main extends HvlTemplateInteg2D{
 	public Main(){
 		super(60, 1440, 720, "Auto Mapping Client v3", new HvlDisplayModeDefault());
 	}
+
+
 	//Method for drawing text with an outline. Much more visually appealing
 	public static void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
 		gameFont.drawWord(text, x+1, y, outlineColor, size);

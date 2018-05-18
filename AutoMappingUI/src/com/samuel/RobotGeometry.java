@@ -118,8 +118,9 @@ public class RobotGeometry {
 					String file = dialog.getFile();
 					    //System.out.println(file + " chosen.");
 					ProfileLoader loader = new ProfileLoader(file);
-					//ProfileLoader loader = new ProfileLoader(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
 					loader.loadProfile();
+					//ProfileLoader loader = new ProfileLoader(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
+					
 					//Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
 					Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(file.replaceAll("Loader.BOND", ""));
 					HvlMenu.setCurrent(Main.UI);
