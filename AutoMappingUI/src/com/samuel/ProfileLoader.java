@@ -34,7 +34,7 @@ public class ProfileLoader {
 		String type;
 		String action;
 		   try{
-		          FileInputStream fstream = new FileInputStream(userHomeFolder+fileName+"Loader.BOND");
+		          FileInputStream fstream = new FileInputStream(userHomeFolder+fileName);
 		          DataInputStream in = new DataInputStream(fstream);
 		          BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		          String strLine;

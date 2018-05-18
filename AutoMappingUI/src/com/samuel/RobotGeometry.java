@@ -2,6 +2,13 @@ package com.samuel;
 
 import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuad;
 
+import java.awt.Desktop;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
@@ -82,34 +89,42 @@ public class RobotGeometry {
 		
 		Geo.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)+00).build());
 
-		Geo.getChildOfType(HvlArrangerBox.class,1).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
-			@Override
-			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.lightGray);	
-			}
-		}).setUnfocusedDrawable(new HvlComponentDrawable() {
-			
-			@Override
-			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
-			}
-		}).build());
-		Geo.getChildOfType(HvlArrangerBox.class, 1).add(new HvlSpacer(30, 30));
+//		Geo.getChildOfType(HvlArrangerBox.class,1).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+//			@Override
+//			public void draw(float delta, float x, float y, float width, float height) {
+//				hvlDrawQuad(x,y,width,height, Color.lightGray);	
+//			}
+//		}).setUnfocusedDrawable(new HvlComponentDrawable() {
+//			
+//			@Override
+//			public void draw(float delta, float x, float y, float width, float height) {
+//				hvlDrawQuad(x,y,width,height, Color.green);	
+//			}
+//		}).build());
+//		Geo.getChildOfType(HvlArrangerBox.class, 1).add(new HvlSpacer(30, 30));
 
 		Geo.getChildOfType(HvlArrangerBox.class,1).add(new HvlLabeledButton.Builder().setText("Load").setClickedCommand(new HvlAction1<HvlButton>() {
 	
 			@Override
 			public void run(HvlButton a) {
 				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
-				if(!Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).getText().equals("")){
+				//if(!Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).getText().equals("")){
 					Main.waypoints.clear();
 					
-					ProfileLoader loader = new ProfileLoader(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
+					FileDialog dialog = new FileDialog((Frame)null, "Select a .BOND file");
+					dialog.setMode(FileDialog.LOAD);
+					dialog.setFile("*.BOND");
+					dialog.setVisible(true);
+					String file = dialog.getFile();
+					    //System.out.println(file + " chosen.");
+					ProfileLoader loader = new ProfileLoader(file);
+					//ProfileLoader loader = new ProfileLoader(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
 					loader.loadProfile();
-					Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
-
+					//Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
+					Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(file.replaceAll("Loader.BOND", ""));
 					HvlMenu.setCurrent(Main.UI);
-				}
+				//}
+		
 	
 			}
 		}).build());
