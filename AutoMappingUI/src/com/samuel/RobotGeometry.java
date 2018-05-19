@@ -116,11 +116,11 @@ public class RobotGeometry {
 					dialog.setFile("*.BOND");
 					
 					dialog.setVisible(true);
-					if(!dialog.getFile() == null){
+					if(!(dialog.getFile() == null)){
 						String file = dialog.getFile();
 						    //System.out.println(file + " chosen.");
 						ProfileLoader loader = new ProfileLoader(file);
-
+						loader.loadProfile();
 						//ProfileLoader loader = new ProfileLoader(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
 
 						//Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(Geo.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class, 0).getText());
