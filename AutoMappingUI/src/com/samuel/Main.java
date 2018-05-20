@@ -121,7 +121,6 @@ public class Main extends HvlTemplateInteg2D{
 
 	
 	String fileName;
-	String path = System.getProperty("user.home") + "/Desktop";
 	
 	float screenOffset;
 	

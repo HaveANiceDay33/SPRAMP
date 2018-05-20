@@ -26,6 +26,7 @@ public class RobotGeometry {
 	static HvlMenu Geo;
 	static float robotW;
 	static float robotL;
+	static String userHomeFolder = System.getProperty("user.home")+"/Documents/";
 	public static void initMenu() {
 
 		Geo = new HvlMenu() {
@@ -114,7 +115,8 @@ public class RobotGeometry {
 					FileDialog dialog = new FileDialog((Frame)null, "Select a .BOND file");
 					dialog.setMode(FileDialog.LOAD);
 					dialog.setFile("*.BOND");
-					
+					dialog.setDirectory(userHomeFolder);
+			
 					dialog.setVisible(true);
 					if(!(dialog.getFile() == null)){
 						String file = dialog.getFile();
