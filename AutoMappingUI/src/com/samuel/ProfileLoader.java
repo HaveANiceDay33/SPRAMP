@@ -41,10 +41,18 @@ public class ProfileLoader {
 		          String strLine;
 
 			      while ((strLine = br.readLine()) != null)   {
-			    	  info = strLine.split(" ");  
+			    	  info = strLine.split(" "); 
+			    	  x = Float.parseFloat(info[0])-83;
+			    	  y = Float.parseFloat(info[1])+197;
+			    	  size = Float.parseFloat(info[2]);
+			    	  color = Color.transparent;
 			    	  type = info[4];
 			    	  action = info[5];
-			    	  color = Color.transparent;
+			    	  distance = Float.parseFloat(info[6]);
+			    	  angleOffset = Float.parseFloat(info[7]);
+			    	  origAngle = Float.parseFloat(info[8]);
+			    	  sizeX = Float.parseFloat(info[9]);
+			    	  sizeY  =Float.parseFloat(info[10]);
 			    	  if(type.equals("backwards")) {
 			    		  
 			    	  		if(action.equals("drive")) {
@@ -81,9 +89,7 @@ public class ProfileLoader {
 			    	  if(type.equals("fowardnoAngle") || type.equals("backwardsnoAngle")) {
 			    		  color = Color.transparent;
 			    	  }
-			    	  Waypoint waypoint = new Waypoint(Float.parseFloat(info[0])-83,Float.parseFloat(info[1])+197,Float.parseFloat(info[2]), 
-			    			  color,type,action,Float.parseFloat(info[6]), Double.parseDouble(info[7]),Double.parseDouble(info[8]),
-			    			  Float.parseFloat(info[9]),Float.parseFloat(info[10]));//process record , etc
+			    	  Waypoint waypoint = new Waypoint(x,y,size,color,type,action,distance, angleOffset, origAngle, sizeX, sizeY);//process record , etc
 
 			    	  if(!strLine.equals("")) {
 			    		  Main.waypoints.add(waypoint);
@@ -92,8 +98,8 @@ public class ProfileLoader {
 			    	  
 			     }
 			  
-			     RobotGeometry.robotW = Float.parseFloat(info[9]);
-			     RobotGeometry.robotL = Float.parseFloat(info[10]);
+			     RobotGeometry.robotW = sizeX;
+			     RobotGeometry.robotL = sizeY;
 			     in.close();
 		          
 		          
