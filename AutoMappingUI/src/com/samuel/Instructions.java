@@ -19,19 +19,6 @@ public class Instructions {
 				if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
 					HvlMenu.setCurrent(Main.UI);
 				}
-				if(Keyboard.isKeyDown(Keyboard.KEY_C)) {
-					Main.waypoints.clear();
-				}
-				if(Main.waypoints.size() > 0) {
-					if(Keyboard.isKeyDown(Keyboard.KEY_D) && Main.deleteCounter <= 0){
-						Main.waypoints.remove(Main.waypoints.size()-1);
-						Main.deleteCounter = 50;
-					}
-					Main.deleteCounter --;
-					if(Main.deleteCounter == 0) {
-						Main.deleteCounter = 0;
-					}
-				}
 				super.draw(delta);
 			}
 		};
