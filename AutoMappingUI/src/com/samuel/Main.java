@@ -110,6 +110,8 @@ public class Main extends HvlTemplateInteg2D{
 	float yOffsetBet;
 	float xCoord;
 	float yCoord;
+	
+	public static int background;
 
 	
 	double origAngle;
@@ -136,6 +138,8 @@ public class Main extends HvlTemplateInteg2D{
 		getTextureLoader().loadResource("field2018");//0 //
 		getTextureLoader().loadResource("osFont");//1					//TEXTURES
 		getTextureLoader().loadResource("robotFrame2");//2
+		getTextureLoader().loadResource("2016field");//3
+		getTextureLoader().loadResource("2017field");//4
 		zoom = 1;
 		gameFont =  new HvlFontPainter2D(getTexture(1), HvlFontPainter2D.Preset.FP_INOFFICIAL,.5f,8f,0); //font definition
 		zoomer = new HvlCamera2D(540, 360, 0, zoom, HvlCamera2D.ALIGNMENT_CENTER); //Camera definition
@@ -454,7 +458,7 @@ public class Main extends HvlTemplateInteg2D{
 					@Override
 					public void run() {
 						
-						hvlDrawQuadc(300, 360, picSizeX, picSizeY, getTexture(0));
+						hvlDrawQuadc(300, 360, picSizeX, picSizeY, getTexture(background));
 						for(Waypoint allPoints : waypoints) {   //DISPLAYING ALL WAYPOINTS
 								allPoints.display();		
 						}
