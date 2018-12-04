@@ -41,7 +41,7 @@ public class Main extends HvlTemplateInteg2D{
 	public Main(){
 		super(60, 1440, 720, "Auto Mapping Client v3", new HvlDisplayModeDefault());
 	}
-
+	//testing github
 
 	//Method for drawing text with an outline. Much more visually appealing
 	public static void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
