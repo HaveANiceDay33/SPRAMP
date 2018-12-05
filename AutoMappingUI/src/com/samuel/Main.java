@@ -45,20 +45,29 @@ public class Main extends HvlTemplateInteg2D{
 	public void generateData() {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
-		for(int i = 0; i < waypoints.size(); i++) {
-			xVals.add((double) (Math.round((((waypoints.get(i).x)-157+240)/0.47)) - Math.round((((waypoints.get(0).x)-157+240)/0.47)))); //returns cm
-			yVals.add(-((double) (Math.round((((waypoints.get(i).y)-135)/0.47)) - Math.round((((waypoints.get(0).y)-135)/0.47)))));
+		if(waypoints.size() > 0) {
+			for(int i = 0; i < waypoints.size(); i++) {
+				xVals.add((double) (Math.round((((waypoints.get(i).x)-157+240)/0.47)) - Math.round((((waypoints.get(0).x)-157+240)/0.47)))); //returns cm
+				yVals.add(-((double) (Math.round((((waypoints.get(i).y)-135)/0.47)) - Math.round((((waypoints.get(0).y)-135)/0.47)))));
+			}
+			double[] xArray = new double[xVals.size()];
+			double[] yArray = new double[yVals.size()];
+			for(int i = 0; i < waypoints.size(); i++) {
+				xArray[i] = xVals.get(i);
+				yArray[i] = yVals.get(i);
+	
+				System.out.println(xArray[i] + "\t" + yArray[i]);
+			}
+			System.out.println("");
+			PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
+			for(int i = 0; i < 400; i++) {
+				double x = i;
+				double y = functionGen.predict(x);
+				hvlDrawQuad((float)x  , (float)-y, 2, 2, Color.red);
+				System.out.println(x + "\t" + y);
+			}
+			System.out.println(functionGen.toString());
 		}
-		double[] xArray = new double[xVals.size()];
-		double[] yArray = new double[yVals.size()];
-		for(int i = 0; i < waypoints.size(); i++) {
-			xArray[i] = xVals.get(i);
-			yArray[i] = yVals.get(i);
-			System.out.println(xArray[i] + "\t" + yArray[i]);
-		}
-		PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
-		System.out.println(functionGen.toString());
-		
 	}
 	//Method for drawing text with an outline. Much more visually appealing
 	public static void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
@@ -487,14 +496,14 @@ public class Main extends HvlTemplateInteg2D{
 		
 						for(int i = 0; i < waypoints.size(); i++) {
 							if(i>0) {
-								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.green);
+								//HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.green);
 							}
 							if(waypoints.get(i).type.contains("backwards")&& i>0) {
-								HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.red);
+								//HvlPainter2D.hvlDrawLine(waypoints.get(i-1).x, waypoints.get(i-1).y, waypoints.get(i).x, waypoints.get(i).y, Color.red);
 
 							}
-							
 						}
+						generateData();
 					}
 				});
 				textOutline("Press Q to see controls", Color.cyan, Color.darkGray, 50, 50, 0.4f);
