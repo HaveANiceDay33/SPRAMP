@@ -121,7 +121,7 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
      */
     public double beta(int j) {
         // to make -0.0 print as 0.0
-        if (Math.abs(beta.get(j, 0)) < 1E-4) return 0.0;
+        if (Math.abs(beta.get(j, 0)) < 1E-100) return 0.0;
         return beta.get(j, 0);
     }
 
@@ -173,14 +173,14 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
         int j = degree;
 
         // ignoring leading zero coefficients
-        while (j >= 0 && Math.abs(beta(j)) < 1E-5)
+        while (j >= 0 && Math.abs(beta(j)) < 1E-100)
             j--;
 
         // create remaining terms
         while (j >= 0) {
-            if      (j == 0) s.append(String.format("%.8f ", beta(j)));
-            else if (j == 1) s.append(String.format("%.8f %s + ", beta(j), variableName));
-            else             s.append(String.format("%.8f %s^%d + ", beta(j), variableName, j));
+            if      (j == 0) s.append(String.format("%.16f ", beta(j)));
+            else if (j == 1) s.append(String.format("%.16f %s + ", beta(j), variableName));
+            else             s.append(String.format("%.16f %s^%d + ", beta(j), variableName, j));
             j--;
         }
         s = s.append("  (R^2 = " + String.format("%.3f", R2()) + ")");

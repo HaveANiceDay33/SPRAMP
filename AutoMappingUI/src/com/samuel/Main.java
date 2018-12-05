@@ -46,8 +46,8 @@ public class Main extends HvlTemplateInteg2D{
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
 		for(int i = 0; i < waypoints.size(); i++) {
-			xVals.add((double) waypoints.get(i).x - (double)waypoints.get(0).x);
-			yVals.add(-((double) waypoints.get(i).y - (double)waypoints.get(0).y));
+			xVals.add((double) (Math.round((((waypoints.get(i).x)-157+240)/0.47)) - Math.round((((waypoints.get(0).x)-157+240)/0.47)))); //returns cm
+			yVals.add(-((double) (Math.round((((waypoints.get(i).y)-135)/0.47)) - Math.round((((waypoints.get(0).y)-135)/0.47)))));
 		}
 		double[] xArray = new double[xVals.size()];
 		double[] yArray = new double[yVals.size()];
@@ -392,7 +392,7 @@ public class Main extends HvlTemplateInteg2D{
 				}
 			
 				for(int i = 0; i < waypoints.size(); i++) {
-					textOutline((i+1)+". X: "+(Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56) - Math.round((((waypoints.get(0).x)-157+240)/0.4646)/2.56))+" In. Y: "+(Math.round((((waypoints.get(0).y)-135)/0.4646)/2.56) - Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56))+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
+					textOutline((i+1)+". X: "+(Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56) - Math.round((((waypoints.get(0).x)-157+240)/0.4646)/2.56))+" In. Y: "+(Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56) - Math.round((((waypoints.get(0).y)-135)/0.4646)/2.56))+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
 
 					if(i > 0) {
 						//Simple distance formula : ((y2-y1)^2 + (x2-x1)^2)^0.5
