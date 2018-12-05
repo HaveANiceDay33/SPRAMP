@@ -42,7 +42,24 @@ public class Main extends HvlTemplateInteg2D{
 		super(60, 1440, 720, "Auto Mapping Client v3", new HvlDisplayModeDefault());
 	}
 	//testing github
-
+	public void generateData() {
+		ArrayList<Double> xVals = new ArrayList();
+		ArrayList<Double> yVals = new ArrayList();
+		for(int i = 0; i < waypoints.size(); i++) {
+			xVals.add((double) waypoints.get(i).x - (double)waypoints.get(0).x);
+			yVals.add(-((double) waypoints.get(i).y - (double)waypoints.get(0).y));
+		}
+		double[] xArray = new double[xVals.size()];
+		double[] yArray = new double[yVals.size()];
+		for(int i = 0; i < waypoints.size(); i++) {
+			xArray[i] = xVals.get(i);
+			yArray[i] = yVals.get(i);
+			System.out.println(xArray[i] + "\t" + yArray[i]);
+		}
+		PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
+		System.out.println(functionGen.toString());
+		
+	}
 	//Method for drawing text with an outline. Much more visually appealing
 	public static void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
 		gameFont.drawWord(text, x+1, y, outlineColor, size);
@@ -60,6 +77,7 @@ public class Main extends HvlTemplateInteg2D{
 		File loader = new File(userHomeFolder, fileName+"Loader.BOND");//creates new txt file with inputed name
 		BufferedWriter output = null;
 		BufferedWriter loaderOut = null;
+
 		try {
 			
 			output = new BufferedWriter(new FileWriter(profile));  
@@ -70,6 +88,8 @@ public class Main extends HvlTemplateInteg2D{
 				loaderOut.write((waypoints.get(i).x+83)+" "+(waypoints.get(i).y-197)+" "+waypoints.get(i).size + " " + "Color"+ " "+waypoints.get(i).type + " " +waypoints.get(i).action + " "+ waypoints.get(i).distance+" "+waypoints.get(i).angleOffset+" "+waypoints.get(i).origAngle+" "+waypoints.get(i).sizeX+ " "+waypoints.get(i).sizeY);//writes distance, angle, type, and action to text file
 				loaderOut.newLine();
 			}
+
+			/*
 			output.write((waypoints.get(0).x+83)+" "+(waypoints.get(0).y-197)+ " start null" );//writes starting coords
 			output.newLine();
 			for(int i = 1; i < waypoints.size(); i++) {
@@ -78,7 +98,8 @@ public class Main extends HvlTemplateInteg2D{
 			}
 			output.write("END END END END");
 					//MORE WRITING HERE
-		
+			*/
+			
 			output.close();
 			loaderOut.close();
 		} catch (Exception e) {
@@ -135,6 +156,7 @@ public class Main extends HvlTemplateInteg2D{
 	
 	@Override
 	public void initialize() {
+		
 		getTextureLoader().loadResource("field2018");//0 //
 		getTextureLoader().loadResource("osFont");//1					//TEXTURES
 		getTextureLoader().loadResource("robotFrame2");//2
@@ -370,7 +392,7 @@ public class Main extends HvlTemplateInteg2D{
 				}
 			
 				for(int i = 0; i < waypoints.size(); i++) {
-					textOutline((i+1)+". X: "+Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56)+" In. Y: "+Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56)+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
+					textOutline((i+1)+". X: "+(Math.round((((waypoints.get(i).x)-157+240)/0.4646)/2.56) - Math.round((((waypoints.get(0).x)-157+240)/0.4646)/2.56))+" In. Y: "+(Math.round((((waypoints.get(0).y)-135)/0.4646)/2.56) - Math.round((((waypoints.get(i).y)-135)/0.4646)/2.56))+" In.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
 
 					if(i > 0) {
 						//Simple distance formula : ((y2-y1)^2 + (x2-x1)^2)^0.5
@@ -524,7 +546,7 @@ public class Main extends HvlTemplateInteg2D{
 			
 			@Override
 			public void run(HvlButton a) {
-				profileSaver();
+				generateData();
 			}
 			
 			
