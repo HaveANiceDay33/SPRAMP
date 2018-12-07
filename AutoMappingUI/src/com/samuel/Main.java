@@ -42,7 +42,7 @@ public class Main extends HvlTemplateInteg2D{
 		super(60, 1440, 720, "Auto Mapping Client v3", new HvlDisplayModeDefault());
 	}
 	//testing github
-	public void generateData() {
+	public void generateGraphics() {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
 		if(waypoints.size() > 0) {
@@ -60,13 +60,41 @@ public class Main extends HvlTemplateInteg2D{
 	
 				//System.out.println(xArray[i] + "\t" + yArray[i]);
 			}
-			System.out.println("");
+			//System.out.println("");
 			PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
 			for(double i = xVals.get(0); i < xVals.get(xVals.size()-1); i++) {
 				double x = i;
 				double y = functionGen.predict(x);
-				hvlDrawQuad((float)x, (float)y, 2, 2, Color.red);
-				//System.out.print(x + "\t" + y + "\t");
+				hvlDrawQuad((float)x, (float)y, 2, 2, Color.red); 
+			}
+			//System.out.println(functionGen.toString());
+		}
+	}
+	public void generateData() {
+		ArrayList<Double> xVals = new ArrayList();
+		ArrayList<Double> yVals = new ArrayList();
+		if(waypoints.size() > 0) {
+			for(int i = 0; i < waypoints.size(); i++) {
+				xVals.add((double) (Math.round((((waypoints.get(i).x)-157+240)/0.47)) - Math.round((((waypoints.get(0).x)-157+240)/0.47)))); //returns cm
+				yVals.add(-((double) (Math.round((((waypoints.get(i).y)-135)/0.47)) - Math.round((((waypoints.get(0).y)-135)/0.47)))));
+				//xVals.add((double)waypoints.get(i).x);
+				//yVals.add((double)waypoints.get(i).y);
+			}
+			double[] xArray = new double[xVals.size()];
+			double[] yArray = new double[yVals.size()];
+			for(int i = 0; i < waypoints.size(); i++) {
+				xArray[i] = xVals.get(i);
+				yArray[i] = yVals.get(i);
+	
+				//System.out.println(xArray[i] + "\t" + yArray[i]);
+			}
+			//System.out.println("");
+			PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
+			for(double i = xVals.get(0); i < xVals.get(xVals.size()-1); i++) {
+				double x = i;
+				double y = functionGen.predict(x);
+				
+				System.out.println(x + "\t" + y + "\t");
 			}
 			//System.out.println(functionGen.toString());
 		}
@@ -505,7 +533,7 @@ public class Main extends HvlTemplateInteg2D{
 
 							}
 						}
-						generateData();
+						generateGraphics();
 					}
 				});
 				textOutline("Press Q to see controls", Color.cyan, Color.darkGray, 50, 50, 0.4f);
