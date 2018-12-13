@@ -29,7 +29,7 @@ public class Coordinates {
 						}
 
 						if(Main.waypoints.size()!=0) {
-							Main.textOutline("Coord "+(i+1)+": "+(Math.round((((Main.waypoints.get(i).x)-157+240)/0.4646)/2.56) - Math.round((((Main.waypoints.get(0).x)-157+240)/0.4646)/2.56))+" In.      "+(Math.round((((Main.waypoints.get(i).y)-135)/0.4646)/2.56) - Math.round((((Main.waypoints.get(0).y)-135)/0.4646)/2.56))+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + (Main.textY-20), 0.3f);
+							Main.textOutline("Coord "+(i+1)+": "+(Math.round((((Main.waypoints.get(i).x)+82)/0.4646)/2.54) - Math.round((((Main.waypoints.get(0).x)-157+240)/0.4646)/2.54))+" In.      "+(Math.round((((Main.waypoints.get(i).y)-135)/0.4646)/2.54) - Math.round((((Main.waypoints.get(0).y)-135)/0.4646)/2.54))+" In.", Color.cyan, Color.darkGray, 40, (40 *i) + (Main.textY-20), 0.3f);
 
 						}
 							

@@ -36,9 +36,9 @@ public class Waypoint {
 	public void display() {
 		hvlDrawQuadc(x, y, size, size, color);
 		
-		//hvlRotate(x,y, (float)origAngle);
-		//hvlDrawQuadc(x, y, sizeY, sizeX, Main.getTexture(2));
-		//hvlResetRotation();
+		hvlRotate(x,y, (float)origAngle);
+		hvlDrawQuadc(x, y, sizeY, sizeX, Main.getTexture(2));
+		hvlResetRotation();
 		
 		if(action.equals("shoot")) {
 			this.size += 0.5;
