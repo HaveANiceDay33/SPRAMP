@@ -7,22 +7,24 @@ import java.util.ArrayList;
 import org.newdawn.slick.Color;
 
 public class Segment{
-	ArrayList<Waypoint> points;
+	ArrayList<Waypoint> myPoints;
 	public Segment(ArrayList<Waypoint> points) {
-		this.points = points;
+		myPoints = new ArrayList<>();
+		for(int i = 0; i < points.size(); i++) {
+			myPoints.add(points.get(i));
+		}
 	}
 	public void draw() {
-		System.out.println(points.get(0).x);
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
-		if(this.points.size() > 0) {
-			for(int i = 0; i < this.points.size(); i++) {
-				xVals.add((double)this.points.get(i).x);
-				yVals.add((double)this.points.get(i).y);
+		if(myPoints.size() > 0) {
+			for(int i = 0; i < myPoints.size(); i++) {
+				xVals.add((double)myPoints.get(i).x);
+				yVals.add((double)myPoints.get(i).y);
 			}
 			double[] xArray = new double[xVals.size()];
 			double[] yArray = new double[yVals.size()];
-			for(int i = 0; i < this.points.size(); i++) {
+			for(int i = 0; i < myPoints.size(); i++) {
 				xArray[i] = xVals.get(i);
 				yArray[i] = yVals.get(i);
 			}

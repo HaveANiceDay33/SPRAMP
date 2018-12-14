@@ -367,7 +367,7 @@ public class Main extends HvlTemplateInteg2D{
 			public void run(HvlButton a) {
 				Segment newSegment = new Segment(tempWaypoints);
 				segments.add(newSegment);
-				//tempWaypoints.clear();
+				tempWaypoints.clear();
 			}
 		}).build());
 		UI.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Delete").setClickedCommand(new HvlAction1<HvlButton>() {
