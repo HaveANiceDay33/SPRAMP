@@ -178,12 +178,14 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
 
         // create remaining terms
         while (j >= 0) {
-            if      (j == 0) s.append(String.format("%.16f ", beta(j)));
-            else if (j == 1) s.append(String.format("%.16f %s + ", beta(j), variableName));
+            if (j == 0) {
+            	//s.append(String.format("%.16f ", beta(j)));
+            }
+            else if (j == 1) s.append(String.format("%.16f %s", beta(j), variableName));
             else             s.append(String.format("%.16f %s^%d + ", beta(j), variableName, j));
             j--;
         }
-        s = s.append("  (R^2 = " + String.format("%.3f", R2()) + ")");
+        //s = s.append("  (R^2 = " + String.format("%.3f", R2()) + ")");
 
         // replace "+ -2n" with "- 2n"
         return s.toString().replace("+ -", "- ");
