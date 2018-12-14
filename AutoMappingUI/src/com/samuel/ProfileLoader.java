@@ -34,56 +34,56 @@ public class ProfileLoader {
 		String type;
 		String action;
 		   try{
-		          FileInputStream fstream = new FileInputStream(userHomeFolder+fileName);
-		          System.out.println(fileName);
-		          DataInputStream in = new DataInputStream(fstream);
-		          BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		          String strLine;
+	          FileInputStream fstream = new FileInputStream(userHomeFolder+fileName);
+	          System.out.println(fileName);
+	          DataInputStream in = new DataInputStream(fstream);
+	          BufferedReader br = new BufferedReader(new InputStreamReader(in));
+	          String strLine;
 
-			      while ((strLine = br.readLine()) != null)   {
-			    	  info = strLine.split(" "); 
-			    	  x = Float.parseFloat(info[0])-83;
-			    	  y = Float.parseFloat(info[1])+197;
-			    	  size = Float.parseFloat(info[2]);
-			    	  color = Color.transparent;
-			    	  type = info[4];
-			    	  action = info[5];
-			    	  distance = Float.parseFloat(info[6]);
-			    	  angleOffset = Float.parseFloat(info[7]);
-			    	  origAngle = Float.parseFloat(info[8]);
-			    	  sizeX = Float.parseFloat(info[9]);
-			    	  sizeY  =Float.parseFloat(info[10]);
-			    	  if(type.equals("backwards")) {
-			    		  
-			    	  		if(action.equals("drive")) {
-			    	  			color = Color.red;
-			    	  		}else if(action.equals("shoot")) {
-			    	  			color = Color.yellow;
-			    	  		}else if(action.equals("intake")) {
-			    	  			color = Color.magenta;
-			    	  		}else if(action.equals("up")) {
-			    	  			color = Color.pink;
-			    	  		}else if(action.equals("down")) {
-			    	  			color = Color.blue;
-			    	  		}else if(action.equals("start")) {
-					    		color = Color.red;
-					    	}
-			    	  	}
-			    	  	if(type.equals("forward")) {
-			    	  	
-			    	  		if(action.equals("drive")) {
-			    	  			color = Color.green;
-			    	  		}else if(action.equals("shoot")) {
-			    	  			color = Color.yellow;
-			    	  		}else if(action.equals("intake")) {
-			    	  			color = Color.magenta;
-			    	  		}else if(action.equals("up")) {
-			    	  			color = Color.pink;
-			    	  		}else if(action.equals("down")) {
-			    	  			color = Color.blue;
-			    	  		}else if(action.equals("start")) {
-					    		color = Color.orange;
-					    	}
+		      while ((strLine = br.readLine()) != null)   {
+		    	  info = strLine.split(" "); 
+		    	  x = Float.parseFloat(info[0])-83;
+		    	  y = Float.parseFloat(info[1])+197;
+		    	  size = Float.parseFloat(info[2]);
+		    	  color = Color.transparent;
+		    	  type = info[4];
+		    	  action = info[5];
+		    	  distance = Float.parseFloat(info[6]);
+		    	  angleOffset = Float.parseFloat(info[7]);
+		    	  origAngle = Float.parseFloat(info[8]);
+		    	  sizeX = Float.parseFloat(info[9]);
+		    	  sizeY  =Float.parseFloat(info[10]);
+		    	  if(type.equals("backwards")) {
+		    		  
+		    	  		if(action.equals("drive")) {
+		    	  			color = Color.red;
+		    	  		}else if(action.equals("shoot")) {
+		    	  			color = Color.yellow;
+		    	  		}else if(action.equals("intake")) {
+		    	  			color = Color.magenta;
+		    	  		}else if(action.equals("up")) {
+		    	  			color = Color.pink;
+		    	  		}else if(action.equals("down")) {
+		    	  			color = Color.blue;
+		    	  		}else if(action.equals("start")) {
+				    		color = Color.red;
+				    	}
+		    	  	}
+		    	  	if(type.equals("forward")) {
+		    	  	
+		    	  		if(action.equals("drive")) {
+		    	  			color = Color.green;
+		    	  		}else if(action.equals("shoot")) {
+		    	  			color = Color.yellow;
+		    	  		}else if(action.equals("intake")) {
+		    	  			color = Color.magenta;
+		    	  		}else if(action.equals("up")) {
+		    	  			color = Color.pink;
+		    	  		}else if(action.equals("down")) {
+		    	  			color = Color.blue;
+		    	  		}else if(action.equals("start")) {
+				    		color = Color.orange;
+				    	}
 			    	  }
 			 
 			    	  if(type.equals("fowardnoAngle") || type.equals("backwardsnoAngle")) {
@@ -92,7 +92,7 @@ public class ProfileLoader {
 			    	  Waypoint waypoint = new Waypoint(x,y,size,color,type,action,distance, angleOffset, origAngle, sizeX, sizeY);//process record , etc
 
 			    	  if(!strLine.equals("")) {
-			    		  Main.waypoints.add(waypoint);
+			    		  Main.tempWaypoints.add(waypoint);
 			    	  }
 			    	  
 			    	  

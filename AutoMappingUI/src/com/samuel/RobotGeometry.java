@@ -96,7 +96,7 @@ public class RobotGeometry {
 			@Override
 			public void run(HvlButton a) {
 
-					Main.waypoints.clear();
+					Main.tempWaypoints.clear();
 					
 					FileDialog dialog = new FileDialog((Frame)null, "Select a .BOND file");
 					dialog.setMode(FileDialog.LOAD);
@@ -124,7 +124,7 @@ public class RobotGeometry {
 			@Override
 			public void run(HvlButton a) {
 
-					Main.waypoints.clear();
+					Main.tempWaypoints.clear();
 					
 					robotW = 35;
 					robotL = 45;
@@ -140,7 +140,7 @@ public class RobotGeometry {
 			@Override
 			public void run(HvlButton a) {
 
-					Main.waypoints.clear();
+					Main.tempWaypoints.clear();
 					
 					robotW = 42;
 					robotL = 36;
@@ -156,7 +156,7 @@ public class RobotGeometry {
 			@Override
 			public void run(HvlButton a) {
 
-					Main.waypoints.clear();
+					Main.tempWaypoints.clear();
 					
 					robotW = 34;
 					robotL = 46;
