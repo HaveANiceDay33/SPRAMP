@@ -88,7 +88,12 @@ public class Main extends HvlTemplateInteg2D{
 				yArray[i] = yVals.get(i);
 			}
 			PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
-			System.out.println(functionGen.toString());
+			System.out.println("y = " + functionGen.toString());
+			double[] coefficients = functionGen.coefficients();
+			for(int i = 0; i < 6; i++) {
+				double term = coefficients[i];
+				System.out.println("x^"+i + ": "+term);
+			}
 		}
 	}
 	

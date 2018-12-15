@@ -179,7 +179,7 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
         // create remaining terms
         while (j >= 0) {
             if (j == 0) {
-            	//s.append(String.format("%.16f ", beta(j)));
+            	//s.append(String.format("%.16f ", beta(j))); REMOVES y-intercept
             }
             else if (j == 1) s.append(String.format("%.16f %s", beta(j), variableName));
             else             s.append(String.format("%.16f %s^%d + ", beta(j), variableName, j));
@@ -189,6 +189,23 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
 
         // replace "+ -2n" with "- 2n"
         return s.toString().replace("+ -", "- ");
+    }
+    public double[] coefficients() {
+    	double[]coefficients = new double[6];
+    	int j = degree;
+    	coefficients[0] = 0; //x^0
+    	coefficients[1] = 0; //x^1
+    	coefficients[2] = 0; //x^2
+    	coefficients[3] = 0; //x^3
+    	coefficients[4] = 0; //x^4
+    	coefficients[5] = 0; //x^5
+    	
+    	while(j >= 1) {
+    		coefficients[j] = beta(j);
+    		j--;
+    	}
+    	
+    	return coefficients;
     }
 
    /**
