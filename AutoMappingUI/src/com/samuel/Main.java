@@ -42,7 +42,16 @@ public class Main extends HvlTemplateInteg2D{
 		super(60, 1440, 720, "Auto Mapping Client v3", new HvlDisplayModeDefault());
 	}
 	//testing github
-	
+	public String functionGenerator(String equalTo, double[] coeffArray) {
+		StringBuilder s = new StringBuilder();
+		s.append(equalTo + " = ");
+		for(int i = coeffArray.length-1; i >= 0; i--) {
+			if(coeffArray[i] != 0) {
+				s.append(String.format("%.16f %s^%d " + (i==0 ? "" : "+") + " ", coeffArray[i], "x", i));
+			}
+		}
+		return s.toString().replace("+ -", "- ");
+	}
 	public static void generateGraphics(ArrayList<Waypoint> waypoints, Color lineColor) {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
@@ -88,12 +97,31 @@ public class Main extends HvlTemplateInteg2D{
 				yArray[i] = yVals.get(i);
 			}
 			PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
-			System.out.println("y = " + functionGen.toString());
+			
+			System.out.println("POSITION:");
 			double[] coefficients = functionGen.coefficients();
-			for(int i = 0; i < 6; i++) {
+			for(int i = 0; i < functionGen.degree()+1; i++) {
 				double term = coefficients[i];
 				System.out.println("x^"+i + ": "+term);
 			}
+			System.out.println("y(x) = " + functionGen.toString() + "\n");
+			//calculating derivative coefficients
+			System.out.println("VELOCITY:");
+			double[] deriCoeff = new double[5];
+			for(int i = 0; i < functionGen.degree(); i++) { //only goes to 4th degree to prevent index out of range... if there is an x^5 term it will get dropped anyway with power rule derivatives
+				deriCoeff[i] = coefficients[i+1] * (i+1); //Power rule differentiation... for example: the first index(i = 0) of the derivative array gets populated by the 2nd index of the initial coefficient array, times 1 (the exponent on x)
+				double term = deriCoeff[i];
+				System.out.println("x^"+i + ": "+term);									 
+			}
+			System.out.println(functionGenerator("v(x)", deriCoeff) + "\n");
+			System.out.println("ACCELERATION:");
+			double[] secDeriCoeff = new double[4];
+			for(int i = 0; i < functionGen.degree()-1; i++) { //only goes to 3rd degree to prevent index out of range... if there is an x^4 term it will get dropped anyway with power rule derivatives
+				secDeriCoeff[i] = deriCoeff[i+1] * (i+1); 
+				double term = secDeriCoeff[i];
+				System.out.println("x^"+i + ": "+term);									 
+			}
+			System.out.println(functionGenerator("a(x)", secDeriCoeff));
 		}
 	}
 	
