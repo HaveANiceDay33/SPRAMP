@@ -82,6 +82,9 @@ public class Main extends HvlTemplateInteg2D{
 			}
 		}
 	}
+	public double generateRadii(double TwoDer, double OneDer) {
+		return 1/((Math.abs(TwoDer))/(Math.pow(1+(OneDer*OneDer), 1.5)));
+	}
 	public void generateData(ArrayList<Waypoint> waypoints) {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
@@ -178,7 +181,7 @@ public class Main extends HvlTemplateInteg2D{
 	
 	@Override
 	public void initialize() {
-		
+		System.out.println(generateRadii(3, 0.75));
 		getTextureLoader().loadResource("field2018");//0 //
 		getTextureLoader().loadResource("osFont");//1					//TEXTURES
 		getTextureLoader().loadResource("robotFrame2");//2
