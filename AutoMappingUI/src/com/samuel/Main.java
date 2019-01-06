@@ -82,8 +82,24 @@ public class Main extends HvlTemplateInteg2D{
 			}
 		}
 	}
-	public double generateRadii(double TwoDer, double OneDer) {
-		return 1/((Math.abs(TwoDer))/(Math.pow(1+(OneDer*OneDer), 1.5)));
+	public double generateRadiusAtAPoint(double [] coeffs, int degree, float x) {
+		double TwoDer; 
+		double OneDer;
+		double[] coefficients = coeffs;
+		//calculating derivative coefficients
+		double[] deriCoeff = new double[5];
+		for(int i = 0; i < degree; i++) { //only goes to 4th degree to prevent index out of range... if there is an x^5 term it will get dropped anyway with power rule derivatives
+			deriCoeff[i] = coefficients[i+1] * (i+1); //Power rule differentiation... for example: the first index(i = 0) of the derivative array gets populated by the 2nd index of the initial coefficient array, times 1 (the exponent on x)							 
+		}
+		double[] secDeriCoeff = new double[4];
+		for(int i = 0; i < degree-1; i++) { //only goes to 3rd degree to prevent index out of range... if there is an x^4 term it will get dropped anyway with power rule derivatives
+			secDeriCoeff[i] = deriCoeff[i+1] * (i+1); 							 
+		}
+		OneDer = (deriCoeff[4]*Math.pow(x, 4))+(deriCoeff[3]*Math.pow(x, 3))+(deriCoeff[2]*Math.pow(x, 2))+(deriCoeff[1]*Math.pow(x, 1))+(deriCoeff[0]*Math.pow(x, 0));
+		System.out.println("First Derivative: " + OneDer);
+		TwoDer = (secDeriCoeff[3]*Math.pow(x, 3))+(secDeriCoeff[2]*Math.pow(x, 2))+(secDeriCoeff[1]*Math.pow(x, 1))+(secDeriCoeff[0]*Math.pow(x, 0));
+		System.out.println("Second Derivative: " + TwoDer);
+		return 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
 	}
 	public void generateData(ArrayList<Waypoint> waypoints) {
 		ArrayList<Double> xVals = new ArrayList();
@@ -125,6 +141,7 @@ public class Main extends HvlTemplateInteg2D{
 				System.out.println("x^"+i + ": "+term);									 
 			}
 			System.out.println(functionGenerator("a(x)", secDeriCoeff));
+			System.out.println("Radius: "+generateRadiusAtAPoint(coefficients, functionGen.degree(),200));
 		}
 	}
 	
@@ -181,7 +198,6 @@ public class Main extends HvlTemplateInteg2D{
 	
 	@Override
 	public void initialize() {
-		System.out.println(generateRadii(3, 0.75));
 		getTextureLoader().loadResource("field2018");//0 //
 		getTextureLoader().loadResource("osFont");//1					//TEXTURES
 		getTextureLoader().loadResource("robotFrame2");//2
