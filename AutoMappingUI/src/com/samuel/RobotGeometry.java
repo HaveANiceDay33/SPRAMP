@@ -31,8 +31,7 @@ public class RobotGeometry {
 
 		Geo = new HvlMenu() {
 			public void draw(float delta) {
-				Main.textOutline("              Welcome to HavaANiceDay's Auto Mapping Client Application! \nKeep in mind that this is under constant development. Not everything is stable : " ,Color.cyan, Color.darkGray,60,30, 0.4f);
-				Main.textOutline(")",Color.cyan, Color.darkGray,1345,70, 0.4f);
+				Main.textOutline("              Welcome to HavaANiceDay's Auto Mapping Client Application! \n\n2019 FIELD IS THE ONLY ONE THAT IS ACCURATELY MEASURED AND SCALED!!!    : )" ,Color.cyan, Color.darkGray,60,30, 0.4f);
 				Main.textOutline("Set robot width and length :",Color.cyan, Color.darkGray,550,220, 0.3f);
 				Main.textOutline("Width : ",Color.cyan, Color.darkGray,470,280, 0.4f);
 				Main.textOutline("Length : ",Color.cyan, Color.darkGray,470,360, 0.4f);
@@ -81,7 +80,7 @@ public class RobotGeometry {
 					robotW = Float.parseFloat(Geo.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText());
 					robotL = Float.parseFloat(Geo.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText());
 					Main.UI.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
-					Main.background = 0;
+					Main.background = 5;
 					HvlMenu.setCurrent(Main.UI);
 				}
 	
@@ -119,7 +118,7 @@ public class RobotGeometry {
 		}).build());
 		
 		Geo.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)+400).setY((Display.getHeight()/2)-185).build());
-		Geo.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("Use Spectre").setWidth(200). setClickedCommand(new HvlAction1<HvlButton>() {
+		Geo.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("2016 (obsolete)").setWidth(200). setClickedCommand(new HvlAction1<HvlButton>() {
 			
 			@Override
 			public void run(HvlButton a) {
@@ -135,7 +134,7 @@ public class RobotGeometry {
 		
 		Geo.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(70, 30));
 
-		Geo.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("Use Skyfall").setWidth(200). setClickedCommand(new HvlAction1<HvlButton>() {
+		Geo.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("2017 (obsolete)").setWidth(200). setClickedCommand(new HvlAction1<HvlButton>() {
 			
 			@Override
 			public void run(HvlButton a) {
@@ -151,7 +150,7 @@ public class RobotGeometry {
 		
 		Geo.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(70, 30));
 		
-		Geo.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("Use GoldenEye").setWidth(200). setClickedCommand(new HvlAction1<HvlButton>() {
+		Geo.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("2018 (obsolete)").setWidth(200). setClickedCommand(new HvlAction1<HvlButton>() {
 			
 			@Override
 			public void run(HvlButton a) {
@@ -161,6 +160,21 @@ public class RobotGeometry {
 					robotW = 34;
 					robotL = 46;
 					Main.background = 0;
+					HvlMenu.setCurrent(Main.UI);
+			}
+		}).build());
+		
+		Geo.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(70, 30));
+		Geo.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("2019").setWidth(200).setClickedCommand(new HvlAction1<HvlButton>() {
+			
+			@Override
+			public void run(HvlButton a) {
+
+					Main.tempWaypoints.clear();
+					
+					robotW = 34;
+					robotL = 46;
+					Main.background = 5;
 					HvlMenu.setCurrent(Main.UI);
 			}
 		}).build());

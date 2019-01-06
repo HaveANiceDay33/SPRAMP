@@ -96,9 +96,9 @@ public class Main extends HvlTemplateInteg2D{
 			secDeriCoeff[i] = deriCoeff[i+1] * (i+1); 							 
 		}
 		OneDer = (deriCoeff[4]*Math.pow(x, 4))+(deriCoeff[3]*Math.pow(x, 3))+(deriCoeff[2]*Math.pow(x, 2))+(deriCoeff[1]*Math.pow(x, 1))+(deriCoeff[0]*Math.pow(x, 0));
-		System.out.println("First Derivative: " + OneDer);
+		//System.out.println("First Derivative: " + OneDer);
 		TwoDer = (secDeriCoeff[3]*Math.pow(x, 3))+(secDeriCoeff[2]*Math.pow(x, 2))+(secDeriCoeff[1]*Math.pow(x, 1))+(secDeriCoeff[0]*Math.pow(x, 0));
-		System.out.println("Second Derivative: " + TwoDer);
+		//System.out.println("Second Derivative: " + TwoDer);
 		return 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
 	}
 	public void generateData(ArrayList<Waypoint> waypoints) {
@@ -141,7 +141,18 @@ public class Main extends HvlTemplateInteg2D{
 				System.out.println("x^"+i + ": "+term);									 
 			}
 			System.out.println(functionGenerator("a(x)", secDeriCoeff));
-			System.out.println("Radius: "+generateRadiusAtAPoint(coefficients, functionGen.degree(),200));
+			if(xVals.get(xVals.size()-1) < xVals.get(0)) {
+				for(double i = xVals.get(0); i > xVals.get(xVals.size()-1); i--) {
+					double x = i;
+					System.out.println("Radius at "+i+": "+generateRadiusAtAPoint(coefficients, functionGen.degree(),(float) x));
+				}
+			}else {
+				for(double i = xVals.get(0); i < xVals.get(xVals.size()-1); i++) {
+					double x = i;
+					System.out.println("Radius at "+i+": "+generateRadiusAtAPoint(coefficients, functionGen.degree(),(float) x));
+				}
+			}
+			
 		}
 	}
 	
@@ -194,7 +205,7 @@ public class Main extends HvlTemplateInteg2D{
 	static ArrayList<Waypoint> tempWaypoints;
 	static ArrayList<Segment> segments;
 
-	public final static float WALL_OFFSET = 82;
+	public final static float WALL_OFFSET = 92;
 	
 	@Override
 	public void initialize() {
@@ -203,12 +214,13 @@ public class Main extends HvlTemplateInteg2D{
 		getTextureLoader().loadResource("robotFrame2");//2
 		getTextureLoader().loadResource("2016field");//3
 		getTextureLoader().loadResource("2017field");//4
+		getTextureLoader().loadResource("2019field");//5
 		zoom = 1;
 		gameFont =  new HvlFontPainter2D(getTexture(1), HvlFontPainter2D.Preset.FP_INOFFICIAL,.5f,8f,0); //font definition
 		zoomer = new HvlCamera2D(540, 360, 0, zoom, HvlCamera2D.ALIGNMENT_CENTER); //Camera definition
 		numPoints = 0;
-		picSizeX = 1080;
-		picSizeY = 720;
+		picSizeX = 928;
+		picSizeY = 464;
 		xPos = 540;
 		yPos = 360;
 		screenOffset = 720; //has to be half of screen width
