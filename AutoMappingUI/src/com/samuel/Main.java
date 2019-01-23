@@ -41,6 +41,8 @@ public class Main extends HvlTemplateInteg2D{
 	public Main(){
 		super(60, 1440, 720, "Auto Mapping Client v3", new HvlDisplayModeDefault());
 	}
+	
+	static String userHomeFolder = System.getProperty("user.home")+"/Documents/";
 	//testing github
 	public String functionGenerator(String equalTo, double[] coeffArray) {
 		StringBuilder s = new StringBuilder();
@@ -101,7 +103,7 @@ public class Main extends HvlTemplateInteg2D{
 		//System.out.println("Second Derivative: " + TwoDer);
 		return 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
 	}
-	public void generateData(ArrayList<Waypoint> waypoints) {
+	public double[] generateData(ArrayList<Waypoint> waypoints) {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
 		if(waypoints.size() > 0) {
@@ -141,6 +143,8 @@ public class Main extends HvlTemplateInteg2D{
 				System.out.println("x^"+i + ": "+term);									 
 			}
 			System.out.println(functionGenerator("a(x)", secDeriCoeff));
+			System.out.println("\n");
+			/*
 			if(xVals.get(xVals.size()-1) < xVals.get(0)) {
 				for(double i = xVals.get(0); i > xVals.get(xVals.size()-1); i--) {
 					double x = i;
@@ -152,8 +156,10 @@ public class Main extends HvlTemplateInteg2D{
 					System.out.println("Radius at "+i+": "+generateRadiusAtAPoint(coefficients, functionGen.degree(),(float) x));
 				}
 			}
-			
+			*/
+			return coefficients;
 		}
+		return null;
 	}
 	
 	//Method for drawing text with an outline. Much more visually appealing
@@ -466,7 +472,7 @@ public class Main extends HvlTemplateInteg2D{
 				int segNum = 1;
 				for(Segment segment : segments) {
 					System.out.print(segNum + ": ");
-					generateData(segment.myPoints);
+					GenerateVoltages.runVirtualPath(generateData(segment.myPoints));
 					System.out.println("");
 					segNum++;
 				}
