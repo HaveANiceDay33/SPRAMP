@@ -84,25 +84,39 @@ public class Main extends HvlTemplateInteg2D{
 			}
 		}
 	}
+	
+	
+	
+	/**
+	 * <p>Returns the radius of a circle tangent to the curve at any given point.
+	 * Necessary for voltage calculations</p>
+	 * @param coeffs
+	 * @param degree
+	 * @param x
+	 * @return
+	 */
 	public double generateRadiusAtAPoint(double [] coeffs, int degree, float x) {
 		double TwoDer; 
 		double OneDer;
 		double[] coefficients = coeffs;
 		//calculating derivative coefficients
 		double[] deriCoeff = new double[5];
-		for(int i = 0; i < degree; i++) { //only goes to 4th degree to prevent index out of range... if there is an x^5 term it will get dropped anyway with power rule derivatives
-			deriCoeff[i] = coefficients[i+1] * (i+1); //Power rule differentiation... for example: the first index(i = 0) of the derivative array gets populated by the 2nd index of the initial coefficient array, times 1 (the exponent on x)							 
+		for(int i = 0; i < degree; i++) {
+			deriCoeff[i] = coefficients[i+1] * (i+1); 								  
 		}
 		double[] secDeriCoeff = new double[4];
-		for(int i = 0; i < degree-1; i++) { //only goes to 3rd degree to prevent index out of range... if there is an x^4 term it will get dropped anyway with power rule derivatives
+		for(int i = 0; i < degree-1; i++) {
 			secDeriCoeff[i] = deriCoeff[i+1] * (i+1); 							 
 		}
-		OneDer = (deriCoeff[4]*Math.pow(x, 4))+(deriCoeff[3]*Math.pow(x, 3))+(deriCoeff[2]*Math.pow(x, 2))+(deriCoeff[1]*Math.pow(x, 1))+(deriCoeff[0]*Math.pow(x, 0));
-		//System.out.println("First Derivative: " + OneDer);
-		TwoDer = (secDeriCoeff[3]*Math.pow(x, 3))+(secDeriCoeff[2]*Math.pow(x, 2))+(secDeriCoeff[1]*Math.pow(x, 1))+(secDeriCoeff[0]*Math.pow(x, 0));
-		//System.out.println("Second Derivative: " + TwoDer);
-		return 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
+		//calculates first and second derivatives at given point.
+		OneDer = (deriCoeff[4]*Math.pow(x, 4))+(deriCoeff[3]*Math.pow(x, 3))+
+				(deriCoeff[2]*Math.pow(x, 2))+(deriCoeff[1]*Math.pow(x, 1))+(deriCoeff[0]*Math.pow(x, 0));
+		TwoDer = (secDeriCoeff[3]*Math.pow(x, 3))+(secDeriCoeff[2]*Math.pow(x, 2))+
+				(secDeriCoeff[1]*Math.pow(x, 1))+(secDeriCoeff[0]*Math.pow(x, 0));
+		//returns radius with gross formula. 
+		return 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5))); 
 	}
+	
 	public double[] generateData(ArrayList<Waypoint> waypoints) {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();

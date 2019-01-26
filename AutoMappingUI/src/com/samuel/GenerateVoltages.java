@@ -41,19 +41,28 @@ public class GenerateVoltages {
 	static double k1 = 2/wheelBaseWidth;
 	static double k2 = wheelBaseWidth*mass/(2*moi);
 	
-	public static double solveChassisDynamics(double rPath, double vel, double acc, boolean left) { // this should return a two quantity object (drivebaseState) or something like that, but again, for now... no 
+	
+	/**
+	 * <p>Returns voltages for left or right drive side with some gross physics. 
+	 * One of the values printed to the *.BOND output file.</p>
+	 * @param rPath
+	 * @param vel
+	 * @param acc
+	 * @param left
+	 * @return
+	 */
+	public static double solveChassisDynamics(double rPath, double vel, double acc, boolean left) {
 		if(left) {
-			//System.out.println("Target left wheel velocity: " + vel*(k1*rPath-1)/(k1*rPath) + " Target left wheel force: " + (mass*acc*(k2*rPath - 1))/(2*k2*rPath));
 			return voltsForMotion(
 				vel*(k1*rPath-1)/(k1*rPath),
 				(mass*acc*(k2*rPath - 1))/(2*k2*rPath));
 		}else{
-			//System.out.println("Target right wheel velocity: " + vel*(k1*rPath+1)/(k1*rPath) + " Target right wheel force: " + (mass*acc*(k2*rPath + 1))/(2*k2*rPath));
 			return voltsForMotion(
 				vel*(k1*rPath+1)/(k1*rPath),
 				(mass*acc*(k2*rPath + 1))/(2*k2*rPath));
 		}
 	}
+	
 	static double k3 = wheelBaseWidth*mass/2;
 	static double Ts = 60.0; // Tune me!
 	public static double solveScrubbyChassisDynamics( double rPath, double vel, double acc, double angVel, boolean left ){
