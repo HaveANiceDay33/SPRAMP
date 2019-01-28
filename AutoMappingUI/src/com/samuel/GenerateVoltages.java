@@ -20,8 +20,7 @@ public class GenerateVoltages {
 	static double g = 10.71; // gear reduction (g:1)
 	static int nMotors = 2; //number of motors in a gearbox
 	
-	static double pathRadius = 2; //6.1516;//0.4064; // m
-	static double radialDistance;// m   //Target distance to travel
+	static double pathRadius = 0; //6.1516;//0.4064; // m
 	static double velMax = 2.0; 	// m/s
 	static double accMax = 2.0; // m/s^2
 	static double angVelMax = 2.0; // rad/s
@@ -80,6 +79,7 @@ public class GenerateVoltages {
 					//(mass*acc*(k2*rPath + 1))/(2*k2*rPath));
 		}
 	}
+	
 	static double time, pos, vel, acc, ang, angVel, angAcc, voltRight, voltLeft;
 	static String fileName;
 	public static void runVirtualPath(double [] coeffs) {
@@ -96,6 +96,7 @@ public class GenerateVoltages {
 		
 		System.out.println("Pre simulation update. Time: " + time);
 		// Unify constraints from user specified path following constants
+		/*
 		if(angVelMax < velMax / pathRadius) { //Velocity 
 			velMax = angVelMax * pathRadius; 
 			System.out.println("Maximum Velocity adjusted to: " + velMax);
@@ -105,21 +106,24 @@ public class GenerateVoltages {
 			accMax = angAccMax * pathRadius; 
 			System.out.println("Maximum Acceleration adjusted to: " + accMax);
 		}
+		*/
 		System.out.println("Max Acceleration: " + accMax);
 		
 		System.out.println("Beginning profile generation...");
 		System.out.println("Accelerating...");
+		
 		while(vel < velMax) { // solve entire acceleration portion, may not use all of these points
 			acc = accMax; 
 			vel = vel + acc*dt;
-			pos = pos + vel*dt;
-			
-			angAcc = angAccMax*Math.signum(pathRadius); //accounts for direction of curvature
+			pos = pos + vel*Math.sin(ang)*dt;
 			angVel = angVel + angAcc*dt;
 			ang = ang + angVel*dt;
-			//pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, x);
+			angAcc = angAccMax*Math.signum(pathRadius);
+			pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, (float) pos);	
+			
 			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
+			
 			try {
 				fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " + String.format("%.4f", vel) + " " + String.format("%.4f", angVel));
 				fileWriter.newLine();
@@ -127,15 +131,23 @@ public class GenerateVoltages {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 			index++;
 			time += dt;
 		}
 		System.out.println("Max velocity reached.");
 		
-		while(time < 2.5) {
-			//pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, x);
+		while(time < 14) {
+			
+			pos = pos + vel*Math.sin(ang)*dt;
+			System.out.println(pos);
+			
+			pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, (float)pos);
+			
 			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, true);
 			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, false);
+		 
+			
 			try {
 				fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " + String.format("%.4f", vel) + " " + String.format("%.4f", angVel));
 				fileWriter.newLine();
@@ -151,15 +163,14 @@ public class GenerateVoltages {
 		while(vel > 0) { // solve entire acceleration portion, may not use all of these points
 			acc = accMax; 
 			vel = vel - acc*dt;
-			pos = pos - vel*dt;
-			
-			angAcc = angAccMax*Math.signum(pathRadius); //accounts for direction of curvature
-			angVel = angVel - angAcc*dt;
+			pos = pos + vel*Math.sin(ang)*dt;
 			ang = ang + angVel*dt;
-			//pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, x);
+			angVel = angVel - angAcc*dt;
+			pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, (float)pos);
 			
 			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
+		
 			
 			try {
 				fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " + String.format("%.4f", vel) + " " + String.format("%.4f", angVel));

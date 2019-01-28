@@ -68,6 +68,9 @@ public class Main extends HvlTemplateInteg2D{
 				xArray[i] = xVals.get(i);
 				yArray[i] = yVals.get(i);
 			}
+			
+			float mouseX = HvlCursor.getCursorX() - (2*WALL_OFFSET);
+			
 			PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
 			if(xVals.get(xVals.size()-1) < xVals.get(0)) {
 				for(double i = xVals.get(0); i > xVals.get(xVals.size()-1); i--) {
@@ -82,6 +85,7 @@ public class Main extends HvlTemplateInteg2D{
 					hvlDrawQuad((float)x, (float)y, 2, 2, lineColor); 
 				}
 			}
+			hvlDrawQuadc(mouseX, (float)functionGen.predict(mouseX), 60, 60, getTexture(6));
 		}
 	}
 	
@@ -95,7 +99,7 @@ public class Main extends HvlTemplateInteg2D{
 	 * @param x
 	 * @return
 	 */
-	public double generateRadiusAtAPoint(double [] coeffs, int degree, float x) {
+	public static double generateRadiusAtAPoint(double [] coeffs, int degree, float x) {
 		double TwoDer; 
 		double OneDer;
 		double[] coefficients = coeffs;
@@ -114,7 +118,9 @@ public class Main extends HvlTemplateInteg2D{
 		TwoDer = (secDeriCoeff[3]*Math.pow(x, 3))+(secDeriCoeff[2]*Math.pow(x, 2))+
 				(secDeriCoeff[1]*Math.pow(x, 1))+(secDeriCoeff[0]*Math.pow(x, 0));
 		//returns radius with gross formula. 
-		return 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5))); 
+		double radCm = 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
+		
+		return radCm/100;
 	}
 	
 	public double[] generateData(ArrayList<Waypoint> waypoints) {
@@ -158,19 +164,7 @@ public class Main extends HvlTemplateInteg2D{
 			}
 			System.out.println(functionGenerator("a(x)", secDeriCoeff));
 			System.out.println("\n");
-			/*
-			if(xVals.get(xVals.size()-1) < xVals.get(0)) {
-				for(double i = xVals.get(0); i > xVals.get(xVals.size()-1); i--) {
-					double x = i;
-					System.out.println("Radius at "+i+": "+generateRadiusAtAPoint(coefficients, functionGen.degree(),(float) x));
-				}
-			}else {
-				for(double i = xVals.get(0); i < xVals.get(xVals.size()-1); i++) {
-					double x = i;
-					System.out.println("Radius at "+i+": "+generateRadiusAtAPoint(coefficients, functionGen.degree(),(float) x));
-				}
-			}
-			*/
+			
 			return coefficients;
 		}
 		return null;
@@ -235,6 +229,7 @@ public class Main extends HvlTemplateInteg2D{
 		getTextureLoader().loadResource("2016field");//3
 		getTextureLoader().loadResource("2017field");//4
 		getTextureLoader().loadResource("2019field");//5
+		getTextureLoader().loadResource("circle");//6
 		zoom = 1;
 		gameFont =  new HvlFontPainter2D(getTexture(1), HvlFontPainter2D.Preset.FP_INOFFICIAL,.5f,8f,0); //font definition
 		zoomer = new HvlCamera2D(540, 360, 0, zoom, HvlCamera2D.ALIGNMENT_CENTER); //Camera definition
