@@ -85,7 +85,9 @@ public class Main extends HvlTemplateInteg2D{
 					hvlDrawQuad((float)x, (float)y, 2, 2, lineColor); 
 				}
 			}
-			hvlDrawQuadc(mouseX, (float)functionGen.predict(mouseX), 60, 60, getTexture(6));
+			float size = (float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
+			System.out.println(size);
+			hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))+(size), size*2, size*2, getTexture(6));
 		}
 	}
 	
@@ -120,7 +122,7 @@ public class Main extends HvlTemplateInteg2D{
 		//returns radius with gross formula. 
 		double radCm = 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
 		
-		return radCm/100;
+		return radCm;
 	}
 	
 	public double[] generateData(ArrayList<Waypoint> waypoints) {
