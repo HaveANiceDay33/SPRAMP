@@ -85,9 +85,9 @@ public class Main extends HvlTemplateInteg2D{
 					hvlDrawQuad((float)x, (float)y, 2, 2, lineColor); 
 				}
 			}
-			float size = (float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
-			System.out.println(size);
-			hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))+(size), size*2, size*2, getTexture(6));
+			float size = 100*(float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
+			//System.out.println(size/0.56/100);
+			hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))-(size), size*2, size*2, getTexture(6));
 		}
 	}
 	
@@ -122,7 +122,7 @@ public class Main extends HvlTemplateInteg2D{
 		//returns radius with gross formula. 
 		double radCm = 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
 		
-		return radCm;
+		return -radCm/100;
 	}
 	
 	public double[] generateData(ArrayList<Waypoint> waypoints) {
@@ -147,6 +147,9 @@ public class Main extends HvlTemplateInteg2D{
 				double term = coefficients[i];
 				System.out.println("x^"+i + ": "+term);
 			}
+			
+			
+			/*
 			System.out.println("y(x) = " + functionGen.toString() + "\n");
 			//calculating derivative coefficients
 			System.out.println("VELOCITY:");
@@ -166,7 +169,7 @@ public class Main extends HvlTemplateInteg2D{
 			}
 			System.out.println(functionGenerator("a(x)", secDeriCoeff));
 			System.out.println("\n");
-			
+			*/
 			return coefficients;
 		}
 		return null;
