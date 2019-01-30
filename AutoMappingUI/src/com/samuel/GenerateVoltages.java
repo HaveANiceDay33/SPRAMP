@@ -98,8 +98,6 @@ public class GenerateVoltages {
 		
 		double targetTime = (arcL/velMax) + accelTime + decelTime;
 		
-		System.out.println(targetTime);
-		
 		fileName = Main.UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
 		File outputFile = new File(Main.userHomeFolder, fileName + ".BOND");
 		
