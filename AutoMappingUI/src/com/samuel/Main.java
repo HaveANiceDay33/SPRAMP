@@ -165,8 +165,7 @@ public class Main extends HvlTemplateInteg2D{
 			}
 			System.out.println("y(x) = " + functionGen.toString() + "\n");
 			double finalX = xVals.get(xVals.size()-1);
-			
-			double step = 0.1; //in CM, lower to get more precise
+			double step = 0.001; //in CM, lower to get more precise
 
 			//Riemann sum!
 			for(double i = step; i < finalX; i+=step) {

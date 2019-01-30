@@ -94,6 +94,8 @@ public class GenerateVoltages {
 		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2);
 		double decelDistance = 0.5*accMax*Math.pow((decelTime), 2);
 		
+		System.out.println("Total drive distance: " + arcL);
+		
 		arcL -= (accelDistance + decelDistance);
 		
 		double targetTime = (arcL/velMax) + accelTime + decelTime;
@@ -110,7 +112,7 @@ public class GenerateVoltages {
 		System.out.println("Pre simulation update. Time: " + time);
 		// Unify constraints from user specified path following constants
 	
-	
+		
 		
 		System.out.println("Max Acceleration: " + accMax);
 		
