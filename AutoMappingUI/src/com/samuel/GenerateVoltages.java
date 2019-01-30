@@ -88,7 +88,17 @@ public class GenerateVoltages {
 	public static void runVirtualPath(double [] coeffs, double arcL) {
 		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = 0.0;
 		
-		double targetTime = Math.sqrt((2*arcL)/accMax);
+		double accelTime = velMax/accMax;
+		double decelTime = velMax/accMax;
+		
+		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2);
+		double decelDistance = 0.5*accMax*Math.pow((decelTime), 2);
+		
+		arcL -= (accelDistance + decelDistance);
+		
+		double targetTime = (arcL/velMax) + accelTime + decelTime;
+		
+		System.out.println(targetTime);
 		
 		fileName = Main.UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
 		File outputFile = new File(Main.userHomeFolder, fileName + ".BOND");
@@ -109,7 +119,7 @@ public class GenerateVoltages {
 		System.out.println("Beginning profile generation...");
 		System.out.println("Accelerating...");
 		
-		while(vel < velMax) { 
+		while(time < accelTime) { 
 			if(angVelMax < velMax / pathRadius) { //Velocity 
 				velMax = angVelMax * pathRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);
@@ -144,7 +154,7 @@ public class GenerateVoltages {
 		}
 		System.out.println("Max velocity reached.");
 		
-		while(time < targetTime - 1) {
+		while(time < targetTime - decelTime) {
 			if(angVelMax < velMax / pathRadius) { //Velocity 
 				velMax = angVelMax * pathRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);
@@ -174,7 +184,7 @@ public class GenerateVoltages {
 			time += dt;
 		}
 		System.out.println("Decelerating...");
-		while(vel > 0) {
+		while(time < targetTime) {
 			if(angVelMax < velMax / pathRadius) { //Velocity 
 				velMax = angVelMax * pathRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);

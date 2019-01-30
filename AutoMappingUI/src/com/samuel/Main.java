@@ -89,8 +89,10 @@ public class Main extends HvlTemplateInteg2D{
 				}
 			}
 			float size = 100*(float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
-			//System.out.println(size/0.56/100);
-			hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))-(size), size*2, size*2, getTexture(6));
+			if(Math.abs(size) < 1000) {
+				hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))-(size), size*2, size*2, getTexture(6));
+			}
+			
 		}
 	}
 	
@@ -164,22 +166,27 @@ public class Main extends HvlTemplateInteg2D{
 			System.out.println("y(x) = " + functionGen.toString() + "\n");
 			double finalX = xVals.get(xVals.size()-1);
 			
-			double OneDer, OneDerZero;
-			//calculates first and second derivatives at given point.
-			OneDer = (deriCoeff[4]*Math.pow(finalX, 4))+(deriCoeff[3]*Math.pow(finalX, 3))+
-					(deriCoeff[2]*Math.pow(finalX, 2))+(deriCoeff[1]*Math.pow(finalX, 1))+(deriCoeff[0]*Math.pow(finalX, 0));
-			OneDerZero = (deriCoeff[4]*Math.pow(0, 4))+(deriCoeff[3]*Math.pow(0, 3))+
-					(deriCoeff[2]*Math.pow(0, 2))+(deriCoeff[1]*Math.pow(0, 1))+(deriCoeff[0]*Math.pow(0, 0));
-			System.out.println(OneDer);
-			arcLength = ((Math.log((Math.sqrt(Math.pow(OneDer, 2) + 1)+OneDer)))/2 + (OneDer*(Math.sqrt(Math.pow(OneDer, 2)+1)))/2) - 
-					((Math.log((Math.sqrt(Math.pow(OneDerZero, 2) + 1)+OneDerZero)))/2 + (OneDerZero*Math.sqrt(Math.pow(OneDerZero, 2)+1))/2);
-			System.out.println(arcLength);
+			double step = 0.1; //in CM, lower to get more precise
+
+			//Riemann sum!
+			for(double i = step; i < finalX; i+=step) {
+				
+				double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i, 4)) + (deriCoeff[3]*Math.pow(i, 3))+
+						(deriCoeff[2]*Math.pow(i, 2))+(deriCoeff[1]*Math.pow(i, 1))+(deriCoeff[0]*Math.pow(i, 0)), 2));
+				
+				double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i-step, 4)) + (deriCoeff[3]*Math.pow(i-step, 3))+
+						(deriCoeff[2]*Math.pow(i-step, 2))+(deriCoeff[1]*Math.pow(i-step, 1))+(deriCoeff[0]*Math.pow(i-step, 0)), 2));
+				
+			    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+				
+				arcLength += stepVal;
+			}
+			
 			
 			//calculating derivative coefficients
 			System.out.println("VELOCITY:");
 			
 			for(int i = 0; i < functionGen.degree(); i++) { //only goes to 4th degree to prevent index out of range... if there is an x^5 term it will get dropped anyway with power rule derivatives
-				deriCoeff[i] = coefficients[i+1] * (i+1); //Power rule differentiation... for example: the first index(i = 0) of the derivative array gets populated by the 2nd index of the initial coefficient array, times 1 (the exponent on x)
 				double term = deriCoeff[i];
 				System.out.println("x^"+i + ": "+term);									 
 			}
@@ -511,7 +518,7 @@ public class Main extends HvlTemplateInteg2D{
 				int segNum = 1;
 				for(Segment segment : segments) {
 					System.out.print(segNum + ": ");
-					GenerateVoltages.runVirtualPath(generateData(segment.myPoints), arcLength);
+					GenerateVoltages.runVirtualPath(generateData(segment.myPoints), arcLength/100);
 					System.out.println("");
 					segNum++;
 				}
