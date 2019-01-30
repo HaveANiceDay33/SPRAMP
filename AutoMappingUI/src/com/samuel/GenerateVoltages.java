@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.lwjgl.opengl.ARBCLEvent;
+import org.lwjgl.opengl.ARBClearBufferObject;
+
 import com.osreboot.ridhvl.menu.component.HvlArrangerBox;
 import com.osreboot.ridhvl.menu.component.HvlTextBox;
 
@@ -63,7 +66,7 @@ public class GenerateVoltages {
 	}
 	
 	static double k3 = wheelBaseWidth*mass/2;
-	static double Ts = 10.0; // Tune me!
+	static double Ts = 0.0; // Tune me!
 	public static double solveScrubbyChassisDynamics( double rPath, double vel, double acc, double angVel, boolean left ){
 		if(left) {
 			//System.out.println("Vel Left: " + vel*(k1*rPath-1)/(k1*rPath) + " Force Left: " + ((k3-moi/rPath)*mass*acc-angVel*Ts*mass)/(2*k3));
@@ -82,8 +85,10 @@ public class GenerateVoltages {
 	
 	static double time, pos, vel, acc, ang, angVel, angAcc, voltRight, voltLeft;
 	static String fileName;
-	public static void runVirtualPath(double [] coeffs) {
+	public static void runVirtualPath(double [] coeffs, double arcL) {
 		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = 0.0;
+		
+		double targetTime = Math.sqrt((2*arcL)/accMax);
 		
 		fileName = Main.UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
 		File outputFile = new File(Main.userHomeFolder, fileName + ".BOND");
@@ -139,7 +144,7 @@ public class GenerateVoltages {
 		}
 		System.out.println("Max velocity reached.");
 		
-		while(time < 5) {
+		while(time < targetTime - 1) {
 			if(angVelMax < velMax / pathRadius) { //Velocity 
 				velMax = angVelMax * pathRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);

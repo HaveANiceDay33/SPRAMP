@@ -43,6 +43,8 @@ public class Main extends HvlTemplateInteg2D{
 	}
 	
 	static String userHomeFolder = System.getProperty("user.home")+"/Documents/";
+	
+	static double arcLength = 0;
 	//testing github
 	public String functionGenerator(String equalTo, double[] coeffArray) {
 		StringBuilder s = new StringBuilder();
@@ -54,6 +56,7 @@ public class Main extends HvlTemplateInteg2D{
 		}
 		return s.toString().replace("+ -", "- ");
 	}
+	
 	public static void generateGraphics(ArrayList<Waypoint> waypoints, Color lineColor) {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
@@ -119,10 +122,16 @@ public class Main extends HvlTemplateInteg2D{
 				(deriCoeff[2]*Math.pow(x, 2))+(deriCoeff[1]*Math.pow(x, 1))+(deriCoeff[0]*Math.pow(x, 0));
 		TwoDer = (secDeriCoeff[3]*Math.pow(x, 3))+(secDeriCoeff[2]*Math.pow(x, 2))+
 				(secDeriCoeff[1]*Math.pow(x, 1))+(secDeriCoeff[0]*Math.pow(x, 0));
+		
 		//returns radius with gross formula. 
 		double radCm = 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
-		
-		return -radCm/100;
+		if(radCm > 1000000) {
+			return -1000000;
+		}else if(radCm < -1000000){
+			return 1000000;
+		}else {
+			return -radCm/100;
+		}
 	}
 	
 	public double[] generateData(ArrayList<Waypoint> waypoints) {
@@ -147,19 +156,35 @@ public class Main extends HvlTemplateInteg2D{
 				double term = coefficients[i];
 				System.out.println("x^"+i + ": "+term);
 			}
+			double[] deriCoeff = new double[5];
 			
-			
-			/*
+			for(int i = 0; i < 5; i++) {
+				deriCoeff[i] = coefficients[i+1] * (i+1); 								  
+			}
 			System.out.println("y(x) = " + functionGen.toString() + "\n");
+			double finalX = xVals.get(xVals.size()-1);
+			
+			double OneDer, OneDerZero;
+			//calculates first and second derivatives at given point.
+			OneDer = (deriCoeff[4]*Math.pow(finalX, 4))+(deriCoeff[3]*Math.pow(finalX, 3))+
+					(deriCoeff[2]*Math.pow(finalX, 2))+(deriCoeff[1]*Math.pow(finalX, 1))+(deriCoeff[0]*Math.pow(finalX, 0));
+			OneDerZero = (deriCoeff[4]*Math.pow(0, 4))+(deriCoeff[3]*Math.pow(0, 3))+
+					(deriCoeff[2]*Math.pow(0, 2))+(deriCoeff[1]*Math.pow(0, 1))+(deriCoeff[0]*Math.pow(0, 0));
+			System.out.println(OneDer);
+			arcLength = ((Math.log((Math.sqrt(Math.pow(OneDer, 2) + 1)+OneDer)))/2 + (OneDer*(Math.sqrt(Math.pow(OneDer, 2)+1)))/2) - 
+					((Math.log((Math.sqrt(Math.pow(OneDerZero, 2) + 1)+OneDerZero)))/2 + (OneDerZero*Math.sqrt(Math.pow(OneDerZero, 2)+1))/2);
+			System.out.println(arcLength);
+			
 			//calculating derivative coefficients
 			System.out.println("VELOCITY:");
-			double[] deriCoeff = new double[5];
+			
 			for(int i = 0; i < functionGen.degree(); i++) { //only goes to 4th degree to prevent index out of range... if there is an x^5 term it will get dropped anyway with power rule derivatives
 				deriCoeff[i] = coefficients[i+1] * (i+1); //Power rule differentiation... for example: the first index(i = 0) of the derivative array gets populated by the 2nd index of the initial coefficient array, times 1 (the exponent on x)
 				double term = deriCoeff[i];
 				System.out.println("x^"+i + ": "+term);									 
 			}
 			System.out.println(functionGenerator("v(x)", deriCoeff) + "\n");
+			/*
 			System.out.println("ACCELERATION:");
 			double[] secDeriCoeff = new double[4];
 			for(int i = 0; i < functionGen.degree()-1; i++) { //only goes to 3rd degree to prevent index out of range... if there is an x^4 term it will get dropped anyway with power rule derivatives
@@ -486,7 +511,7 @@ public class Main extends HvlTemplateInteg2D{
 				int segNum = 1;
 				for(Segment segment : segments) {
 					System.out.print(segNum + ": ");
-					GenerateVoltages.runVirtualPath(generateData(segment.myPoints));
+					GenerateVoltages.runVirtualPath(generateData(segment.myPoints), arcLength);
 					System.out.println("");
 					segNum++;
 				}
