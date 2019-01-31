@@ -1,7 +1,5 @@
 package com.samuel;
 
-import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuad;
-
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
@@ -20,6 +18,6 @@ public class Segment{
 			segPoints.display();		
 		}
 		
-		Main.generateGraphics(myPoints, Color.green);
+		UI.generateGraphics(myPoints, Color.green);
 	}
 }

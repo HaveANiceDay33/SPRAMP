@@ -11,7 +11,7 @@ import org.lwjgl.opengl.ARBClearBufferObject;
 import com.osreboot.ridhvl.menu.component.HvlArrangerBox;
 import com.osreboot.ridhvl.menu.component.HvlTextBox;
 
-public class GenerateVoltages {
+public class VirtualPathGenerator {
 	static double mass = 40.0; // kg
 	static double moi = 20.0; // kg * m^2   //this is a number 254 code had, I figure it's close-ish. Definitely need tuning. Trying to account for scrub with this, not so great
 	static double wheelRadiusMeters = 0.0762; // m 
@@ -30,20 +30,24 @@ public class GenerateVoltages {
 	static double angAccMax = 2.0; // rad/s^2
 	static double dt = 0.02; // s
 	
+	static double k1 = 2/wheelBaseWidth;
+	static double k2 = wheelBaseWidth*mass/(2*moi);
+	static double k3 = wheelBaseWidth*mass/2;
+	static double Ts = 0.0; // Tune me!
+	
 	static BufferedWriter fileWriter;
 	
 	static int index = 0;
+	
+	static double time, pos, vel, acc, ang, angVel, angAcc, voltRight, voltLeft;
+	static String fileName;
 	
 	public static double voltsForMotion(double velocity, double force) {
 		return force*wheelRadiusMeters*R/(g*kt)/nMotors  //Torque (I*R) term
 			   + velocity/wheelRadiusMeters*g/kv         //Speed  (V*kv) term
 			   + vIntercept;							 //Friction term
 	}
-	
-	static double k1 = 2/wheelBaseWidth;
-	static double k2 = wheelBaseWidth*mass/(2*moi);
-	
-	
+
 	/**
 	 * <p>Returns voltages for left or right drive side with some gross physics. 
 	 * One of the values printed to the *.BOND output file.</p>
@@ -65,27 +69,22 @@ public class GenerateVoltages {
 		}
 	}
 	
-	static double k3 = wheelBaseWidth*mass/2;
-	static double Ts = 0.0; // Tune me!
-	public static double solveScrubbyChassisDynamics( double rPath, double vel, double acc, double angVel, boolean left ){
+	public static double solveScrubbyChassisDynamics(double rPath, double vel, double acc, double angVel, boolean left ){
 		if(left) {
 			//System.out.println("Vel Left: " + vel*(k1*rPath-1)/(k1*rPath) + " Force Left: " + ((k3-moi/rPath)*mass*acc-angVel*Ts*mass)/(2*k3));
 			return voltsForMotion(
 					vel*(k1*rPath-1)/(k1*rPath),
 					((k3-moi/rPath)*mass*acc-angVel*Ts*mass)/(2*k3));
-					//(mass*acc*(k2*rPath - 1))/(2*k2*rPath));
 		}else {
 			//System.out.println("Vel Right: " + vel*(k1*rPath+1)/(k1*rPath) + " Force Right: " + ((k3+moi/rPath)*mass*acc+angVel*Ts*mass)/(2*k3));
 			return voltsForMotion(
 					vel*(k1*rPath+1)/(k1*rPath),
 					((k3+moi/rPath)*mass*acc+angVel*Ts*mass)/(2*k3));
-					//(mass*acc*(k2*rPath + 1))/(2*k2*rPath));
 		}
 	}
 	
-	static double time, pos, vel, acc, ang, angVel, angAcc, voltRight, voltLeft;
-	static String fileName;
 	public static void runVirtualPath(double [] coeffs, double arcL) {
+		
 		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = 0.0;
 		
 		double accelTime = velMax/accMax;
@@ -94,28 +93,16 @@ public class GenerateVoltages {
 		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2);
 		double decelDistance = 0.5*accMax*Math.pow((decelTime), 2);
 		
+		System.out.println("Pre simulation update. Current Time: " + time);
 		System.out.println("Total drive distance: " + arcL);
 		
 		arcL -= (accelDistance + decelDistance);
 		
 		double targetTime = (arcL/velMax) + accelTime + decelTime;
 		
-		fileName = Main.UI.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
-		File outputFile = new File(Main.userHomeFolder, fileName + ".BOND");
-		
-		try {
-			fileWriter = new BufferedWriter(new FileWriter(outputFile));
-		} catch (IOException e) {
-			System.out.println("Could not write to output file");
-		}
-		
-		System.out.println("Pre simulation update. Time: " + time);
-		// Unify constraints from user specified path following constants
-	
-		
-		
+		System.out.println("Total Estimated Time: " + targetTime);
+		System.out.println("Max Velocity: "+ velMax);
 		System.out.println("Max Acceleration: " + accMax);
-		
 		System.out.println("Beginning profile generation...");
 		System.out.println("Accelerating...");
 		
@@ -124,7 +111,6 @@ public class GenerateVoltages {
 				velMax = angVelMax * pathRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);
 			}
-			//System.out.println("Max Velocity: " + velMax);
 			if(angAccMax < accMax / pathRadius) { //Acceleration
 				accMax = angAccMax * pathRadius; 
 				System.out.println("Maximum Acceleration adjusted to: " + accMax);
@@ -136,7 +122,7 @@ public class GenerateVoltages {
 			ang = ang + angVel*dt;
 			angAcc = angAccMax*Math.signum(pathRadius);
 			pos = pos + vel*Math.cos(Math.toRadians(ang))*dt;
-			pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
+			pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
 			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 			
@@ -152,6 +138,7 @@ public class GenerateVoltages {
 			index++;
 			time += dt;
 		}
+		
 		System.out.println("Max velocity reached.");
 		
 		while(time < targetTime - decelTime) {
@@ -159,18 +146,16 @@ public class GenerateVoltages {
 				velMax = angVelMax * pathRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);
 			}
-			//System.out.println("Max Velocity: " + velMax);
 			if(angAccMax < accMax / pathRadius) { //Acceleration
 				accMax = angAccMax * pathRadius; 
 				System.out.println("Maximum Acceleration adjusted to: " + accMax);
 			}
 			pos = pos + vel*Math.cos(Math.toRadians(ang))*dt;
-			pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+			pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
 			
 			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, true);
 			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, false);
 		 
-			
 			try {
 				fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
 						String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
@@ -189,7 +174,6 @@ public class GenerateVoltages {
 				velMax = angVelMax * pathRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);
 			}
-			//System.out.println("Max Velocity: " + velMax);
 			if(angAccMax < accMax / pathRadius) { //Acceleration
 				accMax = angAccMax * pathRadius; 
 				System.out.println("Maximum Acceleration adjusted to: " + accMax);
@@ -200,7 +184,7 @@ public class GenerateVoltages {
 			ang = ang + angVel*dt;
 			angVel = angVel - angAcc*dt;
 			pos = pos + vel*Math.cos(Math.toRadians(ang))*dt;
-			pathRadius = Main.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+			pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
 			
 			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
@@ -219,6 +203,7 @@ public class GenerateVoltages {
 		}
 		System.out.println("Complete!");
 		System.out.println("Profile generated with name: " + fileName + ".BOND");
+	
 		try {
 			fileWriter.close();
 		} catch (IOException e) {
