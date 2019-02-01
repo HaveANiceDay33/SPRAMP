@@ -196,7 +196,7 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				UI.tempWaypoints.clear();
 				robotW = 34; //change to whatever MoonRaker will be
-				robotL = 46; 
+				robotL = 39; 
 				UI.background = Main.FIELD_INDEX;
 				HvlMenu.setCurrent(ui);
 			}
