@@ -80,7 +80,7 @@ public class UI {
 					hvlDrawQuad((float)x, (float)y, 2, 2, lineColor); 
 				}
 			}
-			float size = 100*(float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
+			float size = -100*(float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
 			if(Math.abs(size) < 1000 && mouseX > xVals.get(0) && mouseX < xVals.get(xVals.size()-1)) {
 				hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))-(size), size*2, size*2, Main.getTexture(Main.CIRCLE_INDEX));
 			}
@@ -118,11 +118,11 @@ public class UI {
 		double radCm = 1/((TwoDer)/(Math.pow(1+(OneDer*OneDer), 1.5)));
 		
 		if(radCm > 1000000) {
-			return -1000000;
-		}else if(radCm < -1000000){
 			return 1000000;
+		}else if(radCm < -1000000){
+			return -1000000;
 		}else {
-			return -radCm/100;
+			return radCm/100;
 		}
 	}
 	
@@ -157,7 +157,7 @@ public class UI {
 				secDeriCoeff[i] = deriCoeff[i+1] * (i+1); 							 
 			}
 			
-			double finalX = xVals.get(xVals.size()-1);
+			double finalX = Math.abs(xVals.get(xVals.size()-1));
 			double step = 0.001; //in CM, lower to get more precise
 
 			//Riemann sum!
@@ -174,8 +174,8 @@ public class UI {
 				arcLength += stepVal;
 			}
 			
-			System.out.println("y(x) = " + functionGen.toString() + "\n");
-			System.out.println(functionGenerator("v(x)", deriCoeff) + "\n");
+			System.out.println("y(x) = " + functionGen.toString());
+			System.out.println(functionGenerator("v(x)", deriCoeff));
 			System.out.println(functionGenerator("a(x)", secDeriCoeff));
 			System.out.println("");
 			

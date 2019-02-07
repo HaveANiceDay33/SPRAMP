@@ -76,8 +76,15 @@ public class MenuManager {
 		ui.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("New\nSegment").setClickedCommand(new HvlAction1<HvlButton>() {
 			@Override
 			public void run(HvlButton a) {
-				Segment newSegment = new Segment(UI.tempWaypoints);
-				UI.segments.add(newSegment);
+				Segment newSegment;
+				if(UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+					newSegment = new Segment(UI.tempWaypoints, true);
+					UI.segments.add(newSegment);
+				} else if (UI.tempWaypoints.get(0).x > UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+					newSegment = new Segment(UI.tempWaypoints, false);
+					UI.segments.add(newSegment);
+				}
+				
 				UI.tempWaypoints.clear();
 			}
 		}).build());
@@ -127,9 +134,17 @@ public class MenuManager {
 				int segNum = 1;
 				for(Segment segment : UI.segments) {
 					System.out.print("Segment " + segNum + ": \n");
-					VirtualPathGenerator.runVirtualPath(UI.generateData(segment.myPoints), UI.arcLength/100);
+					VirtualPathGenerator.runVirtualPath(UI.generateData(segment.myPoints), UI.arcLength/100, segment.forward);
 					System.out.println("");
 					segNum++;
+				}
+				try {
+					System.out.println("Complete!");
+					System.out.println("Profile generated with name: " + VirtualPathGenerator.fileName + ".BOND");
+					VirtualPathGenerator.fileWriter.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				System.out.println("----------------------------------------------------------------------------------------------");
 			}	

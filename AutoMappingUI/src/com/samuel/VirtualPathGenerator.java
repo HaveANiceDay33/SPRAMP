@@ -24,10 +24,10 @@ public class VirtualPathGenerator {
 	static int nMotors = 2; //number of motors in a gearbox
 	
 	static double pathRadius = 100000; //6.1516;//0.4064; // m
-	static double velMax = 2.0; 	// m/s
+	static double velMax = 3.0; 	// m/s
 	static double accMax = 2.0; // m/s^2
-	static double angVelMax = 2.0; // rad/s
-	static double angAccMax = 2.0; // rad/s^2
+	static double angVelMax = 4.0; // rad/s
+	static double angAccMax = 4.0; // rad/s^2
 	static double dt = 0.02; // s
 	
 	static double k1 = 2/wheelBaseWidth;
@@ -83,132 +83,217 @@ public class VirtualPathGenerator {
 		}
 	}
 	
-	public static void runVirtualPath(double [] coeffs, double arcL) {
+	public static void runVirtualPath(double [] coeffs, double arcL, boolean forward) {
 		
 		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = 0.0;
 		
 		double accelTime = velMax/accMax;
-		double decelTime = velMax/accMax;
 		
 		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2);
-		double decelDistance = 0.5*accMax*Math.pow((decelTime), 2);
-		
+		double decelDistance = accelDistance;
 		System.out.println("Pre simulation update. Current Time: " + time);
 		System.out.println("Total drive distance: " + arcL);
-		
-		arcL -= (accelDistance + decelDistance);
-		
-		double targetTime = (arcL/velMax) + accelTime + decelTime;
-		
-		System.out.println("Total Estimated Time: " + targetTime);
-		System.out.println("Max Velocity: "+ velMax);
-		System.out.println("Max Acceleration: " + accMax);
-		System.out.println("Beginning profile generation...");
-		System.out.println("Accelerating...");
-		
-		while(time < accelTime) { 
-			if(angVelMax < velMax / pathRadius) { //Velocity 
-				velMax = angVelMax * pathRadius; 
-				System.out.println("Maximum Velocity adjusted to: " + velMax);
-			}
-			if(angAccMax < accMax / pathRadius) { //Acceleration
-				accMax = angAccMax * pathRadius; 
-				System.out.println("Maximum Acceleration adjusted to: " + accMax);
-			}// solve entire acceleration portion, may not use all of these points
-			acc = accMax; 
-			vel = vel + acc*dt;
-			
-			angVel = angVel + angAcc*dt;
-			ang = ang + angVel*dt;
-			angAcc = angAccMax*Math.signum(pathRadius);
-			pos = pos + vel*Math.cos(Math.toRadians(ang))*dt;
-			pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
-			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
-			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
-			
-			try {
-				fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-						String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-				fileWriter.newLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			index++;
-			time += dt;
+		double direction;
+		if(forward) {
+			direction = 1;
+			System.out.println("Going FORWARDS");
+		} else {
+			direction = -1;
+			System.out.println("Going BACKWARDS");
 		}
 		
-		System.out.println("Max velocity reached.");
-		
-		while(time < targetTime - decelTime) {
-			if(angVelMax < velMax / pathRadius) { //Velocity 
-				velMax = angVelMax * pathRadius; 
-				System.out.println("Maximum Velocity adjusted to: " + velMax);
-			}
-			if(angAccMax < accMax / pathRadius) { //Acceleration
-				accMax = angAccMax * pathRadius; 
-				System.out.println("Maximum Acceleration adjusted to: " + accMax);
-			}
-			pos = pos + vel*Math.cos(Math.toRadians(ang))*dt;
-			pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+		if(arcL > (2*accelDistance)) {
 			
-			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, true);
-			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, false);
-		 
-			try {
-				fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-						String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-				fileWriter.newLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			arcL -= (accelDistance + decelDistance);
+			
+			double targetTime = (arcL/velMax) + (2* accelTime);
+			
+			System.out.println("Running TRAPEZOID profile.");
+			System.out.println("Total Estimated Time: " + targetTime);
+			System.out.println("Max Velocity: "+ velMax);
+			System.out.println("Max Acceleration: " + accMax);
+			System.out.println("Beginning profile generation...");
+			System.out.println("Accelerating...");
+			
+			while(time < accelTime) { 
+				if(angVelMax < velMax / pathRadius) { //Velocity 
+					velMax = angVelMax * pathRadius; 
+					System.out.println("Maximum Velocity adjusted to: " + velMax);
+				}
+				if(angAccMax < accMax / pathRadius) { //Acceleration
+					accMax = angAccMax * pathRadius; 
+					System.out.println("Maximum Acceleration adjusted to: " + accMax);
+				}// solve entire acceleration portion, may not use all of these points
+				acc = accMax * direction; 
+				vel = (vel + acc*dt);
+				
+				angVel = (angVel + angAcc*dt);
+				ang = (ang + angVel*dt);
+				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
+				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
+				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
+				
+				try {
+					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
+							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
+					fileWriter.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				index++;
+				time += dt;
 			}
 			
-			index++;
-			time += dt;
+			System.out.println("Max velocity reached.");
+			
+			while(time < targetTime - accelTime) {
+				if(angVelMax < velMax / pathRadius) { //Velocity 
+					velMax = angVelMax * pathRadius; 
+					System.out.println("Maximum Velocity adjusted to: " + velMax);
+				}
+				if(angAccMax < accMax / pathRadius) { //Acceleration
+					accMax = angAccMax * pathRadius; 
+					System.out.println("Maximum Acceleration adjusted to: " + accMax);
+				}
+				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+				
+				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, true);
+				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, false);
+			 
+				try {
+					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
+							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
+					fileWriter.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				index++;
+				time += dt;
+			}
+			System.out.println("Decelerating...");
+			while(time < targetTime) {
+				if(angVelMax < velMax / pathRadius) { //Velocity 
+					velMax = angVelMax * pathRadius; 
+					System.out.println("Maximum Velocity adjusted to: " + velMax);
+				}
+				if(angAccMax < accMax / pathRadius) { //Acceleration
+					accMax = angAccMax * pathRadius; 
+					System.out.println("Maximum Acceleration adjusted to: " + accMax);
+				}// solve entire acceleration portion, may not use all of these points
+				acc = accMax*direction; 
+				vel = (vel - acc*dt);
+				
+				ang = (ang + angVel*dt);
+				angVel = (angVel - angAcc*dt);
+				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+				
+				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
+				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
+			
+				
+				try {
+					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
+							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
+					fileWriter.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				index++;
+				time += dt;
+			}
+		} else if (arcL < (2*accelDistance)) {
+			
+			double triAccelTime = Math.sqrt(arcL / accMax);
+			
+			double targetTime = 2 * triAccelTime;
+			
+			System.out.println("Running TRIANGLE profile.");
+			System.out.println("Total Estimated Time: " + targetTime);
+			System.out.println("Max Velocity: "+ velMax);
+			System.out.println("Max Acceleration: " + accMax);
+			System.out.println("Beginning profile generation...");
+			System.out.println("Accelerating...");
+			
+			while(time < targetTime/2) { 
+				if(angVelMax < velMax / pathRadius) { //Velocity 
+					velMax = angVelMax * pathRadius; 
+					System.out.println("Maximum Velocity adjusted to: " + velMax);
+				}
+				if(angAccMax < accMax / pathRadius) { //Acceleration
+					accMax = angAccMax * pathRadius; 
+					System.out.println("Maximum Acceleration adjusted to: " + accMax);
+				}// solve entire acceleration portion, may not use all of these points
+				acc = accMax*direction; 
+				vel = (vel + acc*dt);
+				
+				angVel = (angVel + angAcc*dt);
+				ang = (ang + angVel*dt);
+				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
+				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
+				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
+				
+				try {
+					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
+							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
+					fileWriter.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				index++;
+				time += dt;
+			}
+			
+			System.out.println("Max velocity reached.");
+			System.out.println("Decelerating...");
+			while(time < targetTime) {
+				if(angVelMax < velMax / pathRadius) { //Velocity 
+					velMax = angVelMax * pathRadius; 
+					System.out.println("Maximum Velocity adjusted to: " + velMax);
+				}
+				if(angAccMax < accMax / pathRadius) { //Acceleration
+					accMax = angAccMax * pathRadius; 
+					System.out.println("Maximum Acceleration adjusted to: " + accMax);
+				}// solve entire acceleration portion, may not use all of these points
+				acc = accMax*direction; 
+				vel = (vel - acc*dt);
+				
+				ang = (ang + angVel*dt);
+				angVel = (angVel - angAcc*dt);
+				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+				
+				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
+				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
+			
+				
+				try {
+					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
+							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
+					fileWriter.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				index++;
+				time += dt;
+			}
 		}
-		System.out.println("Decelerating...");
-		while(time < targetTime) {
-			if(angVelMax < velMax / pathRadius) { //Velocity 
-				velMax = angVelMax * pathRadius; 
-				System.out.println("Maximum Velocity adjusted to: " + velMax);
-			}
-			if(angAccMax < accMax / pathRadius) { //Acceleration
-				accMax = angAccMax * pathRadius; 
-				System.out.println("Maximum Acceleration adjusted to: " + accMax);
-			}// solve entire acceleration portion, may not use all of these points
-			acc = accMax; 
-			vel = vel - acc*dt;
 			
-			ang = ang + angVel*dt;
-			angVel = angVel - angAcc*dt;
-			pos = pos + vel*Math.cos(Math.toRadians(ang))*dt;
-			pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
-			
-			voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
-			voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
-		
-			
-			try {
-				fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-						String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-				fileWriter.newLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			index++;
-			time += dt;
-		}
-		System.out.println("Complete!");
-		System.out.println("Profile generated with name: " + fileName + ".BOND");
-	
-		try {
-			fileWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
