@@ -196,16 +196,11 @@ public class UI {
 	
 	public static void update(float delta) {
 		if(mouseX < 900 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
+			
 			if(Mouse.isButtonDown(0) && clicked == false) {
-				if(tempWaypoints.size() >= 1) {
+				if(tempWaypoints.size() > 0 || segments.size() == 0) {
 					Waypoint point = new Waypoint((mouseX / Main.zoomer.getZoom() + (Main.zoomer.getX() - 720)/Main.zoomer.getZoom()), (mouseY / Main.zoomer.getZoom())+(Main.zoomer.getY() - 360)/Main.zoomer.getZoom(),
 						10, Color.yellow, MenuManager.robotW, MenuManager.robotL);
-					tempWaypoints.add(point);
-					clicked = true;
-				}
-				if(tempWaypoints.size() == 0 && segments.size() == 0) {	
-					Waypoint point = new Waypoint((float) (-WALL_OFFSET+(((MenuManager.robotL)*0.9)/2)), (mouseY / Main.zoomer.getZoom())+(Main.zoomer.getY() - 360)/Main.zoomer.getZoom(),
-							20, Color.orange,MenuManager.robotW, MenuManager.robotL);
 					tempWaypoints.add(point);
 					clicked = true;
 				}
@@ -249,8 +244,8 @@ public class UI {
 		if((Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  
 				Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_UP)) && tempWaypoints.size() > 0) {
 			//FINE ADJUSTMENT FOR tempWaypoints
-			if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT) && tempWaypoints.size()>1) {tempWaypoints.get(tempWaypoints.size()-1).x += fineSpeed;}
-			if(Keyboard.isKeyDown(Keyboard.KEY_LEFT) && tempWaypoints.size()>1) {tempWaypoints.get(tempWaypoints.size()-1).x += -fineSpeed;}
+			if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {tempWaypoints.get(tempWaypoints.size()-1).x += fineSpeed;}
+			if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {tempWaypoints.get(tempWaypoints.size()-1).x += -fineSpeed;}
 			if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {tempWaypoints.get(tempWaypoints.size()-1).y += -fineSpeed;}
 			if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {tempWaypoints.get(tempWaypoints.size()-1).y += fineSpeed;}
 		}else {

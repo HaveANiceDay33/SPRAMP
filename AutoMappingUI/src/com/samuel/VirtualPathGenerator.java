@@ -10,7 +10,7 @@ import org.lwjgl.opengl.ARBClearBufferObject;
 
 import com.osreboot.ridhvl.menu.component.HvlArrangerBox;
 import com.osreboot.ridhvl.menu.component.HvlTextBox;
-
+//scp beter1.BOND lvuser@roborio-5811-frc.local:
 public class VirtualPathGenerator {
 	static double mass = 40.0; // kg
 	static double moi = 20.0; // kg * m^2   //this is a number 254 code had, I figure it's close-ish. Definitely need tuning. Trying to account for scrub with this, not so great
@@ -24,10 +24,10 @@ public class VirtualPathGenerator {
 	static int nMotors = 2; //number of motors in a gearbox
 	
 	static double pathRadius = 100000; //6.1516;//0.4064; // m
-	static double velMax = 3.0; 	// m/s
-	static double accMax = 2.0; // m/s^2
+	static double velMax = 2.0; 	// m/s
+	static double accMax = 1.0; // m/s^2
 	static double angVelMax = 4.0; // rad/s
-	static double angAccMax = 4.0; // rad/s^2
+	static double angAccMax = 2.0; // rad/s^2
 	static double dt = 0.02; // s
 	
 	static double k1 = 2/wheelBaseWidth;
@@ -36,6 +36,8 @@ public class VirtualPathGenerator {
 	static double Ts = 0.0; // Tune me!
 	
 	static BufferedWriter fileWriter;
+	
+	static float currentPos = 0;
 	
 	static int index = 0;
 	
@@ -66,6 +68,17 @@ public class VirtualPathGenerator {
 			return voltsForMotion(
 				vel*(k1*rPath+1)/(k1*rPath),
 				(mass*acc*(k2*rPath + 1))/(2*k2*rPath));
+		}
+	}
+	
+	public static void writeLine(double vR, double vL, double disp, double vel, double ang, double angVel, double rad) {
+		try {
+			fileWriter.write(String.format("%.4f", vR) + " " + String.format("%.4f", vL) + " " +
+					String.format("%.4f", disp) + " " + String.format("%.4f", vel)+ " " + String.format("%.4f", ang)+ " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", rad));
+			fileWriter.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -102,6 +115,8 @@ public class VirtualPathGenerator {
 			System.out.println("Going BACKWARDS");
 		}
 		
+		pos = 0;
+		
 		if(arcL > (2*accelDistance)) {
 			
 			arcL -= (accelDistance + decelDistance);
@@ -124,26 +139,30 @@ public class VirtualPathGenerator {
 					accMax = angAccMax * pathRadius; 
 					System.out.println("Maximum Acceleration adjusted to: " + accMax);
 				}// solve entire acceleration portion, may not use all of these points
+				
+				
+				
 				acc = accMax * direction; 
 				vel = (vel + acc*dt);
-				
-				angVel = (angVel + angAcc*dt);
+				pos = (pos + vel*Math.cos(ang)*dt);
+				//pos++;
+				if(Math.abs(pathRadius)>= 10000) {
+					angVel=0;
+				}else {
+					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+					//angAcc = acc / pathRadius * direction;
+					angVel = vel / pathRadius;
+				}
+				//angVel = (angVel + angAcc*dt);
 				ang = (ang + angVel*dt);
-				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
+				currentPos+=(vel*dt);
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 				
-				try {
-					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-					fileWriter.newLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
 				
 				index++;
 				time += dt;
@@ -160,20 +179,26 @@ public class VirtualPathGenerator {
 					accMax = angAccMax * pathRadius; 
 					System.out.println("Maximum Acceleration adjusted to: " + accMax);
 				}
-				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				pos = (pos + vel*Math.cos(ang)*dt);
+				//pos++;
+				if(Math.abs(pathRadius)>= 100000) {
+					angVel = 0; //angAcc=0;
+				}else {
+					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+					//angAcc = acc / pathRadius * direction;
+					angVel = vel / pathRadius;
+				}
+				//angVel = (angVel - angAcc*dt);
+				ang = (ang + angVel*dt);
+				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
+				currentPos+=(vel*dt);
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, false);
 			 
-				try {
-					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-					fileWriter.newLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
 				
 				index++;
 				time += dt;
@@ -188,27 +213,29 @@ public class VirtualPathGenerator {
 					accMax = angAccMax * pathRadius; 
 					System.out.println("Maximum Acceleration adjusted to: " + accMax);
 				}// solve entire acceleration portion, may not use all of these points
+				
 				acc = accMax*direction; 
 				vel = (vel - acc*dt);
-				
+				pos = (pos + vel*Math.cos(ang)*dt);
+				//pos++;
+				if(Math.abs(pathRadius) >= 100000) {
+					angVel = 0; //angAcc=0;
+				}else {
+					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+					//angAcc = acc / pathRadius * direction;
+					angVel = vel / pathRadius;
+				}
+				//angVel = (angVel - angAcc*dt);
 				ang = (ang + angVel*dt);
-				angVel = (angVel - angAcc*dt);
-				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
+				currentPos+=(vel*dt);
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
-			
-				
-				try {
-					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-					fileWriter.newLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
+				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
 				index++;
 				time += dt;
 			}
@@ -226,6 +253,7 @@ public class VirtualPathGenerator {
 			System.out.println("Accelerating...");
 			
 			while(time < targetTime/2) { 
+				
 				if(angVelMax < velMax / pathRadius) { //Velocity 
 					velMax = angVelMax * pathRadius; 
 					System.out.println("Maximum Velocity adjusted to: " + velMax);
@@ -234,26 +262,29 @@ public class VirtualPathGenerator {
 					accMax = angAccMax * pathRadius; 
 					System.out.println("Maximum Acceleration adjusted to: " + accMax);
 				}// solve entire acceleration portion, may not use all of these points
+				
 				acc = accMax*direction; 
 				vel = (vel + acc*dt);
-				
-				angVel = (angVel + angAcc*dt);
+				pos = (pos + vel*Math.cos(ang)*dt);
+				//pos+=0.01;
+				if(Math.abs(pathRadius)>= 100000) {
+					angVel = 0; //angAcc=0;
+				}else {
+					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+					//angAcc = acc / pathRadius * direction;
+					angVel = vel / pathRadius;
+				}
+				//angVel = (angVel + angAcc*dt);
 				ang = (ang + angVel*dt);
-				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
+				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
+				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius + "\t" + Math.cos(ang) + "\t" + accMax + "\t" + velMax);
+				currentPos+=(vel*dt);
+				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 				
-				try {
-					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-					fileWriter.newLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
 				index++;
 				time += dt;
 			}
@@ -271,25 +302,27 @@ public class VirtualPathGenerator {
 				}// solve entire acceleration portion, may not use all of these points
 				acc = accMax*direction; 
 				vel = (vel - acc*dt);
-				
+				pos = (pos + vel*Math.cos(ang)*dt);
+				//pos+=0.01;
+				if(Math.abs(pathRadius)>= 100000) {
+					angVel=0; //angAcc = 0;
+				}else {
+					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+					//angAcc = acc / pathRadius * direction;
+					angVel = vel/pathRadius;
+				}
+				//angVel = (angVel - angAcc*dt);
 				ang = (ang + angVel*dt);
-				angVel = (angVel - angAcc*dt);
-				pos = (pos + vel*Math.cos(Math.toRadians(ang))*dt);
-				angAcc = (angAccMax*Math.signum(pathRadius))*direction;
+				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
+				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
+				currentPos+=(vel*dt);
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 			
 				
-				try {
-					fileWriter.write(String.format("%.4f", voltRight) + " " + String.format("%.4f", voltLeft) + " " +
-							String.format("%.4f", vel) + " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", pathRadius));
-					fileWriter.newLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
 				index++;
 				time += dt;
 			}

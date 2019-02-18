@@ -109,6 +109,8 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				UI.segments.clear();
 				UI.tempWaypoints.clear();
+				VirtualPathGenerator.pos = 0;
+				VirtualPathGenerator.currentPos = 0;
 				ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
 			}
 		}).build());
@@ -116,6 +118,8 @@ public class MenuManager {
 		ui.getChildOfType(HvlArrangerBox.class, 1).add(new HvlLabeledButton.Builder().setText("RESET").setClickedCommand(new HvlAction1<HvlButton>() {
 			@Override
 			public void run(HvlButton a) {
+				VirtualPathGenerator.pos = 0;
+				VirtualPathGenerator.currentPos = 0;
 				reset();
 			}	
 		}).build());
@@ -124,7 +128,8 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				VirtualPathGenerator.fileName = MenuManager.ui.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
 				File outputFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + ".BOND");
-				
+				VirtualPathGenerator.pos = 0;
+				VirtualPathGenerator.currentPos = 0;
 				try {
 					VirtualPathGenerator.fileWriter = new BufferedWriter(new FileWriter(outputFile));
 				} catch (IOException e) {
@@ -210,8 +215,8 @@ public class MenuManager {
 			@Override
 			public void run(HvlButton a) {
 				UI.tempWaypoints.clear();
-				robotW = 34; //change to whatever MoonRaker will be
-				robotL = 39; 
+				robotW = (float) (34 * 2.54 * 0.56); //change to whatever MoonRaker will be
+				robotL = (float) (39 * 2.54 * .56); 
 				UI.background = Main.FIELD_INDEX;
 				HvlMenu.setCurrent(ui);
 			}
