@@ -110,7 +110,7 @@ public class MenuManager {
 				UI.segments.clear();
 				UI.tempWaypoints.clear();
 				VirtualPathGenerator.pos = 0;
-				VirtualPathGenerator.currentPos = 0;
+				VirtualPathGenerator.currentPosOnArc = 0;
 				ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
 			}
 		}).build());
@@ -119,7 +119,7 @@ public class MenuManager {
 			@Override
 			public void run(HvlButton a) {
 				VirtualPathGenerator.pos = 0;
-				VirtualPathGenerator.currentPos = 0;
+				VirtualPathGenerator.currentPosOnArc = 0;
 				reset();
 			}	
 		}).build());
@@ -129,7 +129,7 @@ public class MenuManager {
 				VirtualPathGenerator.fileName = MenuManager.ui.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
 				File outputFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + ".BOND");
 				VirtualPathGenerator.pos = 0;
-				VirtualPathGenerator.currentPos = 0;
+				VirtualPathGenerator.currentPosOnArc = 0;
 				try {
 					VirtualPathGenerator.fileWriter = new BufferedWriter(new FileWriter(outputFile));
 				} catch (IOException e) {

@@ -28,7 +28,7 @@ public class VirtualPathGenerator {
 	static double accMax = 1.0; // m/s^2
 	static double angVelMax = 4.0; // rad/s
 	static double angAccMax = 2.0; // rad/s^2
-	static double dt = 0.02; // s
+	static double dt = 0.02; // s  //adjusting 2/19/19
 	
 	static double k1 = 2/wheelBaseWidth;
 	static double k2 = wheelBaseWidth*mass/(2*moi);
@@ -37,12 +37,18 @@ public class VirtualPathGenerator {
 	
 	static BufferedWriter fileWriter;
 	
-	static float currentPos = 0;
+	static float currentPosOnArc = 0;
 	
 	static int index = 0;
 	
+	static double stepOnArc;
+	static double xPos = 0;
+	static double prevAng;
+	
 	static double time, pos, vel, acc, ang, angVel, angAcc, voltRight, voltLeft;
 	static String fileName;
+	
+	static double step = 0.1;
 	
 	public static double voltsForMotion(double velocity, double force) {
 		return force*wheelRadiusMeters*R/(g*kt)/nMotors  //Torque (I*R) term
@@ -71,10 +77,10 @@ public class VirtualPathGenerator {
 		}
 	}
 	
-	public static void writeLine(double vR, double vL, double disp, double vel, double ang, double angVel, double rad) {
+	public static void writeLine(double vR, double vL, double disp, double vel, double ang, double angVel, double rad, double pos) {
 		try {
 			fileWriter.write(String.format("%.4f", vR) + " " + String.format("%.4f", vL) + " " +
-					String.format("%.4f", disp) + " " + String.format("%.4f", vel)+ " " + String.format("%.4f", ang)+ " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", rad));
+					String.format("%.4f", disp) + " " + String.format("%.4f", vel)+ " " + String.format("%.4f", ang)+ " " + String.format("%.4f", angVel)+ " " + String.format("%.4f", rad)+ " " + String.format("%.4f", pos));
 			fileWriter.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -98,10 +104,10 @@ public class VirtualPathGenerator {
 	
 	public static void runVirtualPath(double [] coeffs, double arcL, boolean forward) {
 		
-		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = 0.0;
+		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = xPos = currentPosOnArc = (float) 0.0;
 		
 		double accelTime = velMax/accMax;
-		
+		double [] deriCoeff = new double[5];
 		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2);
 		double decelDistance = accelDistance;
 		System.out.println("Pre simulation update. Current Time: " + time);
@@ -130,22 +136,63 @@ public class VirtualPathGenerator {
 			System.out.println("Beginning profile generation...");
 			System.out.println("Accelerating...");
 			
-			while(time < accelTime) { 
-				if(angVelMax < velMax / pathRadius) { //Velocity 
-					velMax = angVelMax * pathRadius; 
-					System.out.println("Maximum Velocity adjusted to: " + velMax);
+			double minRadius = 100000.0;
+			
+			for(int i = 0; i<1000; i++) {
+				if(UI.generateRadiusAtAPoint(coeffs, 5, (float) i*100)<minRadius) {
+					minRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) i*100);
 				}
-				if(angAccMax < accMax / pathRadius) { //Acceleration
-					accMax = angAccMax * pathRadius; 
-					System.out.println("Maximum Acceleration adjusted to: " + accMax);
-				}// solve entire acceleration portion, may not use all of these points
-				
-				
+			}
+			
+			if(angVelMax < velMax / minRadius) { //Velocity 
+				velMax = angVelMax * minRadius; 
+				System.out.println("Maximum Velocity adjusted to: " + velMax);
+				}
+			if(angAccMax < accMax / minRadius) { //Acceleration
+				accMax = angAccMax * minRadius; 
+				System.out.println("Maximum Acceleration adjusted to: " + accMax);
+			}// solve entire acceleration portion, may not use all of these points
+			
+			
+			while(time < accelTime) { 
 				
 				acc = accMax * direction; 
 				vel = (vel + acc*dt);
-				pos = (pos + vel*Math.cos(ang)*dt);
+				
+				currentPosOnArc+=(vel*dt);
+				
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);
+				
+				for(int i = 0; i < 5; i++) {
+					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
+				}
+				
+				while(stepOnArc < currentPosOnArc*100){
+					
+					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+					
+					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+					
+				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+					
+					stepOnArc += stepVal;
+					
+					xPos += step;
+				}
+					
+					
+				
+				double deriAtxPos = (deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+						(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0));
+				
+				ang = Math.atan(deriAtxPos);
+				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
+				prevAng = ang;
+				//pos = (pos + vel*Math.cos(ang)*dt);
 				//pos++;
+				/*
 				if(Math.abs(pathRadius)>= 10000) {
 					angVel=0;
 				}else {
@@ -153,16 +200,17 @@ public class VirtualPathGenerator {
 					//angAcc = acc / pathRadius * direction;
 					angVel = vel / pathRadius;
 				}
+				*/
 				//angVel = (angVel + angAcc*dt);
-				ang = (ang + angVel*dt);
+				//ang = (ang + angVel*dt);
 				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
-				currentPos+=(vel*dt);
 				
-				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
+				
+				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 				
-				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
+				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				
 				index++;
 				time += dt;
@@ -171,71 +219,85 @@ public class VirtualPathGenerator {
 			System.out.println("Max velocity reached.");
 			
 			while(time < targetTime - accelTime) {
-				if(angVelMax < velMax / pathRadius) { //Velocity 
-					velMax = angVelMax * pathRadius; 
-					System.out.println("Maximum Velocity adjusted to: " + velMax);
-				}
-				if(angAccMax < accMax / pathRadius) { //Acceleration
-					accMax = angAccMax * pathRadius; 
-					System.out.println("Maximum Acceleration adjusted to: " + accMax);
-				}
-				pos = (pos + vel*Math.cos(ang)*dt);
-				//pos++;
-				if(Math.abs(pathRadius)>= 100000) {
-					angVel = 0; //angAcc=0;
-				}else {
-					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-					//angAcc = acc / pathRadius * direction;
-					angVel = vel / pathRadius;
-				}
-				//angVel = (angVel - angAcc*dt);
-				ang = (ang + angVel*dt);
 				
-				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
-				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
-				currentPos+=(vel*dt);
+				currentPosOnArc+=(vel*dt);
+				
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
+				
+				for(int i = 0; i < 5; i++) {
+					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
+				}
+				
+				while(stepOnArc < currentPosOnArc*100){
+					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+					
+					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+					
+				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+					
+					stepOnArc += stepVal;
+					
+					xPos += step;
+				}
+					
+					
+				
+				double deriAtxPos = (deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+						(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0));
+				
+				ang = Math.atan(deriAtxPos);
+				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
+				prevAng = ang;
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, false);
 			 
-				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
+				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				
 				index++;
 				time += dt;
 			}
 			System.out.println("Decelerating...");
-			while(time < targetTime) {
-				if(angVelMax < velMax / pathRadius) { //Velocity 
-					velMax = angVelMax * pathRadius; 
-					System.out.println("Maximum Velocity adjusted to: " + velMax);
-				}
-				if(angAccMax < accMax / pathRadius) { //Acceleration
-					accMax = angAccMax * pathRadius; 
-					System.out.println("Maximum Acceleration adjusted to: " + accMax);
-				}// solve entire acceleration portion, may not use all of these points
-				
-				acc = accMax*direction; 
+			
+			while(time < targetTime) { 
 				vel = (vel - acc*dt);
-				pos = (pos + vel*Math.cos(ang)*dt);
-				//pos++;
-				if(Math.abs(pathRadius) >= 100000) {
-					angVel = 0; //angAcc=0;
-				}else {
-					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-					//angAcc = acc / pathRadius * direction;
-					angVel = vel / pathRadius;
-				}
-				//angVel = (angVel - angAcc*dt);
-				ang = (ang + angVel*dt);
 				
-				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
-				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
-				currentPos+=(vel*dt);
+				currentPosOnArc+=(vel*dt);
+				
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
+				for(int i = 0; i < 5; i++) {
+					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
+				}
+				while(stepOnArc < currentPosOnArc*100){
+					
+					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+					
+					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+					
+				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+					
+					stepOnArc += stepVal;
+					
+					xPos += step;
+				} 
+					
+					
+				
+				double deriAtxPos = (deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+						(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0));
+				
+				ang = Math.atan(deriAtxPos);
+				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
+				prevAng = ang;
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 
-				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
+				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				index++;
 				time += dt;
 			}
@@ -252,39 +314,81 @@ public class VirtualPathGenerator {
 			System.out.println("Beginning profile generation...");
 			System.out.println("Accelerating...");
 			
-			while(time < targetTime/2) { 
-				
-				if(angVelMax < velMax / pathRadius) { //Velocity 
-					velMax = angVelMax * pathRadius; 
+			double minRadius = 100000.0;
+			
+			for(int i = 0; i<1000; i++) {
+				if(UI.generateRadiusAtAPoint(coeffs, 5, (float) i*100)<minRadius) {
+					minRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) i*100);
+				}
+			}
+			
+			if(angVelMax < velMax / minRadius) { //Velocity 
+					velMax = angVelMax * minRadius; 
 					System.out.println("Maximum Velocity adjusted to: " + velMax);
 				}
-				if(angAccMax < accMax / pathRadius) { //Acceleration
-					accMax = angAccMax * pathRadius; 
+				if(angAccMax < accMax / minRadius) { //Acceleration
+					accMax = angAccMax * minRadius; 
 					System.out.println("Maximum Acceleration adjusted to: " + accMax);
 				}// solve entire acceleration portion, may not use all of these points
 				
-				acc = accMax*direction; 
+			while(time < targetTime/2) { 
+				
+				acc = accMax * direction; 
 				vel = (vel + acc*dt);
-				pos = (pos + vel*Math.cos(ang)*dt);
-				//pos+=0.01;
-				if(Math.abs(pathRadius)>= 100000) {
-					angVel = 0; //angAcc=0;
+				
+				currentPosOnArc+=(vel*dt);
+				
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);
+				
+				for(int i = 0; i < 5; i++) {
+					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
+				}
+				
+				while(stepOnArc < currentPosOnArc*100){
+					
+					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+					
+					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+					
+				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+					
+					stepOnArc += stepVal;
+					
+					xPos += step;
+				}
+					
+					
+				
+				double deriAtxPos = (deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+						(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0));
+				
+				ang = Math.atan(deriAtxPos);
+				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
+				prevAng = ang;
+				//pos = (pos + vel*Math.cos(ang)*dt);
+				//pos++;
+				/*
+				if(Math.abs(pathRadius)>= 10000) {
+					angVel=0;
 				}else {
 					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
 					//angAcc = acc / pathRadius * direction;
 					angVel = vel / pathRadius;
 				}
+				*/
 				//angVel = (angVel + angAcc*dt);
-				ang = (ang + angVel*dt);
+				//ang = (ang + angVel*dt);
+				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
 				
-				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);	
-				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius + "\t" + Math.cos(ang) + "\t" + accMax + "\t" + velMax);
-				currentPos+=(vel*dt);
+				
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 				
-				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
+				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
+				
 				index++;
 				time += dt;
 			}
@@ -292,37 +396,42 @@ public class VirtualPathGenerator {
 			System.out.println("Max velocity reached.");
 			System.out.println("Decelerating...");
 			while(time < targetTime) {
-				if(angVelMax < velMax / pathRadius) { //Velocity 
-					velMax = angVelMax * pathRadius; 
-					System.out.println("Maximum Velocity adjusted to: " + velMax);
-				}
-				if(angAccMax < accMax / pathRadius) { //Acceleration
-					accMax = angAccMax * pathRadius; 
-					System.out.println("Maximum Acceleration adjusted to: " + accMax);
-				}// solve entire acceleration portion, may not use all of these points
-				acc = accMax*direction; 
 				vel = (vel - acc*dt);
-				pos = (pos + vel*Math.cos(ang)*dt);
-				//pos+=0.01;
-				if(Math.abs(pathRadius)>= 100000) {
-					angVel=0; //angAcc = 0;
-				}else {
-					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-					//angAcc = acc / pathRadius * direction;
-					angVel = vel/pathRadius;
-				}
-				//angVel = (angVel - angAcc*dt);
-				ang = (ang + angVel*dt);
 				
-				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) pos*100);
-				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
-				currentPos+=(vel*dt);
+				currentPosOnArc+=(vel*dt);
+				
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
+				for(int i = 0; i < 5; i++) {
+					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
+				}
+				while(stepOnArc < currentPosOnArc*100){
+					
+					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+					
+					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+					
+				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+					
+					stepOnArc += stepVal;
+					
+					xPos += step;
+				} 
+					
+					
+				
+				double deriAtxPos = (deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+						(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0));
+				
+				ang = Math.atan(deriAtxPos);
+				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
+				prevAng = ang;
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
-			
-				
-				writeLine(voltRight, voltLeft, currentPos, vel, ang, angVel, pathRadius);
+
+				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				index++;
 				time += dt;
 			}
