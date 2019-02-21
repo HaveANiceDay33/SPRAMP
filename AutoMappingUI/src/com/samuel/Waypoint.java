@@ -16,7 +16,6 @@ public class Waypoint {
 	public String action;
 	public float distance;
 	public double angleOffset;
-	public double origAngle;
 	public float sizeX;
 	public float sizeY;
 	
@@ -33,7 +32,7 @@ public class Waypoint {
 	public void display() {
 		hvlDrawQuadc(x, y, size, size, color);
 		
-		hvlRotate(x,y, (float)origAngle);
+		hvlRotate(x,y, (float)this.angleOffset);
 		hvlDrawQuadc(x, y, sizeY, sizeX, Main.getTexture(Main.FRAME_INDEX));
 		hvlResetRotation();
 	}
@@ -43,6 +42,9 @@ public class Waypoint {
 	}
 	public void setY(float newY) {
 		this.y = newY;
+	}
+	public void setAngle(double d) {
+		this.angleOffset = d;
 	}
 
 }

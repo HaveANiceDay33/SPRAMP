@@ -76,16 +76,18 @@ public class MenuManager {
 		ui.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("New\nSegment").setClickedCommand(new HvlAction1<HvlButton>() {
 			@Override
 			public void run(HvlButton a) {
-				Segment newSegment;
-				if(UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
-					newSegment = new Segment(UI.tempWaypoints, true);
-					UI.segments.add(newSegment);
-				} else if (UI.tempWaypoints.get(0).x > UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
-					newSegment = new Segment(UI.tempWaypoints, false);
-					UI.segments.add(newSegment);
+				if(UI.tempWaypoints.size() > 0) {
+					Segment newSegment;
+					if(UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+						newSegment = new Segment(UI.tempWaypoints, true);
+						UI.segments.add(newSegment);
+					} else if (UI.tempWaypoints.get(0).x > UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+						newSegment = new Segment(UI.tempWaypoints, false);
+						UI.segments.add(newSegment);
+					}
+					
+					UI.tempWaypoints.clear();
 				}
-				
-				UI.tempWaypoints.clear();
 			}
 		}).build());
 		ui.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Delete\nPoint").setClickedCommand(new HvlAction1<HvlButton>() {
@@ -109,7 +111,7 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				UI.segments.clear();
 				UI.tempWaypoints.clear();
-				VirtualPathGenerator.pos = 0;
+				VirtualPathGenerator.xPos = 0;
 				VirtualPathGenerator.currentPosOnArc = 0;
 				ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
 			}
@@ -120,6 +122,7 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				VirtualPathGenerator.pos = 0;
 				VirtualPathGenerator.currentPosOnArc = 0;
+				VirtualPathGenerator.xPos = 0;
 				reset();
 			}	
 		}).build());
@@ -130,6 +133,7 @@ public class MenuManager {
 				File outputFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + ".BOND");
 				VirtualPathGenerator.pos = 0;
 				VirtualPathGenerator.currentPosOnArc = 0;
+				VirtualPathGenerator.xPos = 0;
 				try {
 					VirtualPathGenerator.fileWriter = new BufferedWriter(new FileWriter(outputFile));
 				} catch (IOException e) {
@@ -199,8 +203,8 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
 				if(!rbg.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText().equals("")){
-					robotW = Float.parseFloat(rbg.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText());
-					robotL = Float.parseFloat(rbg.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText());
+					robotW = Float.parseFloat(rbg.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText()) *  (float) (39 * 2.54 * .56);;
+					robotL = Float.parseFloat(rbg.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText()) *  (float) (39 * 2.54 * .56);;
 					ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
 					UI.background = Main.FIELD_INDEX;
 					HvlMenu.setCurrent(ui);
@@ -239,9 +243,6 @@ public class MenuManager {
 			Main.textOutline("Length : ",Color.cyan, Color.darkGray,470,360, 0.4f);
 		} else if(HvlMenu.getCurrent() == ui) {
 			UI.update(delta);
-			if(Keyboard.isKeyDown(Keyboard.KEY_L)) {
-				reset();
-			}
 		}
 		
 		HvlMenu.updateMenus(delta);

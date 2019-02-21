@@ -2,6 +2,8 @@ package com.samuel;
 
 import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuad;
 import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuadc;
+import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlResetRotation;
+import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlRotate;
 
 import java.util.ArrayList;
 
@@ -67,6 +69,23 @@ public class UI {
 			float mouseX = HvlCursor.getCursorX() - (2*WALL_OFFSET);
 			
 			PolynomialRegression functionGen = new PolynomialRegression(xArray, yArray, 5, "x");
+			double [] deriCoeff = new double[5];
+			double [] coeffs = functionGen.coefficients();
+			for(int i = 0; i < 5; i++) {
+				deriCoeff[i] = coeffs[i+1] * (i+1); 								  
+			}
+			
+			for(Waypoint w : waypoints) {
+				double deriAtxPos = (deriCoeff[4]*Math.pow(w.x, 4)) + (deriCoeff[3]*Math.pow(w.x, 3))+
+						(deriCoeff[2]*Math.pow(w.x, 2))+(deriCoeff[1]*Math.pow(w.x, 1))+(deriCoeff[0]*Math.pow(w.x, 0));
+				
+				double ang = Math.atan(deriAtxPos);
+				if(deriCoeff[0] != 0) {
+					w.setAngle(Math.toDegrees(ang));
+				}
+				
+			}
+			
 			if(xVals.get(xVals.size()-1) < xVals.get(0)) {
 				for(double i = xVals.get(0); i > xVals.get(xVals.size()-1); i--) {
 					double x = i;
@@ -81,8 +100,19 @@ public class UI {
 				}
 			}
 			float size = -100*(float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
-			if(Math.abs(size) < 1000 && mouseX > xVals.get(0) && mouseX < xVals.get(xVals.size()-1)) {
-				hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))-(size), size*2, size*2, Main.getTexture(Main.CIRCLE_INDEX));
+			
+			
+			if(mouseX > xVals.get(0) && mouseX < xVals.get(xVals.size()-1)) {
+				if(Math.abs(size) < 300) {
+					hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))-(size), size*2, size*2, Main.getTexture(Main.CIRCLE_INDEX));
+				}
+				double deriAtxPos = (deriCoeff[4]*Math.pow(mouseX, 4)) + (deriCoeff[3]*Math.pow(mouseX, 3))+
+						(deriCoeff[2]*Math.pow(mouseX, 2))+(deriCoeff[1]*Math.pow(mouseX, 1))+(deriCoeff[0]*Math.pow(mouseX, 0));
+				
+				double ang = Math.atan(deriAtxPos);
+				hvlRotate(mouseX, (float)functionGen.predict(mouseX), (float)Math.toDegrees(ang));
+				hvlDrawQuadc(mouseX, (float)functionGen.predict(mouseX), MenuManager.robotL, MenuManager.robotW, Main.getTexture(Main.FRAME_INDEX));
+				hvlResetRotation();
 			}
 		}
 	}
@@ -208,7 +238,9 @@ public class UI {
 					Waypoint point = new Waypoint(segments.get(segments.size()-1).myPoints.get(segments.get(segments.size()-1).myPoints.size()-1).x, 
 							segments.get(segments.size()-1).myPoints.get(segments.get(segments.size()-1).myPoints.size()-1).y,
 							20, Color.blue,MenuManager.robotW, MenuManager.robotL);
+					
 					tempWaypoints.add(point);
+					point.setAngle(segments.get(segments.size()-1).myPoints.get(segments.get(segments.size()-1).myPoints.size()-1).angleOffset);
 					clicked = true;
 				}
 			}
@@ -243,11 +275,13 @@ public class UI {
 		
 		if((Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  
 				Keyboard.isKeyDown(Keyboard.KEY_DOWN) || Keyboard.isKeyDown(Keyboard.KEY_UP)) && tempWaypoints.size() > 0) {
+			if((segments.size() > 0 && tempWaypoints.size() > 1) || segments.size() == 0) {
 			//FINE ADJUSTMENT FOR tempWaypoints
-			if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {tempWaypoints.get(tempWaypoints.size()-1).x += fineSpeed;}
-			if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {tempWaypoints.get(tempWaypoints.size()-1).x += -fineSpeed;}
-			if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {tempWaypoints.get(tempWaypoints.size()-1).y += -fineSpeed;}
-			if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {tempWaypoints.get(tempWaypoints.size()-1).y += fineSpeed;}
+				if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {tempWaypoints.get(tempWaypoints.size()-1).x += fineSpeed;}
+				if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {tempWaypoints.get(tempWaypoints.size()-1).x += -fineSpeed;}
+				if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {tempWaypoints.get(tempWaypoints.size()-1).y += -fineSpeed;}
+				if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {tempWaypoints.get(tempWaypoints.size()-1).y += fineSpeed;}
+			}
 		}else {
 			if(tempWaypoints.size()>0) {
 				tempWaypoints.get(tempWaypoints.size()-1).x += 0;

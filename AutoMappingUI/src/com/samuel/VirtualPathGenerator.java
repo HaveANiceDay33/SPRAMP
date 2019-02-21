@@ -37,7 +37,7 @@ public class VirtualPathGenerator {
 	
 	static BufferedWriter fileWriter;
 	
-	static float currentPosOnArc = 0;
+	static double currentPosOnArc = 0;
 	
 	static int index = 0;
 	
@@ -104,7 +104,7 @@ public class VirtualPathGenerator {
 	
 	public static void runVirtualPath(double [] coeffs, double arcL, boolean forward) {
 		
-		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = xPos = currentPosOnArc = (float) 0.0;
+		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = xPos =  stepOnArc = currentPosOnArc = (float) 0.0;
 		
 		double accelTime = velMax/accMax;
 		double [] deriCoeff = new double[5];
@@ -113,6 +113,7 @@ public class VirtualPathGenerator {
 		System.out.println("Pre simulation update. Current Time: " + time);
 		System.out.println("Total drive distance: " + arcL);
 		double direction;
+		
 		if(forward) {
 			direction = 1;
 			System.out.println("Going FORWARDS");
@@ -120,8 +121,6 @@ public class VirtualPathGenerator {
 			direction = -1;
 			System.out.println("Going BACKWARDS");
 		}
-		
-		pos = 0;
 		
 		if(arcL > (2*accelDistance)) {
 			
@@ -167,20 +166,38 @@ public class VirtualPathGenerator {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
 				
-				while(stepOnArc < currentPosOnArc*100){
-					
-					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
-							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
-					
-					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
-							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
-					
-				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
-					
-					stepOnArc += stepVal;
-					
-					xPos += step;
+				if(forward) {
+					while(stepOnArc < currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc += stepVal;
+						
+						xPos += step;
+					}
+				} else {
+					while(stepOnArc > currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc -= stepVal;
+						
+						xPos -= step;
+					}
 				}
+				
 					
 					
 				
@@ -228,18 +245,36 @@ public class VirtualPathGenerator {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
 				
-				while(stepOnArc < currentPosOnArc*100){
-					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
-							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
-					
-					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
-							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
-					
-				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
-					
-					stepOnArc += stepVal;
-					
-					xPos += step;
+				if(forward) {
+					while(stepOnArc < currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc += stepVal;
+						
+						xPos += step;
+					}
+				} else {
+					while(stepOnArc > currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc -= stepVal;
+						
+						xPos -= step;
+					}
 				}
 					
 					
@@ -270,20 +305,37 @@ public class VirtualPathGenerator {
 				for(int i = 0; i < 5; i++) {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
-				while(stepOnArc < currentPosOnArc*100){
-					
-					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
-							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
-					
-					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
-							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
-					
-				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
-					
-					stepOnArc += stepVal;
-					
-					xPos += step;
-				} 
+				if(forward) {
+					while(stepOnArc < currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc += stepVal;
+						
+						xPos += step;
+					}
+				} else {
+					while(stepOnArc > currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc -= stepVal;
+						
+						xPos -= step;
+					}
+				}
 					
 					
 				
@@ -344,19 +396,36 @@ public class VirtualPathGenerator {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
 				
-				while(stepOnArc < currentPosOnArc*100){
-					
-					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
-							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
-					
-					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
-							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
-					
-				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
-					
-					stepOnArc += stepVal;
-					
-					xPos += step;
+				if(forward) {
+					while(stepOnArc < currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc += stepVal;
+						
+						xPos += step;
+					}
+				} else {
+					while(stepOnArc > currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc -= stepVal;
+						
+						xPos -= step;
+					}
 				}
 					
 					
@@ -404,20 +473,37 @@ public class VirtualPathGenerator {
 				for(int i = 0; i < 5; i++) {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
-				while(stepOnArc < currentPosOnArc*100){
-					
-					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
-							(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
-					
-					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
-							(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
-					
-				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
-					
-					stepOnArc += stepVal;
-					
-					xPos += step;
-				} 
+				if(forward) {
+					while(stepOnArc < currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc += stepVal;
+						
+						xPos += step;
+					}
+				} else {
+					while(stepOnArc > currentPosOnArc*100){
+						
+						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
+								(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0)), 2));
+						
+						double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos-step, 4)) + (deriCoeff[3]*Math.pow(xPos-step, 3))+
+								(deriCoeff[2]*Math.pow(xPos-step, 2))+(deriCoeff[1]*Math.pow(xPos-step, 1))+(deriCoeff[0]*Math.pow(xPos-step, 0)), 2));
+						
+					    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+						
+						stepOnArc -= stepVal;
+						
+						xPos -= step;
+					}
+				}
 					
 					
 				

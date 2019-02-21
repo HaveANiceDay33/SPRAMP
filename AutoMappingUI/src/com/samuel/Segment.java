@@ -19,7 +19,11 @@ public class Segment{
 		for(Waypoint segPoints : myPoints) {   //DISPLAYING ALL tempWaypoints
 			segPoints.display();		
 		}
+		if(forward) {
+			UI.generateGraphics(myPoints, Color.green);
+		} else {
+			UI.generateGraphics(myPoints, Color.magenta);
+		}
 		
-		UI.generateGraphics(myPoints, Color.green);
 	}
 }
