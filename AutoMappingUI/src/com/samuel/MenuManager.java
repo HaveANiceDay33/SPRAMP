@@ -73,7 +73,7 @@ public class MenuManager {
 		}).build());
 		
 		ui.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(270).setHeight(100).setX(Display.getWidth() - 350).setY(Display.getHeight()-180).build());
-		ui.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("New\nSegment").setClickedCommand(new HvlAction1<HvlButton>() {
+		ui.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Finish\nSegment").setClickedCommand(new HvlAction1<HvlButton>() {
 			@Override
 			public void run(HvlButton a) {
 				if(UI.tempWaypoints.size() > 0) {
@@ -91,10 +91,6 @@ public class MenuManager {
 					}
 					
 					UI.tempWaypoints.clear();
-					ui.getChildOfType(HvlArrangerBox.class, 2).getFirstOfType(HvlTextBox.class).setText("0");
-					ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 1).setText("0");
-					ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 2).setText("0");
-					ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 3).setText("0");
 				}
 			}
 		}).build());
@@ -151,7 +147,7 @@ public class MenuManager {
 				int segNum = 1;
 				for(Segment segment : UI.segments) {
 					System.out.print("Segment " + segNum + ": \n");
-					VirtualPathGenerator.runVirtualPath(UI.generateData(segment.myPoints), UI.arcLength/100, segment.forward);
+					VirtualPathGenerator.runVirtualPath(UI.generateData(segment.myPoints), UI.arcLength/100, segment);
 					System.out.println("");
 					segNum++;
 				}
@@ -176,7 +172,7 @@ public class MenuManager {
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
 		
@@ -191,7 +187,7 @@ public class MenuManager {
 		}).setUnfocusedDrawable(new HvlComponentDrawable() {
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
 		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(10, 10));
@@ -205,7 +201,7 @@ public class MenuManager {
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
 		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(10, 10));
@@ -219,7 +215,7 @@ public class MenuManager {
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
 		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(10, 10));
@@ -233,7 +229,7 @@ public class MenuManager {
 			
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
 		
@@ -248,7 +244,7 @@ public class MenuManager {
 		}).setUnfocusedDrawable(new HvlComponentDrawable() {	
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
 		rbg.getFirstArrangerBox().add(new HvlSpacer(30, 30));
@@ -260,7 +256,7 @@ public class MenuManager {
 		}).setUnfocusedDrawable(new HvlComponentDrawable() {
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
-				hvlDrawQuad(x,y,width,height, Color.green);	
+				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
 		rbg.getChildOfType(HvlArrangerBox.class, 0).add(new HvlSpacer(30, 30));

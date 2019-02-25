@@ -24,10 +24,10 @@ public class VirtualPathGenerator {
 	static int nMotors = 2; //number of motors in a gearbox
 	
 	static double pathRadius = 100000; //6.1516;//0.4064; // m
-	static double velMax = 2.0; 	// m/s
-	static double accMax = 1.0; // m/s^2
-	static double angVelMax = 4.0; // rad/s
-	static double angAccMax = 2.0; // rad/s^2
+	static double velMax; 	// m/s
+	static double accMax; // m/s^2
+	static double angVelMax; // rad/s
+	static double angAccMax; // rad/s^2
 	static double dt = 0.02; // s  //adjusting 2/19/19
 	
 	static double k1 = 2/wheelBaseWidth;
@@ -102,9 +102,14 @@ public class VirtualPathGenerator {
 		}
 	}
 	
-	public static void runVirtualPath(double [] coeffs, double arcL, boolean forward) {
+	public static void runVirtualPath(double [] coeffs, double arcL, Segment segment) {
 		
 		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = xPos =  stepOnArc = currentPosOnArc = (float) 0.0;
+		
+		velMax = segment.getVel();
+		accMax = segment.getAcc();
+		angVelMax = segment.getAngVel();
+		angAccMax = segment.getAngAcc();
 		
 		double accelTime = velMax/accMax;
 		double [] deriCoeff = new double[5];
@@ -113,7 +118,7 @@ public class VirtualPathGenerator {
 		System.out.println("Pre simulation update. Current Time: " + time);
 		System.out.println("Total drive distance: " + arcL);
 		double direction;
-		
+		boolean forward = segment.forward;
 		if(forward) {
 			direction = 1;
 			System.out.println("Going FORWARDS");
