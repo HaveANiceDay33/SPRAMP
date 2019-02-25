@@ -78,10 +78,21 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				if(UI.tempWaypoints.size() > 0) {
 					Segment newSegment;
-					double vel = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getFirstOfType(HvlTextBox.class).getText());
-					double acc = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 1).getText());
-					double angVel = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 2).getText());
-					double angAcc = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 3).getText());
+					double vel;
+					double acc;
+					double angVel;
+					double angAcc;
+					try {
+						vel = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getFirstOfType(HvlTextBox.class).getText());
+						acc = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 1).getText());
+						angVel = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 2).getText());
+						angAcc = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 3).getText());
+					} catch (NumberFormatException e) {
+						vel = 0;
+						acc = 0;
+						angVel = 0;
+						angAcc = 0;
+					}
 					if(UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
 						newSegment = new Segment(UI.tempWaypoints, true, vel, acc, angVel, angAcc);
 						UI.segments.add(newSegment);

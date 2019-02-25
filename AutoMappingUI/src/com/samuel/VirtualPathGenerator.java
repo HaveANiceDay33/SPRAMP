@@ -111,6 +111,10 @@ public class VirtualPathGenerator {
 		angVelMax = segment.getAngVel();
 		angAccMax = segment.getAngAcc();
 		
+		if(velMax == 0 || accMax == 0 || angVelMax == 0 || angAccMax == 0) {
+			System.out.println("HEY DUMMY SET YOUR VARIABLES\n");
+		}
+		
 		double accelTime = velMax/accMax;
 		double [] deriCoeff = new double[5];
 		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2);
