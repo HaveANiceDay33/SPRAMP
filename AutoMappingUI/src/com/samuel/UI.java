@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
 import com.osreboot.ridhvl.action.HvlAction0;
@@ -314,6 +315,10 @@ public class UI {
 			}
 		});
 		Main.textOutline("Press Q to see controls", Color.cyan, Color.darkGray, 50, 50, 0.4f);
+		Main.textOutline("v", Color.cyan, Color.darkGray, Display.getWidth() - 340, 290, 0.25f);
+		Main.textOutline("a", Color.cyan, Color.darkGray, Display.getWidth() - 340, 350, 0.25f);
+		Main.textOutline("av", Color.cyan, Color.darkGray, Display.getWidth() - 340, 410, 0.25f);
+		Main.textOutline("aa", Color.cyan, Color.darkGray, Display.getWidth() - 340, 470, 0.25f);
 		if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 				HvlMenu.setCurrent(MenuManager.inst);
