@@ -78,15 +78,23 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				if(UI.tempWaypoints.size() > 0) {
 					Segment newSegment;
+					double vel = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getFirstOfType(HvlTextBox.class).getText());
+					double acc = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 1).getText());
+					double angVel = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 2).getText());
+					double angAcc = Double.parseDouble(ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 3).getText());
 					if(UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
-						newSegment = new Segment(UI.tempWaypoints, true);
+						newSegment = new Segment(UI.tempWaypoints, true, vel, acc, angVel, angAcc);
 						UI.segments.add(newSegment);
 					} else if (UI.tempWaypoints.get(0).x > UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
-						newSegment = new Segment(UI.tempWaypoints, false);
+						newSegment = new Segment(UI.tempWaypoints, false, vel, acc, angVel, angAcc);
 						UI.segments.add(newSegment);
 					}
 					
 					UI.tempWaypoints.clear();
+					ui.getChildOfType(HvlArrangerBox.class, 2).getFirstOfType(HvlTextBox.class).setText("0");
+					ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 1).setText("0");
+					ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 2).setText("0");
+					ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 3).setText("0");
 				}
 			}
 		}).build());
@@ -171,6 +179,64 @@ public class MenuManager {
 				hvlDrawQuad(x,y,width,height, Color.green);	
 			}
 		}).build());
+		
+		//vel and acc changes
+		ui.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(300).setHeight(500).setX(Display.getWidth() - 350).setY(140).build());
+		//vel
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setNumbersOnly(true).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.lightGray);	
+			}
+		}).setUnfocusedDrawable(new HvlComponentDrawable() {
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.green);	
+			}
+		}).build());
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(10, 10));
+		//acc
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setNumbersOnly(true).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.lightGray);	
+			}
+		}).setUnfocusedDrawable(new HvlComponentDrawable() {
+			
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.green);	
+			}
+		}).build());
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(10, 10));
+		//ang vel
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setNumbersOnly(true).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.lightGray);	
+			}
+		}).setUnfocusedDrawable(new HvlComponentDrawable() {
+			
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.green);	
+			}
+		}).build());
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(10, 10));
+		//ang acc
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setNumbersOnly(true).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.lightGray);	
+			}
+		}).setUnfocusedDrawable(new HvlComponentDrawable() {
+			
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.green);	
+			}
+		}).build());
+		
 		
 		rbg.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)-200).build());
 		rbg.getFirstArrangerBox().add(new HvlSpacer(30, 30));
