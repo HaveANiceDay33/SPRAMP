@@ -203,8 +203,8 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				//fileName = UI.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText();
 				if(!rbg.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText().equals("")){
-					robotW = Float.parseFloat(rbg.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText()) *  (float) (39 * 2.54 * .56);;
-					robotL = Float.parseFloat(rbg.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText()) *  (float) (39 * 2.54 * .56);;
+					robotW = Float.parseFloat(rbg.getFirstArrangerBox().getFirstOfType(HvlTextBox.class).getText()) *  (float) (2.54 * .56);;
+					robotL = Float.parseFloat(rbg.getFirstArrangerBox().getChildOfType(HvlTextBox.class, 1).getText()) *  (float) (2.54 * .56);;
 					ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText("");
 					UI.background = Main.FIELD_INDEX;
 					HvlMenu.setCurrent(ui);
