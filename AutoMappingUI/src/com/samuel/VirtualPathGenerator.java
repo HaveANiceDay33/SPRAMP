@@ -1,15 +1,8 @@
 package com.samuel;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.lwjgl.opengl.ARBCLEvent;
-import org.lwjgl.opengl.ARBClearBufferObject;
-
-import com.osreboot.ridhvl.menu.component.HvlArrangerBox;
-import com.osreboot.ridhvl.menu.component.HvlTextBox;
 //scp beter1.BOND lvuser@roborio-5811-frc.local:
 public class VirtualPathGenerator {
 	static double mass = 40.0; // kg
