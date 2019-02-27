@@ -22,6 +22,7 @@ public class UI {
 	
 	public final static float WALL_OFFSET = 92;
 	public static final double PIXELS_TO_CM = 0.56;
+	public static final double TOP_OFFSET = 135;
 	public final static String userHomeFolder = System.getProperty("user.home")+"/Documents/";
 	
 	static double arcLength = 0;
@@ -158,14 +159,15 @@ public class UI {
 		}
 	}
 	
-	public static double[] generateData(ArrayList<Waypoint> waypoints) {
+	public static double[] generateData(Segment seg) {
+		ArrayList<Waypoint> waypoints = seg.segPoints;
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
 		arcLength = 0;
 		if(waypoints.size() > 0) {
 			for(int i = 0; i < waypoints.size(); i++) {
 				xVals.add((double) (Math.round((((waypoints.get(i).x)+WALL_OFFSET)/PIXELS_TO_CM)) - Math.round((((waypoints.get(0).x)+WALL_OFFSET)/PIXELS_TO_CM)))); //returns cm
-				yVals.add(-((double) (Math.round((((waypoints.get(i).y)-135)/PIXELS_TO_CM)) - Math.round((((waypoints.get(0).y)-135)/PIXELS_TO_CM)))));
+				yVals.add(-((double) (Math.round((((waypoints.get(i).y)-TOP_OFFSET)/PIXELS_TO_CM)) - Math.round((((waypoints.get(0).y)-TOP_OFFSET)/PIXELS_TO_CM)))));
 			}
 			double[] xArray = new double[xVals.size()];
 			double[] yArray = new double[yVals.size()];
@@ -190,7 +192,6 @@ public class UI {
 			}
 			
 			double finalX = xVals.get(xVals.size()-1);
-			System.out.println(finalX);
 			double step = 0.001; //in CM, lower to get more precise
 			
 			//Riemann sum!
@@ -222,7 +223,7 @@ public class UI {
 				}
 			}
 			
-			
+			seg.setArcLengthCM(arcLength);
 			
 			System.out.println("y(x) = " + functionGen.toString());
 			System.out.println(functionGenerator("v(x)", deriCoeff));
@@ -255,12 +256,12 @@ public class UI {
 					clicked = true;
 				}
 				if(tempWaypoints.size() == 0 && segments.size() != 0) {	
-					Waypoint point = new Waypoint(segments.get(segments.size()-1).myPoints.get(segments.get(segments.size()-1).myPoints.size()-1).x, 
-							segments.get(segments.size()-1).myPoints.get(segments.get(segments.size()-1).myPoints.size()-1).y,
+					Waypoint point = new Waypoint(segments.get(segments.size()-1).segPoints.get(segments.get(segments.size()-1).segPoints.size()-1).x, 
+							segments.get(segments.size()-1).segPoints.get(segments.get(segments.size()-1).segPoints.size()-1).y,
 							20, Color.blue,MenuManager.robotW, MenuManager.robotL);
 					
 					tempWaypoints.add(point);
-					point.setAngle(segments.get(segments.size()-1).myPoints.get(segments.get(segments.size()-1).myPoints.size()-1).angleOffset);
+					point.setAngle(segments.get(segments.size()-1).segPoints.get(segments.get(segments.size()-1).segPoints.size()-1).angleOffset);
 					clicked = true;
 				}
 			}
@@ -290,7 +291,7 @@ public class UI {
 	
 		for(int i = 0; i < tempWaypoints.size(); i++) {
 			Main.textOutline((i+1)+". X: "+(Math.round((((tempWaypoints.get(i).x)+WALL_OFFSET)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).x)+WALL_OFFSET)/PIXELS_TO_CM)))+
-					" cm. Y: "+(Math.round((((tempWaypoints.get(i).y)-135)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).y)-135)/PIXELS_TO_CM)))+" cm.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
+					" cm. Y: "+(Math.round((((tempWaypoints.get(i).y)-TOP_OFFSET)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).y)-TOP_OFFSET)/PIXELS_TO_CM)))+" cm.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
 		}
 		
 		if((Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  

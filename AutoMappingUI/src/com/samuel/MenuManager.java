@@ -158,7 +158,7 @@ public class MenuManager {
 				int segNum = 1;
 				for(Segment segment : UI.segments) {
 					System.out.print("Segment " + segNum + ": \n");
-					VirtualPathGenerator.runVirtualPath(UI.generateData(segment.myPoints), UI.arcLength/100, segment);
+					VirtualPathGenerator.runVirtualPath(UI.generateData(segment), segment.getArcLengthMeters(), segment);
 					System.out.println("");
 					segNum++;
 				}
