@@ -21,6 +21,7 @@ import com.osreboot.ridhvl.painter.HvlCursor;
 public class UI {
 	
 	public final static float WALL_OFFSET = 92;
+	public static final double PIXELS_TO_CM = 0.56;
 	public final static String userHomeFolder = System.getProperty("user.home")+"/Documents/";
 	
 	static double arcLength = 0;
@@ -163,8 +164,8 @@ public class UI {
 		arcLength = 0;
 		if(waypoints.size() > 0) {
 			for(int i = 0; i < waypoints.size(); i++) {
-				xVals.add((double) (Math.round((((waypoints.get(i).x)+WALL_OFFSET)/0.56)) - Math.round((((waypoints.get(0).x)+WALL_OFFSET)/0.56)))); //returns cm
-				yVals.add(-((double) (Math.round((((waypoints.get(i).y)-135)/0.56)) - Math.round((((waypoints.get(0).y)-135)/0.56)))));
+				xVals.add((double) (Math.round((((waypoints.get(i).x)+WALL_OFFSET)/PIXELS_TO_CM)) - Math.round((((waypoints.get(0).x)+WALL_OFFSET)/PIXELS_TO_CM)))); //returns cm
+				yVals.add(-((double) (Math.round((((waypoints.get(i).y)-135)/PIXELS_TO_CM)) - Math.round((((waypoints.get(0).y)-135)/PIXELS_TO_CM)))));
 			}
 			double[] xArray = new double[xVals.size()];
 			double[] yArray = new double[yVals.size()];
@@ -288,8 +289,8 @@ public class UI {
 		if(Main.zoomer.getY() <= 0) {Main.zoomer.setY(0);}
 	
 		for(int i = 0; i < tempWaypoints.size(); i++) {
-			Main.textOutline((i+1)+". X: "+(Math.round((((tempWaypoints.get(i).x)+WALL_OFFSET)/0.56) - Math.round(((tempWaypoints.get(0).x)+WALL_OFFSET)/0.56)))+
-					" cm. Y: "+(Math.round((((tempWaypoints.get(i).y)-135)/0.56) - Math.round(((tempWaypoints.get(0).y)-135)/0.56)))+" cm.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
+			Main.textOutline((i+1)+". X: "+(Math.round((((tempWaypoints.get(i).x)+WALL_OFFSET)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).x)+WALL_OFFSET)/PIXELS_TO_CM)))+
+					" cm. Y: "+(Math.round((((tempWaypoints.get(i).y)-135)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).y)-135)/PIXELS_TO_CM)))+" cm.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
 		}
 		
 		if((Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  
