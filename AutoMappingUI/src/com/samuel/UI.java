@@ -188,22 +188,40 @@ public class UI {
 				secDeriCoeff[i] = deriCoeff[i+1] * (i+1); 							 
 			}
 			
-			double finalX = Math.abs(xVals.get(xVals.size()-1));
+			double finalX = xVals.get(xVals.size()-1);
+			System.out.println(finalX);
 			double step = 0.001; //in CM, lower to get more precise
-
+			
 			//Riemann sum!
-			for(double i = step; i < finalX; i+=step) {
-				
-				double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i, 4)) + (deriCoeff[3]*Math.pow(i, 3))+
-						(deriCoeff[2]*Math.pow(i, 2))+(deriCoeff[1]*Math.pow(i, 1))+(deriCoeff[0]*Math.pow(i, 0)), 2));
-				
-				double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i-step, 4)) + (deriCoeff[3]*Math.pow(i-step, 3))+
-						(deriCoeff[2]*Math.pow(i-step, 2))+(deriCoeff[1]*Math.pow(i-step, 1))+(deriCoeff[0]*Math.pow(i-step, 0)), 2));
-				
-			    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
-				
-				arcLength += stepVal;
+			if(waypoints.get(0).x < waypoints.get(waypoints.size()-1).x) {
+				for(double i = step; i < finalX; i+=step) {
+					
+					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i, 4)) + (deriCoeff[3]*Math.pow(i, 3))+
+							(deriCoeff[2]*Math.pow(i, 2))+(deriCoeff[1]*Math.pow(i, 1))+(deriCoeff[0]*Math.pow(i, 0)), 2));
+					
+					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i-step, 4)) + (deriCoeff[3]*Math.pow(i-step, 3))+
+							(deriCoeff[2]*Math.pow(i-step, 2))+(deriCoeff[1]*Math.pow(i-step, 1))+(deriCoeff[0]*Math.pow(i-step, 0)), 2));
+					
+				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+					
+					arcLength += stepVal;
+				}
+			} else {
+				for(double i = finalX; i < 0; i+=step) {
+					
+					double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i, 4)) + (deriCoeff[3]*Math.pow(i, 3))+
+							(deriCoeff[2]*Math.pow(i, 2))+(deriCoeff[1]*Math.pow(i, 1))+(deriCoeff[0]*Math.pow(i, 0)), 2));
+					
+					double b = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(i-step, 4)) + (deriCoeff[3]*Math.pow(i-step, 3))+
+							(deriCoeff[2]*Math.pow(i-step, 2))+(deriCoeff[1]*Math.pow(i-step, 1))+(deriCoeff[0]*Math.pow(i-step, 0)), 2));
+					
+				    double stepVal = step * ((a+b)/2); //complies with trapezoidal Riemann sum h(f(a) + f(b))/2
+					
+					arcLength += stepVal;
+				}
 			}
+			
+			
 			
 			System.out.println("y(x) = " + functionGen.toString());
 			System.out.println(functionGenerator("v(x)", deriCoeff));

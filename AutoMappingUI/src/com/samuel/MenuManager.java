@@ -300,6 +300,10 @@ public class MenuManager {
 		}).build());
 	
 		System.out.println("");
+		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 0).setText("2");
+		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 1).setText("2");
+		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 2).setText("2");
+		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 3).setText("2");
 		HvlMenu.setCurrent(rbg);
 	}
 	
