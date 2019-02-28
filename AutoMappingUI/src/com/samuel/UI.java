@@ -335,10 +335,19 @@ public class UI {
 			}
 		});
 		Main.textOutline("Press Q to see controls", Color.cyan, Color.darkGray, 50, 50, 0.4f);
-		Main.textOutline("v", Color.cyan, Color.darkGray, Display.getWidth() - 340, 290, 0.25f);
-		Main.textOutline("a", Color.cyan, Color.darkGray, Display.getWidth() - 340, 350, 0.25f);
-		Main.textOutline("av", Color.cyan, Color.darkGray, Display.getWidth() - 340, 410, 0.25f);
-		Main.textOutline("aa", Color.cyan, Color.darkGray, Display.getWidth() - 340, 470, 0.25f);
+		Main.textOutline("v", Color.cyan, Color.darkGray, Display.getWidth() - 340, 260, 0.25f);
+		Main.textOutline("a", Color.cyan, Color.darkGray, Display.getWidth() - 340, 320, 0.25f);
+		Main.textOutline("av", Color.cyan, Color.darkGray, Display.getWidth() - 340, 380, 0.25f);
+		Main.textOutline("aa", Color.cyan, Color.darkGray, Display.getWidth() - 340, 440, 0.25f);
+		Main.textOutline("ai", Color.cyan, Color.darkGray, Display.getWidth() - 340, 500, 0.25f);
+		if(tempWaypoints.size() > 0) {
+			if(!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("") && 
+					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("-") && 
+					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals(".")) {
+				tempWaypoints.get(0).setAngle(Math.toDegrees(Double.parseDouble(MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText())));
+			}
+		}
+		
 		if(mouseX < 1095 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 				HvlMenu.setCurrent(MenuManager.inst);

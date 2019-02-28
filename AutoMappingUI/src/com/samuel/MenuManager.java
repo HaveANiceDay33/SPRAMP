@@ -243,6 +243,20 @@ public class MenuManager {
 				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
+		//starting angle
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(10, 10));
+		ui.getChildOfType(HvlArrangerBox.class, 2).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setNumbersOnly(true).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.lightGray);	
+			}
+		}).setUnfocusedDrawable(new HvlComponentDrawable() {
+			
+			@Override
+			public void draw(float delta, float x, float y, float width, float height) {
+				hvlDrawQuad(x,y,width,height, Color.white);	
+			}
+		}).build());
 		
 		
 		rbg.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)-200).build());
@@ -304,6 +318,7 @@ public class MenuManager {
 		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 1).setText("2");
 		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 2).setText("2");
 		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 3).setText("2");
+		ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).setText("0");
 		HvlMenu.setCurrent(rbg);
 	}
 	

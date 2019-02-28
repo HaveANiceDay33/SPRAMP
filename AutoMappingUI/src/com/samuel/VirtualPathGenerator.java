@@ -104,7 +104,7 @@ public class VirtualPathGenerator {
 	
 	public static void runVirtualPath(double [] coeffs, double arcL, Segment segment) {
 		
-		time = pos = vel = acc = ang = angVel = angAcc = voltRight = voltLeft = xPos =  stepOnArc = currentPosOnArc = (float) 0.0;
+		time = pos = vel = acc = ang = angVel = angAcc = prevAng = voltRight = voltLeft = xPos =  stepOnArc = currentPosOnArc = (float) 0.0;
 		
 		velMax = segment.getVel();
 		accMax = segment.getAcc();
