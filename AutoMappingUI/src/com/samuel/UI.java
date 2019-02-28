@@ -14,6 +14,8 @@ import org.newdawn.slick.Color;
 
 import com.osreboot.ridhvl.action.HvlAction0;
 import com.osreboot.ridhvl.menu.HvlMenu;
+import com.osreboot.ridhvl.menu.component.HvlArrangerBox;
+import com.osreboot.ridhvl.menu.component.HvlTextBox;
 import com.osreboot.ridhvl.painter.HvlCursor;
 
 public class UI {
