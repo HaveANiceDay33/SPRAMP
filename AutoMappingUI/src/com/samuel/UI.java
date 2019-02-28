@@ -340,7 +340,7 @@ public class UI {
 		Main.textOutline("av", Color.cyan, Color.darkGray, Display.getWidth() - 340, 380, 0.25f);
 		Main.textOutline("aa", Color.cyan, Color.darkGray, Display.getWidth() - 340, 440, 0.25f);
 		Main.textOutline("ai", Color.cyan, Color.darkGray, Display.getWidth() - 340, 500, 0.25f);
-		if(tempWaypoints.size() > 0) {
+		if(tempWaypoints.size() > 0 && segments.size() == 0) {
 			if(!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("") && 
 					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("-") && 
 					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals(".")) {
