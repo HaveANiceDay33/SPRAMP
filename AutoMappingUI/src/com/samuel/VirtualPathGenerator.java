@@ -163,7 +163,13 @@ public class VirtualPathGenerator {
 				vel = (vel + acc*dt);
 				
 				posOnArc += (vel*dt);
-			    currentPosOnArc+=(Math.abs(vel)*dt);
+				
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
+			    
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);
 				
@@ -227,7 +233,11 @@ public class VirtualPathGenerator {
 			while(time < targetTime - accelTime) {
 				
 				posOnArc += (vel*dt);
-			    currentPosOnArc+=(Math.abs(vel)*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
 				
@@ -290,7 +300,11 @@ public class VirtualPathGenerator {
 				vel = (vel - acc*dt);
 				
 				posOnArc += (vel*dt);
-			    currentPosOnArc+=(Math.abs(vel)*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
 				for(int i = 0; i < 5; i++) {
@@ -380,7 +394,11 @@ public class VirtualPathGenerator {
 				vel = (vel + acc*dt);
 				
 				posOnArc += (vel*dt);
-			    currentPosOnArc+=(Math.abs(vel)*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
 			    
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);
 				
@@ -444,7 +462,11 @@ public class VirtualPathGenerator {
 				vel = (vel - acc*dt);
 				
 				posOnArc += (vel*dt);
-			    currentPosOnArc+=(Math.abs(vel)*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
 				for(int i = 0; i < 5; i++) {
