@@ -16,6 +16,7 @@ import com.osreboot.ridhvl.menu.HvlComponentDefault;
 import com.osreboot.ridhvl.menu.HvlMenu;
 import com.osreboot.ridhvl.menu.component.HvlArrangerBox;
 import com.osreboot.ridhvl.menu.component.HvlButton;
+import com.osreboot.ridhvl.menu.component.HvlCheckbox;
 import com.osreboot.ridhvl.menu.component.HvlComponentDrawable;
 import com.osreboot.ridhvl.menu.component.HvlSpacer;
 import com.osreboot.ridhvl.menu.component.HvlTextBox;
@@ -63,6 +64,21 @@ public class MenuManager {
 			}
 		}).build());
 		
+		HvlCheckbox defaultCheckbox = new HvlCheckbox(180, 75, true, new HvlComponentDrawable(){
+			@Override
+			public void draw(float deltaArg, float xArg, float yArg, float widthArg, float heightArg) {
+				hvlDrawQuad(xArg, yArg, widthArg, heightArg, Color.darkGray);
+				Main.gameFont.drawWordc("Backwards", xArg+(widthArg/2), yArg+(heightArg/2), Color.red, 0.3f);
+			}
+		}, new HvlComponentDrawable(){
+			@Override
+			public void draw(float deltaArg, float xArg, float yArg, float widthArg, float heightArg) {
+				hvlDrawQuad(xArg, yArg, widthArg, heightArg, Color.darkGray);
+				Main.gameFont.drawWordc("Forwards", xArg+(widthArg/2), yArg+(heightArg/2), Color.green, 0.3f);
+			}
+		});
+		HvlComponentDefault.setDefault(defaultCheckbox);
+		
 		inst.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(270).setHeight(100).setX(Display.getWidth() - 350).setY(Display.getHeight()-180).build());
 		inst.getFirstArrangerBox().add(new HvlSpacer(0, 500));
 		inst.getFirstArrangerBox().add(new HvlLabeledButton.Builder().setText("Back").setClickedCommand(new HvlAction1<HvlButton>(){
@@ -93,11 +109,21 @@ public class MenuManager {
 						angVel = 0;
 						angAcc = 0;
 					}
-					if(UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
-						newSegment = new Segment(UI.tempWaypoints, true, vel, acc, angVel, angAcc);
+					if(ui.getChildOfType(HvlArrangerBox.class, 3).getFirstOfType(HvlCheckbox.class).getChecked() == true && 
+							UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+						newSegment = new Segment(UI.tempWaypoints, true, true, vel, acc, angVel, angAcc);
 						UI.segments.add(newSegment);
-					} else if (UI.tempWaypoints.get(0).x > UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
-						newSegment = new Segment(UI.tempWaypoints, false, vel, acc, angVel, angAcc);
+					} else if (ui.getChildOfType(HvlArrangerBox.class, 3).getFirstOfType(HvlCheckbox.class).getChecked() == false
+							&& UI.tempWaypoints.get(0).x < UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+						newSegment = new Segment(UI.tempWaypoints, false, true, vel, acc, angVel, angAcc);
+						UI.segments.add(newSegment);
+					} else if(ui.getChildOfType(HvlArrangerBox.class, 3).getFirstOfType(HvlCheckbox.class).getChecked() == true && 
+							UI.tempWaypoints.get(0).x > UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+						newSegment = new Segment(UI.tempWaypoints, true, false, vel, acc, angVel, angAcc);
+						UI.segments.add(newSegment);
+					} else if (ui.getChildOfType(HvlArrangerBox.class, 3).getFirstOfType(HvlCheckbox.class).getChecked() == false
+							&& UI.tempWaypoints.get(0).x > UI.tempWaypoints.get(UI.tempWaypoints.size()-1).x) {
+						newSegment = new Segment(UI.tempWaypoints, false, false, vel, acc, angVel, angAcc);
 						UI.segments.add(newSegment);
 					}
 					
@@ -257,6 +283,10 @@ public class MenuManager {
 				hvlDrawQuad(x,y,width,height, Color.white);	
 			}
 		}).build());
+		
+		ui.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(300).setHeight(500).setX(Display.getWidth() - 350).setY(-50).build());
+		ui.getChildOfType(HvlArrangerBox.class, 3).add(new HvlCheckbox.Builder().build());
+		
 		
 		
 		rbg.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)-200).build());

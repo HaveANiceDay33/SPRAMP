@@ -31,6 +31,7 @@ public class VirtualPathGenerator {
 	static BufferedWriter fileWriter;
 	
 	static double currentPosOnArc = 0;
+	static double posOnArc = 0;
 	
 	static int index = 0;
 	
@@ -97,7 +98,7 @@ public class VirtualPathGenerator {
 	
 	public static void runVirtualPath(double [] coeffs, double arcL, Segment segment) {
 		
-		time = pos = vel = acc = ang = angVel = angAcc = prevAng = voltRight = voltLeft = xPos =  stepOnArc = currentPosOnArc = (float) 0.0;
+		time = pos = vel = acc = ang = angVel = angAcc = prevAng = voltRight = voltLeft = xPos =  stepOnArc = posOnArc = currentPosOnArc = (float) 0.0;
 		
 		velMax = segment.getVel();
 		accMax = segment.getAcc();
@@ -116,6 +117,7 @@ public class VirtualPathGenerator {
 		System.out.println("Total drive distance: " + arcL);
 		double direction;
 		boolean forward = segment.forward;
+		boolean disp = segment.disp;
 		if(forward) {
 			direction = 1;
 			System.out.println("Going FORWARDS");
@@ -160,7 +162,14 @@ public class VirtualPathGenerator {
 				acc = accMax * direction; 
 				vel = (vel + acc*dt);
 				
-				currentPosOnArc+=(vel*dt);
+				posOnArc += (vel*dt);
+				
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
+			    
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);
 				
@@ -168,7 +177,7 @@ public class VirtualPathGenerator {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
 				
-				if(forward) {
+				if(disp) {
 					while(stepOnArc < currentPosOnArc*100){
 						
 						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
@@ -209,27 +218,11 @@ public class VirtualPathGenerator {
 				ang = Math.atan(deriAtxPos);
 				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
 				prevAng = ang;
-				//pos = (pos + vel*Math.cos(ang)*dt);
-				//pos++;
-				/*
-				if(Math.abs(pathRadius)>= 10000) {
-					angVel=0;
-				}else {
-					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-					//angAcc = acc / pathRadius * direction;
-					angVel = vel / pathRadius;
-				}
-				*/
-				//angVel = (angVel + angAcc*dt);
-				//ang = (ang + angVel*dt);
-				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
-				
-				
-				
+			
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 				
-				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
+				writeLine(voltRight, voltLeft, posOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				
 				index++;
 				time += dt;
@@ -239,7 +232,12 @@ public class VirtualPathGenerator {
 			
 			while(time < targetTime - accelTime) {
 				
-				currentPosOnArc+=(vel*dt);
+				posOnArc += (vel*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
 				
@@ -247,7 +245,7 @@ public class VirtualPathGenerator {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
 				
-				if(forward) {
+				if(disp) {
 					while(stepOnArc < currentPosOnArc*100){
 						
 						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
@@ -291,7 +289,7 @@ public class VirtualPathGenerator {
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, 0, angVel, false);
 			 
-				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
+				writeLine(voltRight, voltLeft, posOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				
 				index++;
 				time += dt;
@@ -301,13 +299,18 @@ public class VirtualPathGenerator {
 			while(time < targetTime) { 
 				vel = (vel - acc*dt);
 				
-				currentPosOnArc+=(vel*dt);
+				posOnArc += (vel*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
 				for(int i = 0; i < 5; i++) {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
-				if(forward) {
+				if(disp) {
 					while(stepOnArc < currentPosOnArc*100){
 						
 						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
@@ -351,7 +354,7 @@ public class VirtualPathGenerator {
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 
-				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
+				writeLine(voltRight, voltLeft, posOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				index++;
 				time += dt;
 			}
@@ -390,15 +393,20 @@ public class VirtualPathGenerator {
 				acc = accMax * direction; 
 				vel = (vel + acc*dt);
 				
-				currentPosOnArc+=(vel*dt);
-				
+				posOnArc += (vel*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
+			    
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);
 				
 				for(int i = 0; i < 5; i++) {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
 				
-				if(forward) {
+				if(disp) {
 					while(stepOnArc < currentPosOnArc*100){
 						
 						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
@@ -438,27 +446,11 @@ public class VirtualPathGenerator {
 				ang = Math.atan(deriAtxPos);
 				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
 				prevAng = ang;
-				//pos = (pos + vel*Math.cos(ang)*dt);
-				//pos++;
-				/*
-				if(Math.abs(pathRadius)>= 10000) {
-					angVel=0;
-				}else {
-					//angAcc = (angAccMax*Math.signum(pathRadius))*direction;
-					//angAcc = acc / pathRadius * direction;
-					angVel = vel / pathRadius;
-				}
-				*/
-				//angVel = (angVel + angAcc*dt);
-				//ang = (ang + angVel*dt);
-				//System.out.println(pos + "\t" + vel + "\t" + ang + "\t" + pathRadius+ "\t" + Math.cos(ang)+ "\t" + accMax + "\t" + velMax);
-				
-				
 				
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 				
-				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
+				writeLine(voltRight, voltLeft, posOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				
 				index++;
 				time += dt;
@@ -469,13 +461,18 @@ public class VirtualPathGenerator {
 			while(time < targetTime) {
 				vel = (vel - acc*dt);
 				
-				currentPosOnArc+=(vel*dt);
+				posOnArc += (vel*dt);
+				if(forward != disp) {
+					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else {
+					currentPosOnArc+=(vel*dt);
+				}
 				
 				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);	
 				for(int i = 0; i < 5; i++) {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
-				if(forward) {
+				if(disp) {
 					while(stepOnArc < currentPosOnArc*100){
 						
 						double a = Math.sqrt(1 + Math.pow((deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
@@ -519,7 +516,7 @@ public class VirtualPathGenerator {
 				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 
-				writeLine(voltRight, voltLeft, currentPosOnArc, vel, ang, angVel, pathRadius, xPos/100);
+				writeLine(voltRight, voltLeft, posOnArc, vel, ang, angVel, pathRadius, xPos/100);
 				index++;
 				time += dt;
 			}

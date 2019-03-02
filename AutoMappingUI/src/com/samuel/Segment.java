@@ -6,15 +6,16 @@ import org.newdawn.slick.Color;
 
 public class Segment{
 	ArrayList<Waypoint> segPoints;
-	public boolean forward;
+	public boolean forward, disp;
 	private double vel, angVel, acc, angAcc, arcLength = 0;
-	public Segment(ArrayList<Waypoint> points, boolean forward, double vel, double acc, double angVel, double angAcc) {
+	public Segment(ArrayList<Waypoint> points, boolean forward, boolean disp, double vel, double acc, double angVel, double angAcc) {
 		segPoints = new ArrayList<>();
 		this.vel = vel;
 		this.angVel = angVel;
 		this.acc = acc;
 		this.angAcc = angAcc;
 		this.forward = forward;
+		this.disp = disp;
 		for(int i = 0; i < points.size(); i++) {
 			segPoints.add(points.get(i));
 		}
