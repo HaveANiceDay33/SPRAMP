@@ -8,7 +8,7 @@ public class VirtualPathGenerator {
 	static double mass = 40.0; // kg
 	static double moi = 20.0; // kg * m^2   //this is a number 254 code had, I figure it's close-ish. Definitely need tuning. Trying to account for scrub with this, not so great
 	static double wheelRadiusMeters = 0.0762; // m 
-	static double wheelBaseWidth = 0.8128; // m   //this is the effective wheel base width empirically 4/3 that of the physical wheel base width (24in --> 32in)
+	static double wheelBaseWidth = 0.6096; // m   //this is the effective wheel base width empirically 4/3 that of the physical wheel base width (24in --> 32in)
 	static double vIntercept = 0.67; //0.67 // V
 	static double R = 0.09160305; // ohms
 	static double kv = 46.51333;   // rad/s per V 
