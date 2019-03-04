@@ -349,7 +349,7 @@ public class MenuManager {
 			@Override
 			public void run(HvlButton a) {
 					
-					FileDialog dialog = new FileDialog((Dialog)null, "Select a *.BOND file", FileDialog.LOAD);
+					FileDialog dialog = new FileDialog((Dialog)null, "Select a *.BOND loader file", FileDialog.LOAD);
 					dialog.setFile("*.BOND");
 					dialog.setDirectory(UI.userHomeFolder);
 					dialog.setVisible(true);
