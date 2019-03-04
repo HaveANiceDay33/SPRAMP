@@ -2,6 +2,8 @@ package com.samuel;
 
 import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.hvlDrawQuad;
 
+import java.awt.Dialog;
+import java.awt.FileDialog;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,6 +29,7 @@ public class MenuManager {
 	
 	static HvlMenu inst, ui, rbg;
 	static float robotW, robotL;
+	static BufferedWriter loadWriter;
 	
 	static String instructions = "Scroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nArrow Keys: Adjust LAST point placed"
 			+ "\nL : Adjust Robot Width and Length (Clears all points)\nA : Scroll up, Z : Scroll Down";
@@ -172,13 +175,24 @@ public class MenuManager {
 			public void run(HvlButton a) {
 				VirtualPathGenerator.fileName = MenuManager.ui.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
 				File outputFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + ".BOND");
+				File loaderFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + "Loader.BOND");
 				VirtualPathGenerator.pos = 0;
 				VirtualPathGenerator.currentPosOnArc = 0;
 				VirtualPathGenerator.xPos = 0;
 				try {
 					VirtualPathGenerator.fileWriter = new BufferedWriter(new FileWriter(outputFile));
+					loadWriter = new BufferedWriter(new FileWriter(loaderFile));
 				} catch (IOException e) {
 					System.out.println("Could not write to output file");
+				}
+				for(int i = 0; i < UI.segments.get(0).segPoints.size(); i++) {
+					Waypoint currentPoint = UI.segments.get(0).segPoints.get(i);
+					try {
+						loadWriter.write(currentPoint.x + " " + currentPoint.y + "\n");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				
 				int segNum = 1;
@@ -192,6 +206,7 @@ public class MenuManager {
 					System.out.println("Complete!");
 					System.out.println("Profile generated with name: " + VirtualPathGenerator.fileName + ".BOND");
 					VirtualPathGenerator.fileWriter.close();
+					loadWriter.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -329,6 +344,28 @@ public class MenuManager {
 			}
 		}).build());
 		rbg.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.HORIZONTAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)-125).setY((Display.getHeight()/2)+00).build());
+		rbg.getChildOfType(HvlArrangerBox.class,1).add(new HvlLabeledButton.Builder().setText("Load").setClickedCommand(new HvlAction1<HvlButton>() {
+	
+			@Override
+			public void run(HvlButton a) {
+					
+					FileDialog dialog = new FileDialog((Dialog)null, "Select a *.BOND file", FileDialog.LOAD);
+					dialog.setFile("*.BOND");
+					dialog.setDirectory(UI.userHomeFolder);
+					dialog.setVisible(true);
+					if(!(dialog.getFile() == null)){
+						String file = dialog.getFile();
+						
+						ProfileLoader loader = new ProfileLoader(file);
+
+						ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(file.replaceAll("Loader.BOND", ""));
+						HvlMenu.setCurrent(ui);
+					}
+		
+	
+			}
+		}).build());
+		
 		rbg.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)+400).setY((Display.getHeight()/2)-185).build());
 		
 		rbg.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(70, 30));
