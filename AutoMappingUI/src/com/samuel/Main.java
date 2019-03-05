@@ -20,7 +20,8 @@ public class Main extends HvlTemplateInteg2D{
 	FONT_INDEX = 0,
 	FRAME_INDEX = 1,
 	FIELD_INDEX = 2,
-	CIRCLE_INDEX = 3;
+	CIRCLE_INDEX = 3,
+	LOGO_INDEX = 4;
 	
 	//Method for drawing text with an outline. Much more visually appealing
 	public static void textOutline(String text, Color textColor, Color outlineColor, float x, float y, float size) {
@@ -42,6 +43,7 @@ public class Main extends HvlTemplateInteg2D{
 		getTextureLoader().loadResource("robotFrame2");
 		getTextureLoader().loadResource("2019field");
 		getTextureLoader().loadResource("circle");
+		getTextureLoader().loadResource("logo");
 		
 		gameFont =  new HvlFontPainter2D(getTexture(FONT_INDEX), HvlFontPainter2D.Preset.FP_INOFFICIAL,.5f,8f,0); //font definition
 		zoomer = new HvlCamera2D(540, 360, 0, zoom, HvlCamera2D.ALIGNMENT_CENTER); //Camera definition

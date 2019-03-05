@@ -17,6 +17,7 @@ import com.osreboot.ridhvl.menu.HvlMenu;
 import com.osreboot.ridhvl.menu.component.HvlArrangerBox;
 import com.osreboot.ridhvl.menu.component.HvlTextBox;
 import com.osreboot.ridhvl.painter.HvlCursor;
+import com.osreboot.ridhvl.painter.painter2d.HvlPainter2D;
 
 public class UI {
 	
@@ -246,6 +247,7 @@ public class UI {
 	}
 	
 	public static void update(float delta) {
+		HvlPainter2D.hvlDrawQuadc(Display.getWidth()/2, Display.getHeight()/2, 800, 800, Main.getTexture(Main.LOGO_INDEX));
 		if(mouseX < 900 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
 			
 			if(Mouse.isButtonDown(0) && clicked == false) {
@@ -291,7 +293,7 @@ public class UI {
 	
 		for(int i = 0; i < tempWaypoints.size(); i++) {
 			Main.textOutline((i+1)+". X: "+(Math.round((((tempWaypoints.get(i).x)+WALL_OFFSET)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).x)+WALL_OFFSET)/PIXELS_TO_CM)))+
-					" cm. Y: "+(Math.round((((tempWaypoints.get(i).y)-TOP_OFFSET)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).y)-TOP_OFFSET)/PIXELS_TO_CM)))+" cm.",Color.cyan, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
+					" cm. Y: "+(Math.round((((tempWaypoints.get(i).y)-TOP_OFFSET)/PIXELS_TO_CM) - Math.round(((tempWaypoints.get(0).y)-TOP_OFFSET)/PIXELS_TO_CM)))+" cm.",Color.white, Color.darkGray, 1030, (25*(i-1))+textY, 0.25f);
 		}
 		
 		if((Keyboard.isKeyDown(Keyboard.KEY_RIGHT) || Keyboard.isKeyDown(Keyboard.KEY_LEFT) ||  
@@ -319,7 +321,7 @@ public class UI {
 		
 		mouseX1 = mouseX;
 		mouseY1 = mouseY;
-		
+
 		Main.zoomer.setZoom(Main.zoom);
 		Main.zoomer.doTransform(new HvlAction0() { //THIS THING ALLOWS THE Main.zoom TO WORK
 			@Override
@@ -334,12 +336,12 @@ public class UI {
 				generateGraphics(tempWaypoints, Color.red);
 			}
 		});
-		Main.textOutline("Press Q to see controls", Color.cyan, Color.darkGray, 50, 50, 0.4f);
-		Main.textOutline("v", Color.cyan, Color.darkGray, Display.getWidth() - 340, 260, 0.25f);
-		Main.textOutline("a", Color.cyan, Color.darkGray, Display.getWidth() - 340, 320, 0.25f);
-		Main.textOutline("av", Color.cyan, Color.darkGray, Display.getWidth() - 340, 380, 0.25f);
-		Main.textOutline("aa", Color.cyan, Color.darkGray, Display.getWidth() - 340, 440, 0.25f);
-		Main.textOutline("ai", Color.cyan, Color.darkGray, Display.getWidth() - 340, 500, 0.25f);
+		Main.textOutline("Press Q to see controls", Color.white, Color.darkGray, 50, 50, 0.4f);
+		Main.textOutline("v", Color.white, Color.darkGray, Display.getWidth() - 340, 260, 0.25f);
+		Main.textOutline("a", Color.white, Color.darkGray, Display.getWidth() - 340, 320, 0.25f);
+		Main.textOutline("av", Color.white, Color.darkGray, Display.getWidth() - 340, 380, 0.25f);
+		Main.textOutline("aa", Color.white, Color.darkGray, Display.getWidth() - 340, 440, 0.25f);
+		Main.textOutline("ai", Color.white, Color.darkGray, Display.getWidth() - 340, 500, 0.25f);
 		if(tempWaypoints.size() > 0 && segments.size() == 0) {
 			if(!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("") && 
 					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("-") && 

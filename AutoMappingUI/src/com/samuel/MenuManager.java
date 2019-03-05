@@ -24,6 +24,7 @@ import com.osreboot.ridhvl.menu.component.HvlSpacer;
 import com.osreboot.ridhvl.menu.component.HvlTextBox;
 import com.osreboot.ridhvl.menu.component.HvlArrangerBox.ArrangementStyle;
 import com.osreboot.ridhvl.menu.component.collection.HvlLabeledButton;
+import com.osreboot.ridhvl.painter.painter2d.HvlPainter2D;
 
 public class MenuManager {
 	
@@ -31,8 +32,8 @@ public class MenuManager {
 	static float robotW, robotL;
 	static BufferedWriter loadWriter;
 	
-	static String instructions = "Scroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nArrow Keys: Adjust LAST point placed"
-			+ "\nL : Adjust Robot Width and Length (Clears all points)\nA : Scroll up, Z : Scroll Down";
+	static String instructions = "Left Click: Place a point\nScroll : Zoom in/out\nRight Click : Drag Map\nESC : exit\nLeft Click : Forward drive\nArrow Keys: Adjust LAST point placed"
+			+ "\nA : Scroll up, Z : Scroll Down";
 	
 	
 	public static void reset() {
@@ -50,7 +51,7 @@ public class MenuManager {
 		
 		UI.initialize();
 		
-		HvlComponentDefault.setDefault(HvlLabeledButton.class, new HvlLabeledButton.Builder().setWidth(100).setHeight(50).setFont(Main.gameFont).setTextColor(Color.cyan).setTextScale(0.25f).setOnDrawable(new HvlComponentDrawable() {
+		HvlComponentDefault.setDefault(HvlLabeledButton.class, new HvlLabeledButton.Builder().setWidth(100).setHeight(50).setFont(Main.gameFont).setTextColor(Color.white).setTextScale(0.25f).setOnDrawable(new HvlComponentDrawable() {
 			@Override
 			public void draw(float delta, float x, float y, float width, float height) {
 				hvlDrawQuad(x,y,width,height,Color.lightGray);	
@@ -391,15 +392,17 @@ public class MenuManager {
 	
 	public static void update(float delta) {
 		if(HvlMenu.getCurrent() == inst) {
-			Main.textOutline(instructions, Color.cyan, Color.darkGray, 20, 20, 0.35f);
+			Main.textOutline(instructions, Color.white, Color.darkGray, 20, 20, 0.30f);
 			if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
 				HvlMenu.setCurrent(ui);
 			}
 		} else if(HvlMenu.getCurrent() == rbg) {
-			Main.textOutline("              Welcome to Sam Munro's Auto Mapping Client Application! \n\n2019 FIELD IS THE ONLY ONE THAT IS ACCURATELY MEASURED AND SCALED!!!    : )" ,Color.cyan, Color.darkGray,60,30, 0.4f);
-			Main.textOutline("Set robot width and length :",Color.cyan, Color.darkGray,550,220, 0.3f);
-			Main.textOutline("Width : ",Color.cyan, Color.darkGray,470,280, 0.4f);
-			Main.textOutline("Length : ",Color.cyan, Color.darkGray,470,360, 0.4f);
+			Main.gameFont.drawWordc("S.P.R.A.M.P." ,Display.getWidth()/2, 30, Color.white, 0.4f);
+			Main.gameFont.drawWordc("Written by Samuel Munro and Peter Salisbury for BONDS 5811" ,Display.getWidth()/2, 80, Color.white, 0.4f);
+			HvlPainter2D.hvlDrawQuadc(200, Display.getHeight()/2, 350, 350, Main.getTexture(Main.LOGO_INDEX));
+			Main.textOutline("Set robot width and length :",Color.white, Color.darkGray,550,220, 0.3f);
+			Main.textOutline("Width : ",Color.white, Color.darkGray,470,280, 0.4f);
+			Main.textOutline("Length : ",Color.white, Color.darkGray,470,360, 0.4f);
 		} else if(HvlMenu.getCurrent() == ui) {
 			UI.update(delta);
 		}
