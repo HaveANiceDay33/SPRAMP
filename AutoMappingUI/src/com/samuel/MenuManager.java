@@ -360,6 +360,7 @@ public class MenuManager {
 						ProfileLoader loader = new ProfileLoader(file);
 
 						ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(file.replaceAll("Loader.BOND", ""));
+						UI.background = Main.FIELD_INDEX;
 						HvlMenu.setCurrent(ui);
 					}
 		
