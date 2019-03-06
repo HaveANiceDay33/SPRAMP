@@ -47,7 +47,7 @@ public class VirtualPathGenerator {
 	public static double voltsForMotion(double velocity, double force) {
 		return force*wheelRadiusMeters*R/(g*kt)/nMotors  //Torque (I*R) term
 			   + velocity/wheelRadiusMeters*g/kv         //Speed  (V*kv) term
-			   + vIntercept;							 //Friction term
+			   + vIntercept*Math.signum(velocity);							 //Friction term
 	}
 
 	/**
@@ -297,7 +297,8 @@ public class VirtualPathGenerator {
 			System.out.println("Decelerating...");
 			
 			while(time < targetTime) { 
-				vel = (vel - acc*dt);
+				acc = -accMax * direction;
+				vel = (vel + acc*dt);
 				
 				posOnArc += (vel*dt);
 				if(forward != disp) {
@@ -459,7 +460,8 @@ public class VirtualPathGenerator {
 			System.out.println("Max velocity reached.");
 			System.out.println("Decelerating...");
 			while(time < targetTime) {
-				vel = (vel - acc*dt);
+				acc = -accMax * direction;
+				vel = (vel + acc*dt);
 				
 				posOnArc += (vel*dt);
 				if(forward != disp) {
