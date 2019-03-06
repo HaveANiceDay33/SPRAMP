@@ -106,7 +106,7 @@ public class UI {
 			float size = -100*(float)generateRadiusAtAPoint(functionGen.coefficients(), functionGen.degree(), mouseX);
 			
 			
-			if(mouseX > xVals.get(0) && mouseX < xVals.get(xVals.size()-1)) {
+			if(mouseX > xVals.get(0) && mouseX < xVals.get(xVals.size()-1) || mouseX < xVals.get(0) && mouseX > xVals.get(xVals.size()-1)) {
 				if(Math.abs(size) < 300) {
 					hvlDrawQuadc(mouseX, ((float)functionGen.predict(mouseX))-(size), size*2, size*2, Main.getTexture(Main.CIRCLE_INDEX));
 				}
