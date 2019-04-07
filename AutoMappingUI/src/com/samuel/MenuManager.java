@@ -361,21 +361,37 @@ public class MenuManager {
 			@Override
 			public void run(HvlButton a) {
 					
-					FileDialog dialog = new FileDialog((Dialog)null, "Select a *.BOND loader file", FileDialog.LOAD);
-					dialog.setFile("*.BOND");
-					dialog.setDirectory(UI.userHomeFolder);
-					dialog.setVisible(true);
-					if(!(dialog.getFile() == null)){
-						String file = dialog.getFile();
-						
-						ProfileLoader loader = new ProfileLoader(file);
+				FileDialog dialog = new FileDialog((Dialog)null, "Select a *.BOND loader file", FileDialog.LOAD);
+				dialog.setFile("*.BOND");
+				dialog.setDirectory(UI.userHomeFolder);
+				dialog.setVisible(true);
+				if(!(dialog.getFile() == null)){
+					String file = dialog.getFile();
+					
+					ProfileLoader loader = new ProfileLoader(file);
 
-						ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(file.replaceAll("Loader.BOND", ""));
-						UI.background = Main.FIELD_INDEX;
-						HvlMenu.setCurrent(ui);
-					}
+					ui.getChildOfType(HvlArrangerBox.class,1).getChildOfType(HvlTextBox.class,0).setText(file.replaceAll("Loader.BOND", ""));
+					UI.background = Main.FIELD_INDEX;
+					HvlMenu.setCurrent(ui);
+				}
 		
 	
+			}
+		}).build());
+		rbg.getChildOfType(HvlArrangerBox.class, 1).add(new HvlSpacer(30, 30));
+		rbg.getChildOfType(HvlArrangerBox.class,1).add(new HvlLabeledButton.Builder().setText("Generate\n  Arrays").setClickedCommand(new HvlAction1<HvlButton>() {
+			
+			@Override
+			public void run(HvlButton a) {
+				FileDialog dialog = new FileDialog((Dialog)null, "Select a *.BOND array file", FileDialog.LOAD);
+				dialog.setFile("*.BOND");
+				dialog.setDirectory(UI.userHomeFolder);
+				dialog.setVisible(true);
+				if(!(dialog.getFile() == null)){
+					String file = dialog.getFile();
+					
+					ArrayCreator generator = new ArrayCreator(file);
+				}
 			}
 		}).build());
 		
