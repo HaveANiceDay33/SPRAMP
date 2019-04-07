@@ -13,7 +13,7 @@ public class Main extends HvlTemplateInteg2D{
 		new Main();
 	}
 	public Main(){
-		super(60, 1440, 720, "Auto Mapping Client v3", new HvlDisplayModeDefault());
+		super(60, 1440, 720, "S.P.R.A.M.P. - By Samuel Munro and Peter Salisbury", new HvlDisplayModeDefault());
 	}
 	
 	public static final int
@@ -41,7 +41,7 @@ public class Main extends HvlTemplateInteg2D{
 	public void initialize() {
 		getTextureLoader().loadResource("osFont");					//TEXTURES
 		getTextureLoader().loadResource("robotFrame2");
-		getTextureLoader().loadResource("2019field");
+		getTextureLoader().loadResource("fieldupdated");
 		getTextureLoader().loadResource("circle");
 		getTextureLoader().loadResource("logo");
 		

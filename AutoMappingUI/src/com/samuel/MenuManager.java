@@ -41,6 +41,7 @@ public class MenuManager {
 		UI.segments.clear();
 		rbg.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,0).setText("");
 		rbg.getChildOfType(HvlArrangerBox.class,0).getChildOfType(HvlTextBox.class,1).setText("");
+		ui.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).setText("");
 		HvlMenu.setCurrent(MenuManager.rbg);
 	}
 	
@@ -174,46 +175,56 @@ public class MenuManager {
 		ui.getChildOfType(HvlArrangerBox.class, 1).add(new HvlLabeledButton.Builder().setText("Save").setClickedCommand(new HvlAction1<HvlButton>() {
 			@Override
 			public void run(HvlButton a) {
-				VirtualPathGenerator.fileName = MenuManager.ui.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
-				File outputFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + ".BOND");
-				File loaderFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + "Loader.BOND");
-				VirtualPathGenerator.pos = 0;
-				VirtualPathGenerator.currentPosOnArc = 0;
-				VirtualPathGenerator.xPos = 0;
-				try {
-					VirtualPathGenerator.fileWriter = new BufferedWriter(new FileWriter(outputFile));
-					loadWriter = new BufferedWriter(new FileWriter(loaderFile));
-				} catch (IOException e) {
-					System.out.println("Could not write to output file");
-				}
-				for(int i = 0; i < UI.segments.get(0).segPoints.size(); i++) {
-					Waypoint currentPoint = UI.segments.get(0).segPoints.get(i);
+				if(UI.segments.size() != 0) {
+					VirtualPathGenerator.fileName = MenuManager.ui.getChildOfType(HvlArrangerBox.class, 1).getFirstOfType(HvlTextBox.class).getText();
+					File outputFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + ".BOND");
+					File loaderFile = new File(UI.userHomeFolder, VirtualPathGenerator.fileName + "Loader.BOND");
+					VirtualPathGenerator.pos = 0;
+					VirtualPathGenerator.currentPosOnArc = 0;
+					VirtualPathGenerator.xPos = 0;
 					try {
-						loadWriter.write(currentPoint.x + " " + currentPoint.y + "\n");
+						VirtualPathGenerator.fileWriter = new BufferedWriter(new FileWriter(outputFile));
+						loadWriter = new BufferedWriter(new FileWriter(loaderFile));
+					} catch (IOException e) {
+						System.out.println("Could not write to output file");
+					}
+					for(int i = 0; i < UI.segments.get(0).segPoints.size(); i++) {
+						Waypoint currentPoint = UI.segments.get(0).segPoints.get(i);
+						try {
+							loadWriter.write(currentPoint.x + " " + currentPoint.y + " " + currentPoint.sizeX + " " + currentPoint.sizeY + "\n");
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					try {
+						loadWriter.write("attributes\n");
+						loadWriter.write(Boolean.toString(UI.segments.get(0).forward) + " " + Boolean.toString(UI.segments.get(0).disp) + " " + UI.segments.get(0).getVel() + " " + UI.segments.get(0).getAcc()+ " " + UI.segments.get(0).getAngVel()+ " " + UI.segments.get(0).getAngAcc());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					int segNum = 1;
+					for(Segment segment : UI.segments) {
+						System.out.print("Segment " + segNum + ": \n");
+						VirtualPathGenerator.runVirtualPath(UI.generateData(segment), segment.getArcLengthMeters(), segment);
+						System.out.println("");
+						segNum++;
+					}
+					try {
+						System.out.println("Complete!");
+						System.out.println("Profile generated with name: " + VirtualPathGenerator.fileName + ".BOND");
+						VirtualPathGenerator.fileWriter.close();
+						loadWriter.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					System.out.println("----------------------------------------------------------------------------------------------");
 				}
-				
-				int segNum = 1;
-				for(Segment segment : UI.segments) {
-					System.out.print("Segment " + segNum + ": \n");
-					VirtualPathGenerator.runVirtualPath(UI.generateData(segment), segment.getArcLengthMeters(), segment);
-					System.out.println("");
-					segNum++;
-				}
-				try {
-					System.out.println("Complete!");
-					System.out.println("Profile generated with name: " + VirtualPathGenerator.fileName + ".BOND");
-					VirtualPathGenerator.fileWriter.close();
-					loadWriter.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println("----------------------------------------------------------------------------------------------");
-			}	
+			}
 		}).build());
 		ui.getChildOfType(HvlArrangerBox.class, 1).add(new HvlSpacer(30, 30));
 		ui.getChildOfType(HvlArrangerBox.class, 1).add(new HvlTextBox.Builder().setWidth(200).setHeight(50).setFont(Main.gameFont).setTextColor(Color.darkGray).setTextScale(0.25f).setOffsetY(20).setOffsetX(20).setText("").setFocusedDrawable(new HvlComponentDrawable() {	
