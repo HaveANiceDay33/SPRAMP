@@ -4,6 +4,18 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 //scp beter1.BOND lvuser@roborio-5811-frc.local:
+/**
+ * <h1>Virtual Path Generator</h1>
+ * 
+ * <p>This class generates a comprehensive motion profile, based on a physics model, from the points drawn by the user.
+ * It accounts for any combination of directions, displacements, and kinematic variables such as velocity and acceleration.</p>
+ * <p>The end result of this class is a generated *.BOND file. These files contain all of the necessary information to run the
+ * robot on certain voltages and all of the necessary data to perform feedback while running the motion profile in real life. </p>
+ * 
+ * @author Samuel Munro
+ * @author Peter Salisbury
+ *
+ */
 public class VirtualPathGenerator {
 	static double mass = 40.0; // kg
 	static double moi = 20.0; // kg * m^2   //this is a number 254 code had, I figure it's close-ish. Definitely need tuning. Trying to account for scrub with this, not so great
@@ -44,6 +56,12 @@ public class VirtualPathGenerator {
 	
 	static double step = 0.1;
 	
+	/**
+	 * <h1>Generates voltages for the drivetrain motors based on a velocity and a force.</h1>
+	 * @param velocity
+	 * @param force
+	 * @return
+	 */
 	public static double voltsForMotion(double velocity, double force) {
 		return force*wheelRadiusMeters*R/(g*kt)/nMotors  //Torque (I*R) term
 			   + velocity/wheelRadiusMeters*g/kv         //Speed  (V*kv) term
@@ -51,7 +69,7 @@ public class VirtualPathGenerator {
 	}
 
 	/**
-	 * <p>Returns voltages for left or right drive side with some gross physics. 
+	 * <p>Returns voltages for left or right drive side with a physics model. 
 	 * One of the values printed to the *.BOND output file.</p>
 	 * @param rPath
 	 * @param vel
@@ -71,6 +89,17 @@ public class VirtualPathGenerator {
 		}
 	}
 	
+	/**
+	 * <p>Method for printing out the data to the generated *.BOND file with formatting. All numbers are formatted to 4 decimal places</p>
+	 * @param vR
+	 * @param vL
+	 * @param disp
+	 * @param vel
+	 * @param ang
+	 * @param angVel
+	 * @param rad
+	 * @param pos
+	 */
 	public static void writeLine(double vR, double vL, double disp, double vel, double ang, double angVel, double rad, double pos) {
 		try {
 			fileWriter.write(String.format("%.4f", vR) + " " + String.format("%.4f", vL) + " " +
@@ -82,6 +111,15 @@ public class VirtualPathGenerator {
 		}
 	}
 	
+	/**
+	 * <p>Returns voltages for left or right drive side with a physics model. 
+	 * One of the values printed to the *.BOND output file.</p>
+	 * @param rPath
+	 * @param vel
+	 * @param acc
+	 * @param left
+	 * @return
+	 */
 	public static double solveScrubbyChassisDynamics(double rPath, double vel, double acc, double angVel, boolean left ){
 		if(left) {
 			//System.out.println("Vel Left: " + vel*(k1*rPath-1)/(k1*rPath) + " Force Left: " + ((k3-moi/rPath)*mass*acc-angVel*Ts*mass)/(2*k3));
@@ -96,10 +134,19 @@ public class VirtualPathGenerator {
 		}
 	}
 	
+	/**
+	 * <h1>Running the virtual path</h1>
+	 * <p>This method is the bread and butter of this program. It takes in an array of coefficients, an arc length, and a Segment object, which contains data such as
+	 * velocity, acceleration, angular velocity, angular acceleration, robot direction, displacement, etc. This method first determines whether the robot will run 
+	 * a trapezoidal or triangular profile. From here, a comprehensive profile is generated through a variety of calculus, kinematic, and physics formulas.</p>
+	 * @param coeffs
+	 * @param arcL
+	 * @param segment
+	 */
 	public static void runVirtualPath(double [] coeffs, double arcL, Segment segment) {
-		
+		//initialization
 		time = pos = vel = acc = ang = angVel = angAcc = prevAng = voltRight = voltLeft = xPos =  stepOnArc = posOnArc = currentPosOnArc = (float) 0.0;
-		
+		//grabbing kinematic variables from the passed-in segment
 		velMax = segment.getVel();
 		accMax = segment.getAcc();
 		angVelMax = segment.getAngVel();
@@ -109,16 +156,16 @@ public class VirtualPathGenerator {
 			System.out.println("HEY DUMMY SET YOUR VARIABLES\n");
 		}
 		
-		double accelTime = velMax/accMax;
+		double accelTime = velMax/accMax; //determining acceleration time
 		double [] deriCoeff = new double[5];
-		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2);
-		double decelDistance = accelDistance;
+		double accelDistance = 0.5*accMax*Math.pow((accelTime), 2); //determining acceleration distance
+		double decelDistance = accelDistance; //in both trapezoidal and triangular, acceleration time and distance are the same.
 		System.out.println("Pre simulation update. Current Time: " + time);
 		System.out.println("Total drive distance: " + arcL);
 		double direction;
 		boolean forward = segment.forward;
 		boolean disp = segment.disp;
-		if(forward) {
+		if(forward) { //setting direction for accelerations
 			direction = 1;
 			System.out.println("Going FORWARDS");
 		} else {
@@ -126,12 +173,12 @@ public class VirtualPathGenerator {
 			System.out.println("Going BACKWARDS");
 		}
 		
-		if(arcL > (2*accelDistance)) {
+		if(arcL > (2*accelDistance)) { //Determining if triangular or trapezoidal. This is a trapezoidal profile
 			
-			arcL -= (accelDistance + decelDistance);
+			arcL -= (accelDistance + decelDistance); //modifying arc length to isolate the middle (full speed) part of the profile.
 			
-			double targetTime = (arcL/velMax) + (2* accelTime);
-			
+			double targetTime = (arcL/velMax) + (2* accelTime); //target time of whole profile
+			//diagnostics
 			System.out.println("Running TRAPEZOID profile.");
 			System.out.println("Total Estimated Time: " + targetTime);
 			System.out.println("Max Velocity: "+ velMax);
@@ -141,12 +188,14 @@ public class VirtualPathGenerator {
 			
 			double minRadius = 100000.0;
 			
+			//determine a minimum path radius for acceleration correction
 			for(int i = 0; i<1000; i++) {
 				if(UI.generateRadiusAtAPoint(coeffs, 5, (float) i*100)<minRadius) {
 					minRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) i*100);
 				}
 			}
 			
+			//maximum angular acceleration and velocity will get adjusted based on path constraints
 			if(angVelMax < velMax / minRadius) { //Velocity 
 				velMax = angVelMax * minRadius; 
 				System.out.println("Maximum Velocity adjusted to: " + velMax);
@@ -156,7 +205,7 @@ public class VirtualPathGenerator {
 				System.out.println("Maximum Acceleration adjusted to: " + accMax);
 			}// solve entire acceleration portion, may not use all of these points
 			
-			
+			//point stepping begins here for acceleration portion
 			while(time < accelTime) { 
 				
 				acc = accMax * direction; 
@@ -164,19 +213,23 @@ public class VirtualPathGenerator {
 				
 				posOnArc += (vel*dt);
 				
-				if(forward != disp) {
+				//robot direction versus displacement to determine how the velocity is added to the position
+				if(forward == false && disp == true) {
 					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else if (forward == true && disp == false){
+					currentPosOnArc-=(Math.abs(vel)*dt);
 				} else {
 					currentPosOnArc+=(vel*dt);
 				}
 			    
 				
-				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos);
+				pathRadius = UI.generateRadiusAtAPoint(coeffs, 5, (float) xPos); //instantaneous path-radius is calculated with a function found in the UI class
 				
 				for(int i = 0; i < 5; i++) {
 					deriCoeff[i] = coeffs[i+1] * (i+1); 								  
 				}
 				
+				//back-calculates a Riemann sum to determine the current x-position along the path
 				if(disp) {
 					while(stepOnArc < currentPosOnArc*100){
 						
@@ -211,18 +264,18 @@ public class VirtualPathGenerator {
 				
 					
 					
-				
+				//uses this x-position and the passed-in derivative coefficients to calculate the slope at that point.
 				double deriAtxPos = (deriCoeff[4]*Math.pow(xPos, 4)) + (deriCoeff[3]*Math.pow(xPos, 3))+
 						(deriCoeff[2]*Math.pow(xPos, 2))+(deriCoeff[1]*Math.pow(xPos, 1))+(deriCoeff[0]*Math.pow(xPos, 0));
 				
-				ang = Math.atan(deriAtxPos);
-				angVel = (ang - prevAng)/dt; //add prev ang from derivative to beginning of new segments
-				prevAng = ang;
+				ang = Math.atan(deriAtxPos); //an angle is determined from this derivative(slope)
+				angVel = (ang - prevAng)/dt; //now angular velocity can be determined
+				prevAng = ang; //add prev ang from derivative to beginning of new segments
 			
-				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true);
+				voltLeft = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, true); //solves volatge based on calculated varaibles
 				voltRight = solveScrubbyChassisDynamics(pathRadius, vel, acc, angVel, false);
 				
-				writeLine(voltRight, voltLeft, posOnArc, vel, ang, angVel, pathRadius, xPos/100);
+				writeLine(voltRight, voltLeft, posOnArc, vel, ang, angVel, pathRadius, xPos/100); //writes data to text file
 				
 				index++;
 				time += dt;
@@ -233,8 +286,11 @@ public class VirtualPathGenerator {
 			while(time < targetTime - accelTime) {
 				
 				posOnArc += (vel*dt);
-				if(forward != disp) {
+				
+				if(forward == false && disp == true) {
 					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else if (forward == true && disp == false){
+					currentPosOnArc-=(Math.abs(vel)*dt);
 				} else {
 					currentPosOnArc+=(vel*dt);
 				}
@@ -301,8 +357,11 @@ public class VirtualPathGenerator {
 				vel = (vel + acc*dt);
 				
 				posOnArc += (vel*dt);
-				if(forward != disp) {
+				
+				if(forward == false && disp == true) {
 					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else if (forward == true && disp == false){
+					currentPosOnArc-=(Math.abs(vel)*dt);
 				} else {
 					currentPosOnArc+=(vel*dt);
 				}
@@ -395,8 +454,10 @@ public class VirtualPathGenerator {
 				vel = (vel + acc*dt);
 				
 				posOnArc += (vel*dt);
-				if(forward != disp) {
+				if(forward == false && disp == true) {
 					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else if (forward == true && disp == false){
+					currentPosOnArc-=(Math.abs(vel)*dt);
 				} else {
 					currentPosOnArc+=(vel*dt);
 				}
@@ -464,8 +525,10 @@ public class VirtualPathGenerator {
 				vel = (vel + acc*dt);
 				
 				posOnArc += (vel*dt);
-				if(forward != disp) {
+				if(forward == false && disp == true) {
 					currentPosOnArc+=(Math.abs(vel)*dt);
+				} else if (forward == true && disp == false){
+					currentPosOnArc-=(Math.abs(vel)*dt);
 				} else {
 					currentPosOnArc+=(vel*dt);
 				}

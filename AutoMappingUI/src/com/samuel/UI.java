@@ -19,6 +19,12 @@ import com.osreboot.ridhvl.menu.component.HvlTextBox;
 import com.osreboot.ridhvl.painter.HvlCursor;
 import com.osreboot.ridhvl.painter.painter2d.HvlPainter2D;
 
+/**
+ * <h1>This class handles the drawing and function calculations required to generate a path.</h1>
+ * @author Samuel Munro
+ * @author Peter Salisbury
+ *
+ */
 public class UI {
 	
 	public final static float WALL_OFFSET = 92;
@@ -345,7 +351,8 @@ public class UI {
 		if(tempWaypoints.size() > 0 && segments.size() == 0) {
 			if(!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("") && 
 					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("-") && 
-					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals(".")) {
+					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals(".") &&
+					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals(".-")) {
 				tempWaypoints.get(0).setAngle(Math.toDegrees(Double.parseDouble(MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText())));
 			}
 		}
