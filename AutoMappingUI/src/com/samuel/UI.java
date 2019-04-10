@@ -375,7 +375,7 @@ public class UI {
 			if(!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("") && 
 					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("-") && 
 					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals(".") &&
-					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals(".-")) {
+					!MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText().equals("-.")) {
 				tempWaypoints.get(0).setAngle(Math.toDegrees(Double.parseDouble(MenuManager.ui.getChildOfType(HvlArrangerBox.class, 2).getChildOfType(HvlTextBox.class, 4).getText())));
 			}
 		}
