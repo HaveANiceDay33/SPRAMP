@@ -398,7 +398,7 @@ public class MenuManager {
 		rbg.add(new HvlArrangerBox.Builder().setStyle(ArrangementStyle.VERTICAL).setWidth(250).setHeight(400).setX((Display.getWidth()/2)+400).setY((Display.getHeight()/2)-185).build());
 		
 		rbg.getChildOfType(HvlArrangerBox.class, 2).add(new HvlSpacer(70, 30));
-		rbg.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("Deep Space").setWidth(200).setClickedCommand(new HvlAction1<HvlButton>() {
+		rbg.getChildOfType(HvlArrangerBox.class,2).add(new HvlLabeledButton.Builder().setText("Use Moonraker in\n   Deep Space").setWidth(200).setClickedCommand(new HvlAction1<HvlButton>() {
 			@Override
 			public void run(HvlButton a) {
 				UI.tempWaypoints.clear();
