@@ -49,7 +49,13 @@ public class UI {
 	
 	static ArrayList<Waypoint> tempWaypoints;
 	static ArrayList<Segment> segments;
-
+	
+	/**
+	 * Writes a function in a readable manner based on coefficients in array form
+	 * @param equalTo
+	 * @param coeffArray
+	 * @return
+	 */
 	public static String functionGenerator(String equalTo, double[] coeffArray) {
 		StringBuilder s = new StringBuilder();
 		s.append(equalTo + " = ");
@@ -61,6 +67,11 @@ public class UI {
 		return s.toString().replace("+ -", "- ");
 	}
 	
+	/**
+	 * Generates all of the path, path radius, and robot frame graphics for the UI
+	 * @param waypoints
+	 * @param lineColor
+	 */
 	public static void generateGraphics(ArrayList<Waypoint> waypoints, Color lineColor) {
 		ArrayList<Double> xVals = new ArrayList();
 		ArrayList<Double> yVals = new ArrayList();
@@ -166,6 +177,11 @@ public class UI {
 		}
 	}
 	
+	/**
+	 * Generates a function in terms of cm for the virtual path generator class to use for calculations.
+	 * @param seg
+	 * @return
+	 */
 	public static double[] generateData(Segment seg) {
 		ArrayList<Waypoint> waypoints = seg.segPoints;
 		ArrayList<Double> xVals = new ArrayList();
@@ -242,6 +258,9 @@ public class UI {
 		return null;
 	}
 	
+	/**
+	 * Initializes UI
+	 */
 	public static void initialize() {
 		picSizeX = 928;
 		picSizeY = 464;
@@ -252,6 +271,10 @@ public class UI {
 		textY = 40;
 	}
 	
+	/**
+	 * Handles point drawing, scrolling, and other controls
+	 * @param delta
+	 */
 	public static void update(float delta) {
 		HvlPainter2D.hvlDrawQuadc(Display.getWidth()/2, Display.getHeight()/2, 800, 800, Main.getTexture(Main.LOGO_INDEX));
 		if(mouseX < 900 || mouseX > 1435 && mouseY > 75 || mouseY < 25) {
