@@ -35,42 +35,42 @@ public class ArrayCreator {
 				ang.add(Double.parseDouble(nums[4]));
 				angVel.add(Double.parseDouble(nums[5]));
 			}
-			arrayWriter.write("voltagesRight = new ArrayList(\n\tArrays.asList(");
+			arrayWriter.write("ProfileDrive.voltagesRight = new ArrayList(\n\tArrays.asList(");
 			for(int a = 0; a < vR.size(); a++) {
 				arrayWriter.write(vR.get(a) + (a == (vR.size() - 1) ? "" : ", "));
 			}
 			arrayWriter.newLine();
 			arrayWriter.write("\t)\n);");
 			arrayWriter.newLine();
-			arrayWriter.write("voltagesLeft = new ArrayList(\n\tArrays.asList(");
+			arrayWriter.write("ProfileDrive.voltagesLeft = new ArrayList(\n\tArrays.asList(");
 			for(int a = 0; a < vL.size(); a++) {
 				arrayWriter.write(vL.get(a) + (a == (vL.size() - 1) ? "" : ", "));
 			}
 			arrayWriter.newLine();
 			arrayWriter.write("\t)\n);");
 			arrayWriter.newLine();
-			arrayWriter.write("poses = new ArrayList(\n\tArrays.asList(");
+			arrayWriter.write("ProfileDrive.poses = new ArrayList(\n\tArrays.asList(");
 			for(int a = 0; a < pos.size(); a++) {
 				arrayWriter.write(pos.get(a) + (a == (pos.size() - 1) ? "" : ", "));
 			}
 			arrayWriter.newLine();
 			arrayWriter.write("\t)\n);");
 			arrayWriter.newLine();
-			arrayWriter.write("vels = new ArrayList(\n\tArrays.asList(");
+			arrayWriter.write("ProfileDrive.vels = new ArrayList(\n\tArrays.asList(");
 			for(int a = 0; a < vel.size(); a++) {
 				arrayWriter.write(vel.get(a) + (a == (vel.size() - 1) ? "" : ", "));
 			}
 			arrayWriter.newLine();
 			arrayWriter.write("\t)\n);");
 			arrayWriter.newLine();
-			arrayWriter.write("angs = new ArrayList(\n\tArrays.asList(");
+			arrayWriter.write("ProfileDrive.angs = new ArrayList(\n\tArrays.asList(");
 			for(int a = 0; a < ang.size(); a++) {
 				arrayWriter.write(ang.get(a) + (a == (ang.size() - 1) ? "" : ", "));
 			}
 			arrayWriter.newLine();
 			arrayWriter.write("\t)\n);");
 			arrayWriter.newLine();
-			arrayWriter.write("angVels = new ArrayList(\n\tArrays.asList(");
+			arrayWriter.write("ProfileDrive.angVels = new ArrayList(\n\tArrays.asList(");
 			for(int a = 0; a < angVel.size(); a++) {
 				arrayWriter.write(angVel.get(a) + (a == (angVel.size() - 1) ? "" : ", "));
 			}
